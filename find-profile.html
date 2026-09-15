@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>프로필 찾기 | Castfolio</title>
+
+    <!-- Main Castfolio CSS -->
+    <link
+        rel="stylesheet"
+        href="CSS/main.css?v=10"
+    >
+
+    <link
+    rel="stylesheet"
+    href="CSS/find-profile.css?v=1"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <header class="header">
+
+
+        <!-- Logo -->
+
+        <a
+            href="main.html"
+            class="logo"
+        >
+
+            <img
+                src="images/castfolio.png"
+                alt="Castfolio Logo"
+            >
+
+            <span>
+                Castfolio
+            </span>
+
+        </a>
+
+
+
+        <!-- =================================
+             NAVIGATION
+        ================================== -->
+
+        <nav
+            class="nav"
+            id="navMenu"
+        >
+
+
+            <a
+                href="my-character.html"
+                class="nav-link"
+            >
+                캐릭터
+            </a>
+
+
+            <a
+                href="gallery.html"
+                class="nav-link"
+            >
+                갤러리
+            </a>
+
+
+            <a
+                href="search.html"
+                class="nav-link"
+            >
+                검색
+            </a>
+
+
+
+            <!-- Other Dropdown -->
+
+            <div class="dropdown">
+
+                <button
+                    class="dropdown-button"
+                    id="moreButton"
+                    type="button"
+                >
+
+                    기타
+
+                    <span class="arrow">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="dropdown-menu"
+                    id="dropdownMenu"
+                >
+
+                    <a href="settings.html">
+                        설정
+                    </a>
+
+                    <a href="find-profile.html">
+                        프로필 찾기
+                    </a>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+
+        <!-- =================================
+             RIGHT SIDE
+        ================================== -->
+
+        <div class="header-right">
+
+
+            <!-- User Profile -->
+
+            <a
+                href="settings.html"
+                class="header-user-profile"
+                id="headerUserProfile"
+                hidden
+            >
+
+                <img
+                    src="images/castfolio.png"
+                    alt="프로필 이미지"
+                    class="header-profile-image"
+                    id="headerProfileImage"
+                    width="36"
+                    height="36"
+                >
+
+                <span
+                    class="header-profile-name"
+                    id="headerProfileName"
+                >
+                    사용자
+                </span>
+
+            </a>
+
+
+
+            <!-- Login / Logout -->
+
+            <button
+                class="login-button"
+                id="loginButton"
+                type="button"
+            >
+                로그인
+            </button>
+
+
+
+            <!-- Mobile Menu -->
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="메뉴 열기"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================
+         FIND PROFILE PAGE
+    ================================== -->
+
+    <main
+        class="find-profile-page"
+        id="findProfilePage"
+        hidden
+    >
+
+        <section class="find-profile-content">
+
+
+            <p class="find-profile-subtitle">
+                새로운 프로필 사진을 찾아보세요
+            </p>
+
+
+            <h1 class="find-profile-title">
+                프로필 찾기
+            </h1>
+
+
+            <p class="find-profile-description">
+
+                Pinterest와 ChatGPT에서<br>
+
+                캐릭터의 새로운 아이디어와
+                영감을 찾아보세요.
+
+            </p>
+
+
+
+            <!-- =================================
+                 LINKS
+            ================================== -->
+
+            <div class="profile-link-container">
+
+
+                <!-- Pinterest -->
+
+                <a
+                    href="https://www.pinterest.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="
+                        profile-link-card
+                        pinterest-card
+                    "
+                    aria-label="Pinterest 열기"
+                >
+
+                    <div class="profile-link-icon">
+
+                        <img
+                            src="images/pinterest.png"
+                            alt="Pinterest"
+                        >
+
+                    </div>
+
+
+                    <span class="profile-link-name">
+                        Pinterest
+                    </span>
+
+
+                    <span class="profile-link-text">
+                        Pinterest에서 찾기
+                    </span>
+
+                </a>
+
+
+
+                <!-- ChatGPT -->
+
+                <a
+                    href="https://chatgpt.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="
+                        profile-link-card
+                        chatgpt-card
+                    "
+                    aria-label="ChatGPT 열기"
+                >
+
+                    <div class="profile-link-icon">
+
+                        <img
+                            src="images/chatgpt.jpg"
+                            alt="ChatGPT"
+                        >
+
+                    </div>
+
+
+                    <span class="profile-link-name">
+                        ChatGPT
+                    </span>
+
+
+                    <span class="profile-link-text">
+                        ChatGPT에서 만들어 보기
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =================================
+         MAIN JAVASCRIPT
+    ================================== -->
+
+    <script
+        type="module"
+        src="JS/main.js?v=10"
+    ></script>
+
+
+
+    <!-- =================================
+         LOGIN REQUIRED
+    ================================== -->
+
+    <script type="module">
+
+        import {
+            auth
+        } from "./JS/main.js?v=10";
+
+
+        import {
+            onAuthStateChanged
+        } from
+            "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+        const findProfilePage =
+            document.getElementById(
+                "findProfilePage"
+            );
+
+
+        onAuthStateChanged(
+            auth,
+
+            function (user) {
+
+                /*
+                    This page can only be
+                    accessed when logged in.
+                */
+
+                if (!user) {
+
+                    window.location.replace(
+                        "main.html"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    Firebase confirmed that
+                    the user is logged in.
+
+                    Show the page.
+                */
+
+                findProfilePage.hidden =
+                    false;
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Castfolio</title>
+
+    <!--
+        ?v=10 forces the browser to load the newest CSS
+        instead of an old cached version.
+    -->
+    <link
+        rel="stylesheet"
+        href="CSS/main.css?v=10"
+    >
+</head>
+
+
+<body>
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <header class="header">
+
+        <!-- Logo -->
+
+        <a
+            href="main.html"
+            class="logo"
+        >
+            <img
+                src="images/castfolio.png"
+                alt="Castfolio Logo"
+            >
+
+            <span>
+                Castfolio
+            </span>
+        </a>
+
+
+        <!-- Navigation -->
+
+        <nav
+            class="nav"
+            id="navMenu"
+        >
+
+            <a
+                href="my-character.html"
+                class="nav-link"
+            >
+                캐릭터
+            </a>
+
+
+            <a
+                href="gallery.html"
+                class="nav-link"
+            >
+                갤러리
+            </a>
+
+
+            <a
+                href="search.html"
+                class="nav-link"
+            >
+                검색
+            </a>
+
+
+            <!-- Other Dropdown -->
+
+            <div class="dropdown">
+
+                <button
+                    class="dropdown-button"
+                    id="moreButton"
+                    type="button"
+                >
+                    기타
+
+                    <span class="arrow">
+                        ▾
+                    </span>
+                </button>
+
+
+                <div
+                    class="dropdown-menu"
+                    id="dropdownMenu"
+                >
+
+                    <a href="settings.html">
+                        설정
+                    </a>
+
+                    <a href="find-profile.html">
+                        프로필 찾기
+                    </a>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+        <!-- =================================
+             RIGHT SIDE
+        ================================== -->
+
+        <div class="header-right">
+
+            <!--
+                User Profile
+
+                hidden = invisible by default.
+
+                main.js removes "hidden"
+                ONLY when Firebase confirms
+                that a user is logged in.
+            -->
+
+            <a
+                href="settings.html"
+                class="header-user-profile"
+                id="headerUserProfile"
+                hidden
+            >
+
+                <img
+                    src="images/castfolio.png"
+                    alt="프로필 이미지"
+                    class="header-profile-image"
+                    id="headerProfileImage"
+                    width="36"
+                    height="36"
+                >
+
+                <span
+                    class="header-profile-name"
+                    id="headerProfileName"
+                >
+                    사용자
+                </span>
+
+            </a>
+
+
+            <!-- Login / Logout -->
+
+            <button
+                class="login-button"
+                id="loginButton"
+                type="button"
+            >
+                로그인
+            </button>
+
+
+            <!-- Mobile Menu -->
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="메뉴 열기"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================
+         HOMEPAGE
+    ================================== -->
+
+    <main class="hero">
+
+        <div class="hero-overlay"></div>
+
+
+        <section class="hero-content">
+
+            <p class="welcome-text">
+                Castfolio에 오신 것을 환영합니다
+            </p>
+
+
+            <h1>
+                나만의 캐릭터<br>
+                컬렉션
+            </h1>
+
+
+            <p class="hero-description">
+                당신의 캐릭터를 한곳에 모아<br>
+                기록하고 관리해 보세요.
+            </p>
+
+
+            <a
+                href="add-character.html"
+                class="add-character-button"
+                aria-label="캐릭터 추가"
+            >
+
+                <span class="plus-icon">
+                    ＋
+                </span>
+
+                <span class="add-text">
+                    캐릭터 추가
+                </span>
+
+            </a>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =================================
+         JAVASCRIPT
+    ================================== -->
+
+    <script
+        type="module"
+        src="JS/main.js?v=10"
+    ></script>
+
+</body>
+
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>설정 | Castfolio</title>
+
+
+    <!-- Shared Site CSS -->
+
+    <link
+        rel="stylesheet"
+        href="CSS/main.css?v=10"
+    >
+
+
+    <!-- Settings CSS -->
+
+    <link
+        rel="stylesheet"
+        href="CSS/settings.css?v=10"
+    >
+</head>
+
+
+<body>
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <header class="header">
+
+        <!-- Logo -->
+
+        <a
+            href="main.html"
+            class="logo"
+        >
+
+            <img
+                src="images/castfolio.png"
+                alt="Castfolio Logo"
+            >
+
+            <span>
+                Castfolio
+            </span>
+
+        </a>
+
+
+
+        <!-- Navigation -->
+
+        <nav
+            class="nav"
+            id="navMenu"
+        >
+
+            <a
+                href="my-character.html"
+                class="nav-link"
+            >
+                캐릭터
+            </a>
+
+
+            <a
+                href="gallery.html"
+                class="nav-link"
+            >
+                갤러리
+            </a>
+
+
+            <a
+                href="search.html"
+                class="nav-link"
+            >
+                검색
+            </a>
+
+
+            <div class="dropdown">
+
+                <button
+                    class="dropdown-button"
+                    id="moreButton"
+                    type="button"
+                >
+                    기타
+
+                    <span class="arrow">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="dropdown-menu"
+                    id="dropdownMenu"
+                >
+
+                    <a href="settings.html">
+                        설정
+                    </a>
+
+                    <a href="find-profile.html">
+                        프로필 찾기
+                    </a>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+
+        <!-- =================================
+             RIGHT SIDE
+        ================================== -->
+
+        <div class="header-right">
+
+            <!-- User Profile -->
+
+            <a
+                href="settings.html"
+                class="header-user-profile"
+                id="headerUserProfile"
+                hidden
+            >
+
+                <img
+                    src="images/castfolio.png"
+                    alt="프로필 이미지"
+                    class="header-profile-image"
+                    id="headerProfileImage"
+                    width="36"
+                    height="36"
+                >
+
+                <span
+                    class="header-profile-name"
+                    id="headerProfileName"
+                >
+                    사용자
+                </span>
+
+            </a>
+
+
+            <!-- Login / Logout -->
+
+            <button
+                class="login-button"
+                id="loginButton"
+                type="button"
+            >
+                로그인
+            </button>
+
+
+            <!-- Mobile Menu -->
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="메뉴 열기"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================
+         SETTINGS PAGE
+    ================================== -->
+
+    <main
+        class="settings-page"
+        id="settingsPage"
+    >
+
+        <div class="settings-container">
+
+
+            <!-- Heading -->
+
+            <section class="settings-heading">
+
+                <p class="settings-small-title">
+                    CASTFOLIO
+                </p>
+
+
+                <h1>
+                    설정
+                </h1>
+
+
+                <p class="settings-description">
+                    프로필과 계정 정보를 관리할 수 있습니다.
+                </p>
+
+            </section>
+
+
+
+            <!-- =================================
+                 PROFILE SETTINGS
+            ================================== -->
+
+            <section class="settings-card">
+
+                <div class="card-heading">
+
+                    <h2>
+                        프로필
+                    </h2>
+
+
+                    <p>
+                        다른 사용자에게 표시되는 프로필 정보를 수정할 수 있습니다.
+                    </p>
+
+                </div>
+
+
+
+                <!-- Current Profile -->
+
+                <div class="profile-preview">
+
+                    <img
+                        src="images/castfolio.png"
+                        id="profileImage"
+                        class="settings-profile-image"
+                        alt="프로필 이미지"
+                        width="84"
+                        height="84"
+                    >
+
+
+                    <div class="profile-preview-info">
+
+                        <strong id="profileName">
+                            사용자
+                        </strong>
+
+
+                        <span id="profileEmail">
+                            이메일
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Username -->
+
+                <div class="form-group">
+
+                    <label for="usernameInput">
+                        사용자 이름
+                    </label>
+
+
+                    <input
+                        id="usernameInput"
+                        class="settings-input"
+                        type="text"
+                        maxlength="30"
+                        placeholder="사용자 이름을 입력하세요"
+                    >
+
+
+                    <p class="input-description">
+                        상단 메뉴와 Castfolio 프로필에 표시될 이름입니다.
+                    </p>
+
+                </div>
+
+
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label for="emailInput">
+                        이메일
+                    </label>
+
+
+                    <input
+                        id="emailInput"
+                        class="settings-input"
+                        type="email"
+                        disabled
+                    >
+
+
+                    <p class="input-description">
+                        Google 로그인에 사용한 이메일입니다.
+                    </p>
+
+                </div>
+
+
+
+                <!-- Profile Image -->
+
+                <div class="form-group">
+
+                    <label for="photoURLInput">
+                        프로필 이미지 URL
+                    </label>
+
+
+                    <input
+                        id="photoURLInput"
+                        class="settings-input"
+                        type="url"
+                        placeholder="https://example.com/profile.jpg"
+                    >
+
+
+                    <p class="input-description">
+                        사용할 프로필 이미지 주소를 입력하세요.
+                    </p>
+
+                </div>
+
+
+
+                <!-- Status -->
+
+                <div
+                    class="settings-message"
+                    id="settingsMessage"
+                ></div>
+
+
+
+                <!-- Save -->
+
+                <div class="save-button-wrapper">
+
+                    <button
+                        class="save-button"
+                        id="saveProfileButton"
+                        type="button"
+                    >
+                        변경사항 저장
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 ACCOUNT SETTINGS
+            ================================== -->
+
+            <section class="settings-card account-card">
+
+                <div class="card-heading">
+
+                    <h2>
+                        계정 관리
+                    </h2>
+
+
+                    <p>
+                        계정과 관련된 중요한 설정입니다.
+                    </p>
+
+                </div>
+
+
+                <div class="delete-account-row">
+
+                    <div>
+
+                        <h3>
+                            계정 삭제
+                        </h3>
+
+
+                        <p>
+                            계정을 삭제하면 복구할 수 없습니다.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="delete-account-button"
+                        id="deleteAccountButton"
+                        type="button"
+                    >
+                        계정 삭제
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =================================
+         DELETE CONFIRMATION
+    ================================== -->
+
+    <div
+        class="modal-background"
+        id="deleteModal"
+    >
+
+        <div class="delete-modal">
+
+            <div class="warning-icon">
+                !
+            </div>
+
+
+            <h2>
+                정말 계정을 삭제하시겠습니까?
+            </h2>
+
+
+            <p>
+                계정을 삭제하면 다시 복구할 수 없습니다.
+                계속 진행하시겠습니까?
+            </p>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    class="cancel-button"
+                    id="cancelDeleteButton"
+                    type="button"
+                >
+                    취소
+                </button>
+
+
+                <button
+                    class="confirm-delete-button"
+                    id="confirmDeleteButton"
+                    type="button"
+                >
+                    계정 삭제
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!--
+        Do NOT load main.js separately.
+
+        settings.js imports main.js itself.
+    -->
+
+    <script
+        type="module"
+        src="JS/settings.js?v=10"
+    ></script>
+
+</body>
+
+</html>
