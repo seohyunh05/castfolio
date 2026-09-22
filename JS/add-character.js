@@ -2399,7 +2399,20 @@ characterForm.addEventListener(
                         "",
 
                     profileCrop:
-                        finalProfileCrop,
+                        finalProfileCrop
+                            ? {
+                                x: finalProfileCrop.x ?? 0,
+                                y: finalProfileCrop.y ?? 0,
+                                width: finalProfileCrop.width ?? 0,
+                                height: finalProfileCrop.height ?? 0,
+                                rotate: finalProfileCrop.rotate ?? 0,
+                                scaleX: finalProfileCrop.scaleX ?? 1,
+                                scaleY: finalProfileCrop.scaleY ?? 1,
+                                aspectRatio: finalProfileCrop.aspectRatio ?? (4 / 5),
+                                originalWidth: finalProfileCrop.originalWidth ?? 0,
+                                originalHeight: finalProfileCrop.originalHeight ?? 0
+                            }
+                            : null,
 
                     galleryImages:
                         galleryImageUrls,
