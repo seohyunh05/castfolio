@@ -1,136 +1,43 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>캐릭터 추가 | Castfolio</title>
 
-    <!-- Existing Castfolio CSS -->
-    <link
-        rel="stylesheet"
-        href="CSS/main.css?v=10"
-    >
-
-    <!-- Add Character CSS -->
-    <link
-        rel="stylesheet"
-        href="CSS/add-character.css?v=1"
-    >
+    <link rel="stylesheet" href="CSS/main.css?v=10">
+    <link rel="stylesheet" href="CSS/add-character.css?v=3">
 </head>
-
-
 <body>
-
-    <!-- =================================
-         HEADER
-    ================================== -->
-
     <header class="header">
-
-        <!-- Logo -->
-
-        <a
-            href="main.html"
-            class="logo"
-        >
-            <img
-                src="images/castfolio.png"
-                alt="Castfolio Logo"
-            >
-
-            <span>
-                Castfolio
-            </span>
+        <a href="main.html" class="logo">
+            <img src="images/castfolio.png" alt="Castfolio Logo">
+            <span>Castfolio</span>
         </a>
 
-
-        <!-- Navigation -->
-
-        <nav
-            class="nav"
-            id="navMenu"
-        >
-
-            <a
-                href="my-characters.html"
-                class="nav-link"
-            >
-                캐릭터
-            </a>
-
-
-            <a
-                href="gallery.html"
-                class="nav-link"
-            >
-                갤러리
-            </a>
-
-
-            <a
-                href="search.html"
-                class="nav-link"
-            >
-                검색
-            </a>
-
-
-            <!-- Other Dropdown -->
+        <nav class="nav" id="navMenu">
+            <a href="my-characters.html" class="nav-link">캐릭터</a>
+            <a href="gallery.html" class="nav-link">갤러리</a>
+            <a href="search.html" class="nav-link">검색</a>
 
             <div class="dropdown">
-
-                <button
-                    class="dropdown-button"
-                    id="moreButton"
-                    type="button"
-                >
-                    기타
-
-                    <span class="arrow">
-                        ▾
-                    </span>
+                <button class="dropdown-button" id="moreButton" type="button">
+                    기타 <span class="arrow">▾</span>
                 </button>
-
-
-                <div
-                    class="dropdown-menu"
-                    id="dropdownMenu"
-                >
-
-                    <a href="settings.html">
-                        설정
-                    </a>
-
-                    <a href="find-profile.html">
-                        프로필 찾기
-                    </a>
-
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="settings.html">설정</a>
+                    <a href="find-profile.html">프로필 찾기</a>
                 </div>
-
             </div>
-
         </nav>
 
-
-        <!-- Header Right -->
-
         <div class="header-right">
-
-            <!-- User Profile -->
-
             <a
                 href="settings.html"
                 class="header-user-profile"
                 id="headerUserProfile"
                 hidden
             >
-
                 <img
                     src="images/castfolio.png"
                     alt="프로필 이미지"
@@ -139,105 +46,33 @@
                     width="36"
                     height="36"
                 >
-
-                <span
-                    class="header-profile-name"
-                    id="headerProfileName"
-                >
-                    사용자
-                </span>
-
+                <span class="header-profile-name" id="headerProfileName">사용자</span>
             </a>
 
-
-            <!-- Login / Logout -->
-
-            <button
-                class="login-button"
-                id="loginButton"
-                type="button"
-            >
-                로그인
-            </button>
-
-
-            <!-- Mobile Menu -->
-
+            <button class="login-button" id="loginButton" type="button">로그인</button>
             <button
                 class="mobile-menu-button"
                 id="mobileMenuButton"
                 type="button"
                 aria-label="메뉴 열기"
-            >
-                ☰
-            </button>
-
+            >☰</button>
         </div>
-
     </header>
 
-
-
-    <!-- =================================
-         ADD CHARACTER PAGE
-    ================================== -->
-
     <main class="character-editor-page">
+        <div class="page-glow page-glow-left"></div>
+        <div class="page-glow page-glow-right"></div>
 
-        <!-- Background glow -->
-
-        <div
-            class="page-glow page-glow-left"
-        ></div>
-
-        <div
-            class="page-glow page-glow-right"
-        ></div>
-
-
-        <section
-            class="character-editor-shell"
-            aria-labelledby="pageTitle"
-        >
-
-            <!-- =================================
-                 PAGE HEADING
-            ================================== -->
-
+        <section class="character-editor-shell" aria-labelledby="pageTitle">
             <div class="page-heading">
-
-                <p class="eyebrow">
-                    NEW CHARACTER
-                </p>
-
-                <h1 id="pageTitle">
-                    캐릭터 추가
-                </h1>
-
-                <p>
-                    새로운 캐릭터의 정보를 기록해 보세요.
-                </p>
-
+                <p class="eyebrow">NEW CHARACTER</p>
+                <h1 id="pageTitle">캐릭터 추가</h1>
+                <p>새로운 캐릭터의 정보를 기록해 보세요.</p>
             </div>
 
-
-            <!-- =================================
-                 CHARACTER FORM
-            ================================== -->
-
-            <form
-                id="characterForm"
-                novalidate
-            >
-
-                <!-- Character Name -->
-
+            <form id="characterForm" novalidate>
                 <div class="character-name-wrap">
-
-                    <label for="characterName">
-                        캐릭터 이름
-                    </label>
-
+                    <label for="characterName">캐릭터 이름</label>
                     <input
                         id="characterName"
                         name="characterName"
@@ -246,57 +81,23 @@
                         placeholder="캐릭터 이름"
                         autocomplete="off"
                     >
-
                 </div>
 
-
-                <!-- =================================
-                     MAIN EDITOR
-                ================================== -->
-
                 <div class="editor-grid">
-
-
-                    <!-- =================================
-                         LEFT SIDE
-                    ================================== -->
-
                     <aside class="profile-panel">
-
                         <div class="profile-card">
-
-
-                            <!-- Profile Image -->
-
-                            <div
-                                class="profile-image-frame"
-                                id="profileImageFrame"
-                            >
-
+                            <div class="profile-image-frame" id="profileImageFrame">
                                 <img
                                     id="profilePreview"
                                     alt="캐릭터 프로필 미리보기"
                                     hidden
                                 >
 
-
-                                <div
-                                    class="profile-placeholder"
-                                    id="profilePlaceholder"
-                                >
-
-                                    <span class="placeholder-icon">
-                                        ✦
-                                    </span>
-
-                                    <span>
-                                        프로필 이미지
-                                    </span>
-
+                                <div class="profile-placeholder" id="profilePlaceholder">
+                                    <span class="placeholder-icon">✦</span>
+                                    <span>프로필 이미지</span>
                                 </div>
-
                             </div>
-
 
                             <input
                                 id="profileImageInput"
@@ -304,7 +105,6 @@
                                 accept="image/*"
                                 hidden
                             >
-
 
                             <button
                                 type="button"
@@ -315,15 +115,8 @@
                             </button>
 
 
-                            <!-- Short Description -->
-
                             <div class="short-description-field">
-
-                                <label for="shortDescription">
-                                    한줄설명
-                                </label>
-
-
+                                <label for="shortDescription">한줄설명</label>
                                 <textarea
                                     id="shortDescription"
                                     name="shortDescription"
@@ -331,641 +124,253 @@
                                     maxlength="120"
                                     placeholder="캐릭터를 한 줄로 소개해 주세요."
                                 ></textarea>
-
-
-                                <span
-                                    class="character-count"
-                                    id="shortDescriptionCount"
-                                >
-                                    0 / 120
-                                </span>
-
+                                <span class="character-count" id="shortDescriptionCount">0 / 120</span>
                             </div>
-
                         </div>
-
                     </aside>
 
-
-
-                    <!-- =================================
-                         RIGHT SIDE
-                    ================================== -->
-
                     <section class="info-panel">
-
-
-                        <!-- Tabs -->
-
-                        <div
-                            class="tab-list"
-                            role="tablist"
-                            aria-label="캐릭터 정보 탭"
-                        >
-
-                            <button
-                                class="tab-button active"
-                                type="button"
-                                data-tab="general"
-                                role="tab"
-                                aria-selected="true"
-                            >
-                                기본
-                            </button>
-
-
-                            <button
-                                class="tab-button"
-                                type="button"
-                                data-tab="appearance"
-                                role="tab"
-                                aria-selected="false"
-                            >
-                                외형
-                            </button>
-
-
-                            <button
-                                class="tab-button"
-                                type="button"
-                                data-tab="personality"
-                                role="tab"
-                                aria-selected="false"
-                            >
-                                성격
-                            </button>
-
-
-                            <button
-                                class="tab-button"
-                                type="button"
-                                data-tab="features"
-                                role="tab"
-                                aria-selected="false"
-                            >
-                                특징
-                            </button>
-
-
-                            <button
-                                class="tab-button"
-                                type="button"
-                                data-tab="relationship"
-                                role="tab"
-                                aria-selected="false"
-                            >
-                                관계
-                            </button>
-
+                        <div class="tab-list" role="tablist" aria-label="캐릭터 정보 탭">
+                            <button class="tab-button active" type="button" data-tab="general" role="tab" aria-selected="true">기본</button>
+                            <button class="tab-button" type="button" data-tab="appearance" role="tab" aria-selected="false">외형</button>
+                            <button class="tab-button" type="button" data-tab="personality" role="tab" aria-selected="false">성격</button>
+                            <button class="tab-button" type="button" data-tab="features" role="tab" aria-selected="false">특징</button>
+                            <button class="tab-button" type="button" data-tab="relationship" role="tab" aria-selected="false">관계</button>
                         </div>
 
-
-
-                        <!-- =================================
-                             GENERAL TAB
-                        ================================== -->
-
-                        <div
-                            class="tab-content active"
-                            id="tab-general"
-                            data-tab-panel="general"
-                            role="tabpanel"
-                        >
-
+                        <div class="tab-content active" id="tab-general" data-tab-panel="general" role="tabpanel">
                             <div class="form-grid two-column">
-
-
-                                <!-- Age -->
-
                                 <div class="field-group">
-
-                                    <label for="age">
-                                        나이
-                                    </label>
-
-                                    <input
-                                        id="age"
-                                        name="age"
-                                        type="text"
-                                        placeholder="예: 22세"
-                                    >
-
+                                    <label for="age">나이</label>
+                                    <input id="age" name="age" type="text" placeholder="예: 22세">
                                 </div>
 
-
-                                <!-- Gender -->
-
                                 <div class="field-group">
-
-                                    <span class="field-label">
-                                        성별
-                                    </span>
-
-
-                                    <div
-                                        class="gender-options"
-                                        role="group"
-                                        aria-label="성별"
-                                    >
-
-                                        <button
-                                            type="button"
-                                            class="gender-button"
-                                            data-gender="남"
-                                        >
-                                            남
-                                        </button>
-
-
-                                        <button
-                                            type="button"
-                                            class="gender-button"
-                                            data-gender="여"
-                                        >
-                                            여
-                                        </button>
-
+                                    <span class="field-label">성별</span>
+                                    <div class="gender-options" role="group" aria-label="성별">
+                                        <button type="button" class="gender-button" data-gender="남">남</button>
+                                        <button type="button" class="gender-button" data-gender="여">여</button>
                                     </div>
-
-
-                                    <input
-                                        id="gender"
-                                        name="gender"
-                                        type="hidden"
-                                    >
-
+                                    <input id="gender" name="gender" type="hidden">
                                 </div>
-
-
-                                <!-- Species -->
 
                                 <div class="field-group">
-
-                                    <label for="species">
-                                        종
-                                    </label>
-
-                                    <input
-                                        id="species"
-                                        name="species"
-                                        type="text"
-                                        placeholder="예: 인간, 수인, 마족, 천사, 등등"
-                                    >
-
+                                    <label for="species">종</label>
+                                    <input id="species" name="species" type="text" placeholder="예: 인간, 마게이 수인">
                                 </div>
-
-
-                                <!-- Height -->
 
                                 <div class="field-group">
-
-                                    <label for="height">
-                                        키
-                                    </label>
-
-                                    <input
-                                        id="height"
-                                        name="height"
-                                        type="text"
-                                        placeholder="예: 164cm"
-                                    >
-
+                                    <label for="height">키</label>
+                                    <input id="height" name="height" type="text" placeholder="예: 164cm">
                                 </div>
-
-
-                                <!-- Weight -->
 
                                 <div class="field-group">
-
-                                    <label for="weight">
-                                        몸무게
-                                    </label>
-
-                                    <input
-                                        id="weight"
-                                        name="weight"
-                                        type="text"
-                                        placeholder="예: 48kg"
-                                    >
-
+                                    <label for="weight">몸무게</label>
+                                    <input id="weight" name="weight" type="text" placeholder="예: 48kg">
                                 </div>
-
-
-                                <!-- Occupation -->
 
                                 <div class="field-group">
-
-                                    <label for="occupation">
-                                        직업
-                                    </label>
-
-                                    <input
-                                        id="occupation"
-                                        name="occupation"
-                                        type="text"
-                                        placeholder="직업 또는 역할"
-                                    >
-
+                                    <label for="occupation">직업</label>
+                                    <input id="occupation" name="occupation" type="text" placeholder="직업 또는 역할">
                                 </div>
-
-
-                                <!-- Tags -->
 
                                 <div class="field-group full-width">
-
-                                    <label for="tags">
-                                        태그
-                                    </label>
-
+                                    <label for="tags">태그</label>
                                     <input
                                         id="tags"
                                         name="tags"
                                         type="text"
                                         placeholder="쉼표(,)로 구분해 입력하세요. 예: 냉정함, 군인, 판타지"
                                     >
-
-                                    <p class="field-help">
-                                        같은 태그는 저장할 때 자동으로 정리됩니다.
-                                    </p>
-
+                                    <p class="field-help">같은 태그는 저장할 때 자동으로 정리됩니다.</p>
                                 </div>
 
-
-                                <!-- Genre -->
-
                                 <div class="field-group full-width">
-
-                                    <label for="genre">
-                                        장르
-                                    </label>
-
-
+                                    <label for="genre">장르</label>
                                     <div class="select-wrap">
-
-                                        <select
-                                            id="genre"
-                                            name="genre"
-                                        >
-
-                                            <option value="">
-                                                장르 선택
-                                            </option>
-
-                                            <option value="로맨스">
-                                                로맨스
-                                            </option>
-
-                                            <option value="판타지">
-                                                판타지
-                                            </option>
-
-                                            <option value="미스터리">
-                                                미스터리
-                                            </option>
-
-                                            <option value="현대 판타지">
-                                                현대 판타지
-                                            </option>
-
-                                            <option value="시대극">
-                                                시대극
-                                            </option>
-
-                                            <option value="SF">
-                                                SF
-                                            </option>
-
-                                            <option value="일상">
-                                                일상
-                                            </option>
-
+                                        <select id="genre" name="genre">
+                                            <option value="">장르 선택</option>
+                                            <option value="로맨스">로맨스</option>
+                                            <option value="판타지">판타지</option>
+                                            <option value="미스터리">미스터리</option>
+                                            <option value="현대 판타지">현대 판타지</option>
+                                            <option value="시대극">시대극</option>
+                                            <option value="SF">SF</option>
+                                            <option value="일상">일상</option>
                                         </select>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-
-                        <!-- =================================
-                             APPEARANCE TAB
-                        ================================== -->
-
-                        <div
-                            class="tab-content"
-                            id="tab-appearance"
-                            data-tab-panel="appearance"
-                            role="tabpanel"
-                            hidden
-                        >
-
+                        <div class="tab-content" id="tab-appearance" data-tab-panel="appearance" role="tabpanel" hidden>
                             <div class="form-grid two-column">
-
-
                                 <div class="field-group">
-
-                                    <label for="hair">
-                                        머리
-                                    </label>
-
-                                    <input
-                                        id="hair"
-                                        name="hair"
-                                        type="text"
-                                        placeholder="머리색, 길이, 스타일"
-                                    >
-
+                                    <label for="hair">머리</label>
+                                    <input id="hair" name="hair" type="text" placeholder="머리색, 길이, 스타일">
                                 </div>
-
-
                                 <div class="field-group">
-
-                                    <label for="eyes">
-                                        눈
-                                    </label>
-
-                                    <input
-                                        id="eyes"
-                                        name="eyes"
-                                        type="text"
-                                        placeholder="눈 색, 형태"
-                                    >
-
+                                    <label for="eyes">눈</label>
+                                    <input id="eyes" name="eyes" type="text" placeholder="눈 색, 형태">
                                 </div>
-
-
                                 <div class="field-group">
-
-                                    <label for="skin">
-                                        피부
-                                    </label>
-
-                                    <input
-                                        id="skin"
-                                        name="skin"
-                                        type="text"
-                                        placeholder="피부색, 특징"
-                                    >
-
+                                    <label for="skin">피부</label>
+                                    <input id="skin" name="skin" type="text" placeholder="피부색, 특징">
                                 </div>
-
-
                                 <div class="field-group">
-
-                                    <label for="faceShape">
-                                        얼굴형
-                                    </label>
-
-                                    <input
-                                        id="faceShape"
-                                        name="faceShape"
-                                        type="text"
-                                        placeholder="예: 계란형, 갸름한 얼굴"
-                                    >
-
+                                    <label for="faceShape">얼굴형</label>
+                                    <input id="faceShape" name="faceShape" type="text" placeholder="예: 계란형, 갸름한 얼굴">
                                 </div>
-
-
                                 <div class="field-group full-width">
-
-                                    <label for="bodyType">
-                                        체형
-                                    </label>
-
-                                    <input
-                                        id="bodyType"
-                                        name="bodyType"
-                                        type="text"
-                                        placeholder="체형과 신체적인 특징"
-                                    >
-
+                                    <label for="bodyType">체형</label>
+                                    <input id="bodyType" name="bodyType" type="text" placeholder="체형과 신체적인 특징">
                                 </div>
-
                             </div>
-
                         </div>
 
-
-
-                        <!-- =================================
-                             PERSONALITY TAB
-                        ================================== -->
-
-                        <div
-                            class="tab-content"
-                            id="tab-personality"
-                            data-tab-panel="personality"
-                            role="tabpanel"
-                            hidden
-                        >
-
+                        <div class="tab-content" id="tab-personality" data-tab-panel="personality" role="tabpanel" hidden>
                             <div class="field-group free-writing-field">
-
-                                <label for="personality">
-                                    성격
-                                </label>
-
-                                <textarea
-                                    id="personality"
-                                    name="personality"
-                                    rows="12"
-                                    placeholder="캐릭터의 성격을 자유롭게 작성해 주세요."
-                                ></textarea>
-
+                                <label for="personality">성격</label>
+                                <textarea id="personality" name="personality" rows="12" placeholder="캐릭터의 성격을 자유롭게 작성해 주세요."></textarea>
                             </div>
-
                         </div>
 
-
-
-                        <!-- =================================
-                             FEATURES TAB
-                        ================================== -->
-
-                        <div
-                            class="tab-content"
-                            id="tab-features"
-                            data-tab-panel="features"
-                            role="tabpanel"
-                            hidden
-                        >
-
+                        <div class="tab-content" id="tab-features" data-tab-panel="features" role="tabpanel" hidden>
                             <div class="field-group free-writing-field">
-
-                                <label for="features">
-                                    특징
-                                </label>
-
-                                <textarea
-                                    id="features"
-                                    name="features"
-                                    rows="12"
-                                    placeholder="습관, 능력, 설정 등 캐릭터의 특징을 작성해 주세요."
-                                ></textarea>
-
+                                <label for="features">특징</label>
+                                <textarea id="features" name="features" rows="12" placeholder="습관, 능력, 설정 등 캐릭터의 특징을 작성해 주세요."></textarea>
                             </div>
-
                         </div>
 
-
-
-                        <!-- =================================
-                             RELATIONSHIP TAB
-                        ================================== -->
-
-                        <div
-                            class="tab-content"
-                            id="tab-relationship"
-                            data-tab-panel="relationship"
-                            role="tabpanel"
-                            hidden
-                        >
-
+                        <div class="tab-content" id="tab-relationship" data-tab-panel="relationship" role="tabpanel" hidden>
                             <div class="field-group free-writing-field">
-
-                                <label for="relationship">
-                                    관계
-                                </label>
-
-                                <textarea
-                                    id="relationship"
-                                    name="relationship"
-                                    rows="12"
-                                    placeholder="가족, 친구, 연인, 동료 등 관계를 자유롭게 작성해 주세요."
-                                ></textarea>
-
+                                <label for="relationship">관계</label>
+                                <textarea id="relationship" name="relationship" rows="12" placeholder="가족, 친구, 연인, 동료 등 관계를 자유롭게 작성해 주세요."></textarea>
                             </div>
-
                         </div>
-
                     </section>
-
                 </div>
-
-
-
-                <!-- =================================
-                     CHARACTER GALLERY
-                ================================== -->
 
                 <section class="gallery-section">
-
                     <div class="section-heading-row">
-
                         <div>
-
-                            <span class="section-kicker">
-                                CHARACTER GALLERY
-                            </span>
-
-                            <h2>
-                                갤러리
-                            </h2>
-
+                            <span class="section-kicker">CHARACTER GALLERY</span>
+                            <h2>갤러리</h2>
                         </div>
-
-
-                        <p>
-                            프로필 외에 캐릭터 이미지를 여러 장 추가할 수 있습니다.
-                        </p>
-
+                        <p>프로필 외에 캐릭터 이미지를 여러 장 추가할 수 있습니다.</p>
                     </div>
 
+                    <input id="galleryInput" type="file" accept="image/*" multiple hidden>
 
-                    <input
-                        id="galleryInput"
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        hidden
-                    >
-
-
-                    <div
-                        class="gallery-grid"
-                        id="galleryGrid"
-                    >
-
-                        <button
-                            type="button"
-                            class="gallery-add-card"
-                            id="galleryAddButton"
-                        >
-
-                            <span class="gallery-plus">
-                                ＋
-                            </span>
-
-                            <span>
-                                이미지 추가
-                            </span>
-
+                    <div class="gallery-grid" id="galleryGrid">
+                        <button type="button" class="gallery-add-card" id="galleryAddButton">
+                            <span class="gallery-plus">＋</span>
+                            <span>이미지 추가</span>
                         </button>
-
                     </div>
-
                 </section>
 
-
-
-                <!-- =================================
-                     SAVE
-                ================================== -->
-
                 <div class="form-actions">
-
-                    <p
-                        class="save-status"
-                        id="saveStatus"
-                        aria-live="polite"
-                    ></p>
-
-
-                    <button
-                        type="submit"
-                        class="save-button"
-                        id="saveButton"
-                    >
-
-                        <span class="save-button-text">
-                            저장
-                        </span>
-
+                    <p class="save-status" id="saveStatus" aria-live="polite"></p>
+                    <button type="submit" class="save-button" id="saveButton">
+                        <span class="save-button-text">저장</span>
                     </button>
-
                 </div>
-
             </form>
-
         </section>
-
     </main>
 
 
-
     <!-- =================================
-         JAVASCRIPT
+         PROFILE IMAGE CROP MODAL
     ================================== -->
 
-    <!-- Existing site JS -->
+    <div
+        class="crop-modal"
+        id="cropModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cropModalTitle"
+        hidden
+    >
+        <div class="crop-modal-card">
+            <div class="crop-modal-header">
+                <div>
+                    <p class="crop-modal-kicker">PROFILE IMAGE</p>
+                    <h2 id="cropModalTitle">이미지 자르기</h2>
+                    <p>프레임 안에 보일 부분을 선택해 주세요.</p>
+                </div>
 
-    <script
-        type="module"
-        src="JS/main.js?v=10"
-    ></script>
+                <button
+                    type="button"
+                    class="crop-modal-close"
+                    id="cropCloseButton"
+                    aria-label="이미지 자르기 닫기"
+                >
+                    ×
+                </button>
+            </div>
 
+            <div class="crop-workspace">
+                <div
+                    class="crop-viewport"
+                    id="cropViewport"
+                    aria-label="프로필 이미지 자르기 영역"
+                >
+                    <img
+                        id="cropImage"
+                        alt="자를 이미지"
+                        draggable="false"
+                    >
 
-    <!-- Add Character JS -->
+                    <div class="crop-frame-outline" aria-hidden="true"></div>
+                    <div class="crop-guide crop-guide-v1" aria-hidden="true"></div>
+                    <div class="crop-guide crop-guide-v2" aria-hidden="true"></div>
+                    <div class="crop-guide crop-guide-h1" aria-hidden="true"></div>
+                    <div class="crop-guide crop-guide-h2" aria-hidden="true"></div>
+                </div>
 
-    <script
-        type="module"
-        src="JS/add-character.js?v=1"
-    ></script>
+                <p class="crop-help-text">
+                    이미지를 드래그하여 위치를 조정하세요.
+                </p>
 
+                <div class="crop-zoom-control">
+                    <label for="cropZoom">확대 / 축소</label>
+
+                    <input
+                        id="cropZoom"
+                        type="range"
+                        min="1"
+                        max="3"
+                        step="0.01"
+                        value="1"
+                    >
+
+                    <span id="cropZoomValue">100%</span>
+                </div>
+            </div>
+
+            <div class="crop-modal-actions">
+                <button
+                    type="button"
+                    class="crop-cancel-button"
+                    id="cropCancelButton"
+                >
+                    취소
+                </button>
+
+                <button
+                    type="button"
+                    class="crop-confirm-button"
+                    id="cropConfirmButton"
+                >
+                    자르기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="JS/main.js?v=10"></script>
+    <script type="module" src="JS/add-character.js?v=3"></script>
 </body>
-
 </html>
