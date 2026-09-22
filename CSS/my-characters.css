@@ -9,19 +9,15 @@
     padding-top: 78px;
 
     background:
-        radial-gradient(
-            circle at 15% 10%,
-            rgba(91, 62, 180, 0.13),
-            transparent 34%
+        linear-gradient(
+            rgba(3, 4, 22, 0.55),
+            rgba(3, 4, 22, 0.55)
         ),
+        url("../images/homepage.png");
 
-        radial-gradient(
-            circle at 85% 30%,
-            rgba(65, 90, 190, 0.12),
-            transparent 32%
-        ),
-
-        #050716;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 
