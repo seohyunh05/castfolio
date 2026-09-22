@@ -973,22 +973,15 @@ function createCharacterMenu(
 
 
     editButton.addEventListener(
-
         "click",
-
         function (event) {
 
             event.stopPropagation();
 
-
             window.location.href =
-                "edit-character.html?id=" +
-                encodeURIComponent(
-                    character.id
-                );
+                `add-character.html?edit=${character.id}`;
 
         }
-
     );
 
 
