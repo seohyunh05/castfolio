@@ -16,13 +16,10 @@
 
     overflow: hidden;
 
-    background:
-        linear-gradient(
-            180deg,
-            #060817 0%,
-            #080a1d 48%,
-            #050716 100%
-        );
+    background-image: url("../images/searchpage.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 
