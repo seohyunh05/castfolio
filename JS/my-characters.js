@@ -994,19 +994,6 @@ confirmDeleteButton.addEventListener(
                 true
             );
 
-            /*
-                IMPORTANT:
-
-                There is NO Firebase Storage anymore.
-
-                This deletes the Firestore character
-                document only.
-
-                Cloudinary images cannot safely be
-                deleted from browser JavaScript because
-                that would require secret credentials.
-            */
-
             await deleteDoc(
                 doc(
                     db,
