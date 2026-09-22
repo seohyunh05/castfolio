@@ -1200,34 +1200,34 @@ cropConfirmButton.addEventListener(
             profileCropMetadata = {
 
                 x:
-                    cropData.x,
+                    cropData.x ?? 0,
 
                 y:
-                    cropData.y,
+                    cropData.y ?? 0,
 
                 width:
-                    cropData.width,
+                    cropData.width ?? 0,
 
                 height:
-                    cropData.height,
+                    cropData.height ?? 0,
 
                 rotate:
-                    cropData.rotate,
+                    cropData.rotate ?? 0,
 
                 scaleX:
-                    cropData.scaleX,
+                    cropData.scaleX ?? 1,
 
                 scaleY:
-                    cropData.scaleY,
+                    cropData.scaleY ?? 1,
 
                 aspectRatio:
                     4 / 5,
 
                 originalWidth:
-                    imageData.naturalWidth,
+                    imageData.naturalWidth ?? 0,
 
                 originalHeight:
-                    imageData.naturalHeight
+                    imageData.naturalHeight ?? 0
             };
 
             setProfilePreview(
