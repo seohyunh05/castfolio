@@ -18,7 +18,8 @@ import {
     addDoc,
     serverTimestamp,
     updateDoc,
-    doc
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
@@ -76,6 +77,24 @@ const saveButton =
 const saveStatus =
     document.getElementById(
         "saveStatus"
+    );
+
+
+const pageEyebrow =
+    document.getElementById(
+        "pageEyebrow"
+    );
+
+
+const pageTitle =
+    document.getElementById(
+        "pageTitle"
+    );
+
+
+const pageDescription =
+    document.getElementById(
+        "pageDescription"
     );
 
 
@@ -219,6 +238,49 @@ const tabPanels =
 
 
 // ======================================
+// PAGE MODE
+// ======================================
+
+const pageParams =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+/*
+    No separate edit-character.html is needed.
+
+    Add mode:
+        add-character.html
+
+    Edit mode:
+        add-character.html?edit=CHARACTER_ID
+
+    For convenience, ?id=CHARACTER_ID is also accepted.
+*/
+
+const editCharacterId =
+    pageParams.get("edit") ||
+    pageParams.get("id") ||
+    "";
+
+
+const isEditMode =
+    Boolean(
+        editCharacterId
+    );
+
+
+/*
+    Change this one filename only if your
+    character detail page uses another name.
+*/
+
+const CHARACTER_PAGE_URL =
+    "character.html";
+
+
+// ======================================
 // STATE
 // ======================================
 
@@ -226,12 +288,29 @@ let signedInUser =
     null;
 
 
-/*
-    Original full image.
+let existingCharacterData =
+    null;
 
-    We preserve this so a future
-    Edit Character page can crop
-    the image again.
+
+let existingProfileImageUrl =
+    "";
+
+
+let existingProfileOriginalImageUrl =
+    "";
+
+
+let existingProfileCropMetadata =
+    null;
+
+
+let existingGalleryUrls =
+    [];
+
+
+/*
+    New original full image selected during
+    this visit to the editor.
 */
 
 let profileOriginalFile =
@@ -239,7 +318,7 @@ let profileOriginalFile =
 
 
 /*
-    Actual 4:5 cropped profile image.
+    New 4:5 cropped profile image.
 */
 
 let profileCroppedFile =
@@ -247,9 +326,7 @@ let profileCroppedFile =
 
 
 /*
-    Crop coordinates.
-
-    Useful for future editing.
+    Crop coordinates for a newly selected image.
 */
 
 let profileCropMetadata =
@@ -272,9 +349,457 @@ let pendingProfileFile =
     null;
 
 
+/*
+    Only newly added gallery files live here.
+    Existing Firestore URLs are kept separately.
+*/
+
 let galleryFiles =
     [];
 
+
+// ======================================
+// EDIT MODE UI
+// ======================================
+
+function configurePageMode() {
+
+    if (!isEditMode) {
+
+        return;
+
+    }
+
+
+    document.title =
+        "캐릭터 수정 | Castfolio";
+
+
+    if (pageEyebrow) {
+
+        pageEyebrow.textContent =
+            "EDIT CHARACTER";
+
+    }
+
+
+    if (pageTitle) {
+
+        pageTitle.textContent =
+            "캐릭터 수정";
+
+    }
+
+
+    if (pageDescription) {
+
+        pageDescription.textContent =
+            "기존 캐릭터의 정보를 수정해 보세요.";
+
+    }
+
+}
+
+
+configurePageMode();
+
+
+// ======================================
+// FORM HELPERS
+// ======================================
+
+function setValue(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    element.value =
+        value ?? "";
+
+}
+
+
+function updateShortDescriptionCount() {
+
+    if (
+        shortDescription &&
+        shortDescriptionCount
+    ) {
+
+        shortDescriptionCount.textContent =
+            `${shortDescription.value.length} / 120`;
+
+    }
+
+}
+
+
+function applyGenderSelection(
+    gender
+) {
+
+    setValue(
+        "gender",
+        gender || ""
+    );
+
+
+    genderButtons.forEach(
+
+        function (button) {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.gender === gender
+            );
+
+        }
+
+    );
+
+}
+
+
+function setProfilePreviewFromUrl(
+    url
+) {
+
+    if (!url) {
+
+        profilePreview.removeAttribute(
+            "src"
+        );
+
+
+        profilePreview.hidden =
+            true;
+
+
+        profilePlaceholder.hidden =
+            false;
+
+
+        return;
+
+    }
+
+
+    if (profilePreviewUrl) {
+
+        URL.revokeObjectURL(
+            profilePreviewUrl
+        );
+
+
+        profilePreviewUrl =
+            null;
+
+    }
+
+
+    profilePreview.src =
+        url;
+
+
+    profilePreview.hidden =
+        false;
+
+
+    profilePlaceholder.hidden =
+        true;
+
+
+    profileImageButton.textContent =
+        "이미지 변경";
+
+}
+
+
+// ======================================
+// LOAD CHARACTER FOR EDIT
+// ======================================
+
+async function loadCharacterForEdit() {
+
+    if (
+        !isEditMode ||
+        !signedInUser
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        setSavingState(
+            true,
+            "캐릭터 정보를 불러오고 있습니다..."
+        );
+
+
+        const characterRef =
+            doc(
+                db,
+                "users",
+                signedInUser.uid,
+                "characters",
+                editCharacterId
+            );
+
+
+        const snapshot =
+            await getDoc(
+                characterRef
+            );
+
+
+        if (!snapshot.exists()) {
+
+            alert(
+                "수정할 캐릭터를 찾을 수 없습니다."
+            );
+
+
+            window.location.replace(
+                "my-characters.html"
+            );
+
+
+            return;
+
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        if (
+            data.ownerId &&
+            data.ownerId !== signedInUser.uid
+        ) {
+
+            alert(
+                "이 캐릭터를 수정할 권한이 없습니다."
+            );
+
+
+            window.location.replace(
+                "my-characters.html"
+            );
+
+
+            return;
+
+        }
+
+
+        existingCharacterData =
+            data;
+
+
+        setValue(
+            "characterName",
+            data.name
+        );
+
+
+        setValue(
+            "shortDescription",
+            data.shortDescription
+        );
+
+
+        const general =
+            data.general || {};
+
+
+        setValue(
+            "age",
+            general.age
+        );
+
+
+        applyGenderSelection(
+            general.gender || ""
+        );
+
+
+        setValue(
+            "species",
+            general.species
+        );
+
+
+        setValue(
+            "height",
+            general.height
+        );
+
+
+        setValue(
+            "weight",
+            general.weight
+        );
+
+
+        setValue(
+            "occupation",
+            general.occupation
+        );
+
+
+        const loadedTags =
+            Array.isArray(
+                general.tags
+            )
+                ? general.tags.join(", ")
+                : (general.tags || "");
+
+
+        setValue(
+            "tags",
+            loadedTags
+        );
+
+
+        setValue(
+            "genre",
+            general.genre
+        );
+
+
+        const appearance =
+            data.appearance || {};
+
+
+        setValue(
+            "hair",
+            appearance.hair
+        );
+
+
+        setValue(
+            "eyes",
+            appearance.eyes
+        );
+
+
+        setValue(
+            "skin",
+            appearance.skin
+        );
+
+
+        setValue(
+            "faceShape",
+            appearance.faceShape
+        );
+
+
+        setValue(
+            "bodyType",
+            appearance.bodyType
+        );
+
+
+        setValue(
+            "personality",
+            data.personality
+        );
+
+
+        setValue(
+            "features",
+            data.features
+        );
+
+
+        setValue(
+            "relationship",
+            data.relationship
+        );
+
+
+        existingProfileImageUrl =
+            data.profileImageUrl || "";
+
+
+        existingProfileOriginalImageUrl =
+            data.profileOriginalImageUrl || "";
+
+
+        existingProfileCropMetadata =
+            data.profileCrop || null;
+
+
+        existingGalleryUrls =
+            Array.isArray(
+                data.galleryImages
+            )
+                ? [...data.galleryImages]
+                : [];
+
+
+        setProfilePreviewFromUrl(
+            existingProfileImageUrl
+        );
+
+
+        renderGallery();
+
+
+        updateShortDescriptionCount();
+
+
+        setSavingState(
+            false,
+            ""
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Character load failed:",
+            error
+        );
+
+
+        setSavingState(
+            false,
+            "캐릭터 정보를 불러오지 못했습니다.",
+            "error"
+        );
+
+
+        alert(
+            "캐릭터 정보를 불러오지 못했습니다.\n\n" +
+            (error.code || "") +
+            "\n" +
+            error.message
+        );
+
+    }
+
+}
 
 
 // ======================================
@@ -285,12 +810,14 @@ onAuthStateChanged(
 
     auth,
 
-    function (user) {
+    async function (user) {
 
         if (!user) {
 
             alert(
-                "캐릭터 추가는 로그인 후 이용할 수 있습니다."
+                isEditMode
+                    ? "캐릭터 수정은 로그인 후 이용할 수 있습니다."
+                    : "캐릭터 추가는 로그인 후 이용할 수 있습니다."
             );
 
 
@@ -307,10 +834,16 @@ onAuthStateChanged(
         signedInUser =
             user;
 
+
+        if (isEditMode) {
+
+            await loadCharacterForEdit();
+
+        }
+
     }
 
 );
-
 
 
 // ======================================
@@ -449,17 +982,11 @@ if (
 
         "input",
 
-        function () {
-
-            shortDescriptionCount.textContent =
-                `${shortDescription.value.length} / 120`;
-
-        }
+        updateShortDescriptionCount
 
     );
 
 }
-
 
 
 // ======================================
@@ -1398,6 +1925,102 @@ galleryInput.addEventListener(
 );
 
 
+// ======================================
+// GALLERY CARD
+// ======================================
+
+function appendGalleryCard(
+    imageSource,
+    altText,
+    removeHandler,
+    isObjectUrl = false
+) {
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "gallery-card";
+
+
+    const img =
+        document.createElement(
+            "img"
+        );
+
+
+    img.src =
+        imageSource;
+
+
+    img.alt =
+        altText;
+
+
+    if (isObjectUrl) {
+
+        img.onload =
+            function () {
+
+                URL.revokeObjectURL(
+                    imageSource
+                );
+
+            };
+
+    }
+
+
+    const removeButton =
+        document.createElement(
+            "button"
+        );
+
+
+    removeButton.type =
+        "button";
+
+
+    removeButton.className =
+        "gallery-remove-button";
+
+
+    removeButton.setAttribute(
+        "aria-label",
+        "이미지 삭제"
+    );
+
+
+    removeButton.textContent =
+        "×";
+
+
+    removeButton.addEventListener(
+        "click",
+        removeHandler
+    );
+
+
+    card.appendChild(
+        img
+    );
+
+
+    card.appendChild(
+        removeButton
+    );
+
+
+    galleryGrid.insertBefore(
+        card,
+        galleryAddButton
+    );
+
+}
+
 
 // ======================================
 // RENDER GALLERY
@@ -1422,6 +2045,35 @@ function renderGallery() {
         );
 
 
+    existingGalleryUrls.forEach(
+
+        function (
+            url,
+            index
+        ) {
+
+            appendGalleryCard(
+                url,
+                `기존 갤러리 이미지 ${index + 1}`,
+
+                function () {
+
+                    existingGalleryUrls.splice(
+                        index,
+                        1
+                    );
+
+
+                    renderGallery();
+
+                }
+            );
+
+        }
+
+    );
+
+
     galleryFiles.forEach(
 
         function (
@@ -1429,80 +2081,15 @@ function renderGallery() {
             index
         ) {
 
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "gallery-card";
-
-
-
-            const img =
-                document.createElement(
-                    "img"
-                );
-
-
             const objectUrl =
                 URL.createObjectURL(
                     file
                 );
 
 
-            img.src =
-                objectUrl;
-
-
-            img.alt =
-                `갤러리 이미지 ${index + 1}`;
-
-
-
-            img.onload =
-                function () {
-
-                    URL.revokeObjectURL(
-                        objectUrl
-                    );
-
-                };
-
-
-
-            const removeButton =
-                document.createElement(
-                    "button"
-                );
-
-
-            removeButton.type =
-                "button";
-
-
-            removeButton.className =
-                "gallery-remove-button";
-
-
-            removeButton.setAttribute(
-
-                "aria-label",
-
-                "이미지 삭제"
-
-            );
-
-
-            removeButton.textContent =
-                "×";
-
-
-
-            removeButton.addEventListener(
-
-                "click",
+            appendGalleryCard(
+                objectUrl,
+                `새 갤러리 이미지 ${index + 1}`,
 
                 function () {
 
@@ -1514,28 +2101,9 @@ function renderGallery() {
 
                     renderGallery();
 
-                }
+                },
 
-            );
-
-
-
-            card.appendChild(
-                img
-            );
-
-
-            card.appendChild(
-                removeButton
-            );
-
-
-            galleryGrid.insertBefore(
-
-                card,
-
-                galleryAddButton
-
+                true
             );
 
         }
@@ -1543,7 +2111,6 @@ function renderGallery() {
     );
 
 }
-
 
 
 // ======================================
@@ -1699,7 +2266,6 @@ function setSavingState(
         isSaving;
 
 
-
     saveButton
 
         .querySelector(
@@ -1710,23 +2276,21 @@ function setSavingState(
 
         isSaving
             ? "저장 중..."
-            : "저장";
-
+            : (
+                isEditMode
+                    ? "수정 저장"
+                    : "저장"
+            );
 
 
     saveStatus.textContent =
         message;
 
 
-
     saveStatus.classList.remove(
-
         "error",
-
         "success"
-
     );
-
 
 
     if (type) {
@@ -1739,6 +2303,176 @@ function setSavingState(
 
 }
 
+
+// ======================================
+// CHARACTER DATA
+// ======================================
+
+function makeCharacterData() {
+
+    return {
+
+        ownerId:
+            signedInUser.uid,
+
+
+        ownerName:
+            signedInUser.displayName ||
+            signedInUser.email ||
+            "사용자",
+
+
+        name:
+            cleanValue(
+                "characterName"
+            ),
+
+
+        shortDescription:
+            cleanValue(
+                "shortDescription"
+            ),
+
+
+        general: {
+
+            age:
+                cleanValue(
+                    "age"
+                ),
+
+
+            gender:
+                cleanValue(
+                    "gender"
+                ),
+
+
+            species:
+                cleanValue(
+                    "species"
+                ),
+
+
+            height:
+                cleanValue(
+                    "height"
+                ),
+
+
+            weight:
+                cleanValue(
+                    "weight"
+                ),
+
+
+            occupation:
+                cleanValue(
+                    "occupation"
+                ),
+
+
+            tags:
+                makeTagArray(
+                    cleanValue(
+                        "tags"
+                    )
+                ),
+
+
+            genre:
+                cleanValue(
+                    "genre"
+                )
+
+        },
+
+
+        appearance: {
+
+            hair:
+                cleanValue(
+                    "hair"
+                ),
+
+
+            eyes:
+                cleanValue(
+                    "eyes"
+                ),
+
+
+            skin:
+                cleanValue(
+                    "skin"
+                ),
+
+
+            faceShape:
+                cleanValue(
+                    "faceShape"
+                ),
+
+
+            bodyType:
+                cleanValue(
+                    "bodyType"
+                )
+
+        },
+
+
+        personality:
+            cleanValue(
+                "personality"
+            ),
+
+
+        features:
+            cleanValue(
+                "features"
+            ),
+
+
+        relationship:
+            cleanValue(
+                "relationship"
+            )
+
+    };
+
+}
+
+
+// ======================================
+// EDIT SUCCESS URL
+// ======================================
+
+function getCharacterPageUrl(
+    characterId
+) {
+
+    const customReturn =
+        pageParams.get(
+            "return"
+        );
+
+
+    if (customReturn) {
+
+        return customReturn;
+
+    }
+
+
+    return (
+        `${CHARACTER_PAGE_URL}?id=` +
+        encodeURIComponent(
+            characterId
+        )
+    );
+
+}
 
 
 // ======================================
@@ -1754,21 +2488,12 @@ characterForm.addEventListener(
         event.preventDefault();
 
 
-
-        // ==================================
-        // CHECK LOGIN
-        // ==================================
-
         if (!signedInUser) {
 
             setSavingState(
-
                 false,
-
                 "로그인 정보를 확인할 수 없습니다.",
-
                 "error"
-
             );
 
 
@@ -1777,282 +2502,109 @@ characterForm.addEventListener(
         }
 
 
-
-        // ==================================
-        // CHARACTER DATA
-        // ==================================
-
-        const characterData = {
-
-
-            ownerId:
-                signedInUser.uid,
-
-
-            ownerName:
-                signedInUser.displayName ||
-                signedInUser.email ||
-                "사용자",
-
-
-
-            name:
-                cleanValue(
-                    "characterName"
-                ),
-
-
-
-            shortDescription:
-                cleanValue(
-                    "shortDescription"
-                ),
-
-
-
-            // ==================================
-            // GENERAL
-            // ==================================
-
-            general: {
-
-
-                age:
-                    cleanValue(
-                        "age"
-                    ),
-
-
-                gender:
-                    cleanValue(
-                        "gender"
-                    ),
-
-
-                species:
-                    cleanValue(
-                        "species"
-                    ),
-
-
-                height:
-                    cleanValue(
-                        "height"
-                    ),
-
-
-                weight:
-                    cleanValue(
-                        "weight"
-                    ),
-
-
-                occupation:
-                    cleanValue(
-                        "occupation"
-                    ),
-
-
-                tags:
-                    makeTagArray(
-
-                        cleanValue(
-                            "tags"
-                        )
-
-                    ),
-
-
-                genre:
-                    cleanValue(
-                        "genre"
-                    )
-
-            },
-
-
-
-            // ==================================
-            // APPEARANCE
-            // ==================================
-
-            appearance: {
-
-
-                hair:
-                    cleanValue(
-                        "hair"
-                    ),
-
-
-                eyes:
-                    cleanValue(
-                        "eyes"
-                    ),
-
-
-                skin:
-                    cleanValue(
-                        "skin"
-                    ),
-
-
-                faceShape:
-                    cleanValue(
-                        "faceShape"
-                    ),
-
-
-                bodyType:
-                    cleanValue(
-                        "bodyType"
-                    )
-
-            },
-
-
-
-            personality:
-                cleanValue(
-                    "personality"
-                ),
-
-
-
-            features:
-                cleanValue(
-                    "features"
-                ),
-
-
-
-            relationship:
-                cleanValue(
-                    "relationship"
-                ),
-
-
-
-            /*
-                Cropped 4:5 image URL.
-            */
-
-            profileImageUrl:
-                "",
-
-
-
-            /*
-                Original full image URL.
-            */
-
-            profileOriginalImageUrl:
-                "",
-
-
-
-            /*
-                Original crop coordinates.
-            */
-
-            profileCrop:
-                null,
-
-
-
-            galleryImages:
-                [],
-
-
-
-            createdAt:
-                serverTimestamp(),
-
-
-
-            updatedAt:
-                serverTimestamp()
-
-        };
-
+        const characterData =
+            makeCharacterData();
 
 
         try {
 
             setSavingState(
-
                 true,
-
-                "캐릭터 정보를 저장하고 있습니다..."
-
+                isEditMode
+                    ? "수정된 정보를 저장하고 있습니다..."
+                    : "캐릭터 정보를 저장하고 있습니다..."
             );
 
 
+            let characterId =
+                editCharacterId;
+
+
+            let characterRef =
+                null;
+
 
             // ==================================
-            // CREATE FIRESTORE DOCUMENT
+            // ADD MODE: CREATE DOCUMENT FIRST
             // ==================================
 
-            const characterCollection =
-                collection(
+            if (!isEditMode) {
 
+                const characterCollection =
+                    collection(
+                        db,
+                        "users",
+                        signedInUser.uid,
+                        "characters"
+                    );
+
+
+                const characterDoc =
+                    await addDoc(
+
+                        characterCollection,
+
+                        {
+                            ...characterData,
+
+                            profileImageUrl:
+                                "",
+
+                            profileOriginalImageUrl:
+                                "",
+
+                            profileCrop:
+                                null,
+
+                            galleryImages:
+                                [],
+
+                            createdAt:
+                                serverTimestamp(),
+
+                            updatedAt:
+                                serverTimestamp()
+                        }
+
+                    );
+
+
+                characterId =
+                    characterDoc.id;
+
+            }
+
+
+            characterRef =
+                doc(
                     db,
-
                     "users",
-
                     signedInUser.uid,
-
-                    "characters"
-
+                    "characters",
+                    characterId
                 );
-
-
-
-            const characterDoc =
-                await addDoc(
-
-                    characterCollection,
-
-                    characterData
-
-                );
-
-
-
-            const characterId =
-                characterDoc.id;
-
-
-
-            let profileImageUrl =
-                "";
-
-
-            let profileOriginalImageUrl =
-                "";
-
-
-            const galleryImageUrls =
-                [];
-
 
 
             // ==================================
             // PROFILE IMAGE
             // ==================================
 
+            let profileImageUrl =
+                existingProfileImageUrl;
+
+
+            let profileOriginalImageUrl =
+                existingProfileOriginalImageUrl;
+
+
+            let finalProfileCrop =
+                existingProfileCropMetadata;
+
+
             if (
-
                 profileOriginalFile &&
-
                 profileCroppedFile
-
             ) {
-
-
-                /*
-                    Upload original.
-                */
 
                 const originalFileName =
                     makeStorageFileName(
@@ -2060,80 +2612,64 @@ characterForm.addEventListener(
                     );
 
 
-
                 profileOriginalImageUrl =
                     await uploadFile(
-
                         profileOriginalFile,
-
                         `users/${signedInUser.uid}/` +
                         `characters/${characterId}/` +
                         `profile/original/${originalFileName}`
-
                     );
 
-
-
-                /*
-                    Upload actual crop.
-                */
 
                 profileImageUrl =
                     await uploadFile(
-
                         profileCroppedFile,
-
                         `users/${signedInUser.uid}/` +
                         `characters/${characterId}/` +
                         `profile/cropped/profile-cropped.webp`
-
                     );
 
-            }
 
+                finalProfileCrop =
+                    profileCropMetadata;
+
+            }
 
 
             // ==================================
             // GALLERY IMAGES
             // ==================================
 
+            const galleryImageUrls =
+                [
+                    ...existingGalleryUrls
+                ];
+
+
             for (
-
                 let i = 0;
-
                 i < galleryFiles.length;
-
                 i += 1
-
             ) {
 
                 const file =
                     galleryFiles[i];
 
 
-
                 const galleryFileName =
                     makeStorageFileName(
-
                         file,
-
                         i
-
                     );
-
 
 
                 const imageUrl =
                     await uploadFile(
-
                         file,
-
                         `users/${signedInUser.uid}/` +
                         `characters/${characterId}/` +
                         `gallery/${galleryFileName}`
-
                     );
-
 
 
                 galleryImageUrls.push(
@@ -2143,77 +2679,64 @@ characterForm.addEventListener(
             }
 
 
-
             // ==================================
-            // UPDATE FIRESTORE
+            // SAVE FINAL DATA
             // ==================================
 
             await updateDoc(
 
-                doc(
-
-                    db,
-
-                    "users",
-
-                    signedInUser.uid,
-
-                    "characters",
-
-                    characterId
-
-                ),
-
+                characterRef,
 
                 {
+                    ...characterData,
 
                     profileImageUrl:
                         profileImageUrl,
 
-
                     profileOriginalImageUrl:
                         profileOriginalImageUrl,
 
-
                     profileCrop:
-                        profileCropMetadata,
-
+                        finalProfileCrop,
 
                     galleryImages:
                         galleryImageUrls,
 
-
                     updatedAt:
                         serverTimestamp()
-
                 }
 
             );
 
 
-
-            // ==================================
-            // SUCCESS
-            // ==================================
-
             setSavingState(
-
                 false,
-
-                "저장되었습니다.",
-
+                isEditMode
+                    ? "수정되었습니다."
+                    : "저장되었습니다.",
                 "success"
-
             );
-
 
 
             window.setTimeout(
 
                 function () {
 
-                    window.location.href =
-                        "my-characters.html";
+                    if (isEditMode) {
+
+                        window.location.href =
+                            getCharacterPageUrl(
+                                characterId
+                            );
+
+                    }
+
+                    else {
+
+                        window.location.href =
+                            "my-characters.html";
+
+                    }
 
                 },
 
@@ -2227,35 +2750,31 @@ characterForm.addEventListener(
         catch (error) {
 
             console.error(
-
-                "Character save failed:",
-
+                isEditMode
+                    ? "Character update failed:"
+                    : "Character save failed:",
                 error
-
             );
 
 
             setSavingState(
-
                 false,
-
-                "저장에 실패했습니다. Firebase 설정과 권한을 확인해 주세요.",
-
+                isEditMode
+                    ? "수정 저장에 실패했습니다. Firebase 설정과 권한을 확인해 주세요."
+                    : "저장에 실패했습니다. Firebase 설정과 권한을 확인해 주세요.",
                 "error"
-
             );
 
 
             alert(
-
-                "캐릭터 저장에 실패했습니다.\n\n" +
-
+                (
+                    isEditMode
+                        ? "캐릭터 수정 저장에 실패했습니다.\n\n"
+                        : "캐릭터 저장에 실패했습니다.\n\n"
+                ) +
                 (error.code || "") +
-
                 "\n" +
-
                 error.message
-
             );
 
         }
@@ -2263,7 +2782,6 @@ characterForm.addEventListener(
     }
 
 );
-
 
 
 // ======================================
