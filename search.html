@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>검색 | Castfolio</title>
+
+
+    <!-- Main website CSS -->
+
+    <link
+        rel="stylesheet"
+        href="CSS/main.css?v=10"
+    >
+
+
+    <!-- Search page CSS -->
+
+    <link
+        rel="stylesheet"
+        href="CSS/search.css?v=1"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <header class="header">
+
+
+        <!-- Logo -->
+
+        <a
+            href="main.html"
+            class="logo"
+        >
+
+            <img
+                src="images/castfolio.png"
+                alt="Castfolio Logo"
+            >
+
+            <span>
+                Castfolio
+            </span>
+
+        </a>
+
+
+
+        <!-- Navigation -->
+
+        <nav
+            class="nav"
+            id="navMenu"
+        >
+
+
+            <a
+                href="my-characters.html"
+                class="nav-link"
+            >
+                캐릭터
+            </a>
+
+
+            <a
+                href="gallery.html"
+                class="nav-link"
+            >
+                갤러리
+            </a>
+
+
+            <a
+                href="search.html"
+                class="nav-link active"
+            >
+                검색
+            </a>
+
+
+
+            <!-- Other Dropdown -->
+
+            <div class="dropdown">
+
+                <button
+                    class="dropdown-button"
+                    id="moreButton"
+                    type="button"
+                >
+                    기타
+
+                    <span class="arrow">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <div
+                    class="dropdown-menu"
+                    id="dropdownMenu"
+                >
+
+                    <a href="settings.html">
+                        설정
+                    </a>
+
+                    <a href="find-profile.html">
+                        프로필 찾기
+                    </a>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+
+        <!-- =================================
+             RIGHT SIDE
+        ================================== -->
+
+        <div class="header-right">
+
+
+            <!-- User Profile -->
+
+            <a
+                href="settings.html"
+                class="header-user-profile"
+                id="headerUserProfile"
+                hidden
+            >
+
+                <img
+                    src="images/castfolio.png"
+                    alt="프로필 이미지"
+                    class="header-profile-image"
+                    id="headerProfileImage"
+                    width="36"
+                    height="36"
+                >
+
+                <span
+                    class="header-profile-name"
+                    id="headerProfileName"
+                >
+                    사용자
+                </span>
+
+            </a>
+
+
+
+            <!-- Login / Logout -->
+
+            <button
+                class="login-button"
+                id="loginButton"
+                type="button"
+            >
+                로그인
+            </button>
+
+
+
+            <!-- Mobile Menu -->
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="메뉴 열기"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================
+         SEARCH PAGE
+    ================================== -->
+
+    <main class="search-page">
+
+
+        <!-- Background Decoration -->
+
+        <div class="search-background">
+
+            <div class="background-glow glow-one"></div>
+
+            <div class="background-glow glow-two"></div>
+
+        </div>
+
+
+
+        <!-- =================================
+             PAGE HEADING
+        ================================== -->
+
+        <section class="search-heading">
+
+            <p class="search-subtitle">
+                CASTFOLIO SEARCH
+            </p>
+
+            <h1>
+                캐릭터 검색
+            </h1>
+
+            <p class="search-description">
+                이름, 태그 또는 장르로
+                원하는 캐릭터를 찾아보세요.
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================
+             SEARCH AREA
+        ================================== -->
+
+        <section class="search-controls">
+
+
+            <!-- Search Input -->
+
+            <div class="search-input-container">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="캐릭터 이름 또는 태그 검색"
+                    autocomplete="off"
+                >
+
+
+                <button
+                    id="clearSearchButton"
+                    class="clear-search-button"
+                    type="button"
+                    aria-label="검색어 지우기"
+                    hidden
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <!-- Genre Filter -->
+
+            <div class="genre-select-container">
+
+                <select
+                    id="genreFilter"
+                    class="genre-filter"
+                    aria-label="장르 선택"
+                >
+
+                    <option value="">
+                        모든 장르
+                    </option>
+
+                    <option value="로맨스">
+                        로맨스
+                    </option>
+
+                    <option value="판타지">
+                        판타지
+                    </option>
+
+                    <option value="미스터리">
+                        미스터리
+                    </option>
+
+                    <option value="현대 판타지">
+                        현대 판타지
+                    </option>
+
+                    <option value="시대극">
+                        시대극
+                    </option>
+
+                    <option value="SF">
+                        SF
+                    </option>
+
+                    <option value="일상">
+                        일상
+                    </option>
+
+                </select>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             SEARCH RESULT INFO
+        ================================== -->
+
+        <section class="search-result-header">
+
+            <p
+                class="result-count"
+                id="resultCount"
+            >
+                0개의 캐릭터
+            </p>
+
+
+            <button
+                class="reset-filter-button"
+                id="resetFilterButton"
+                type="button"
+            >
+                필터 초기화
+            </button>
+
+        </section>
+
+
+
+        <!-- =================================
+             LOADING
+        ================================== -->
+
+        <section
+            class="search-state"
+            id="loadingState"
+        >
+
+            <div class="loading-spinner"></div>
+
+            <p>
+                캐릭터를 불러오는 중입니다...
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================
+             CHARACTER GRID
+        ================================== -->
+
+        <section
+            class="character-grid"
+            id="characterGrid"
+        >
+
+            <!--
+                Character cards are created
+                automatically by search.js
+            -->
+
+        </section>
+
+
+
+        <!-- =================================
+             NO CHARACTERS
+        ================================== -->
+
+        <section
+            class="search-state"
+            id="emptyState"
+            hidden
+        >
+
+            <div class="state-icon">
+                ♡
+            </div>
+
+            <h2>
+                아직 등록된 캐릭터가 없습니다
+            </h2>
+
+            <p>
+                새로운 캐릭터를 추가해 보세요.
+            </p>
+
+
+            <a
+                href="add-character.html"
+                class="state-button"
+            >
+                ＋ 캐릭터 추가
+            </a>
+
+        </section>
+
+
+
+        <!-- =================================
+             NO SEARCH RESULTS
+        ================================== -->
+
+        <section
+            class="search-state"
+            id="noResultsState"
+            hidden
+        >
+
+            <div class="state-icon">
+                ⌕
+            </div>
+
+            <h2>
+                검색 결과가 없습니다
+            </h2>
+
+            <p>
+                다른 이름, 태그 또는 장르로
+                검색해 보세요.
+            </p>
+
+
+            <button
+                type="button"
+                class="state-button"
+                id="noResultsResetButton"
+            >
+                검색 초기화
+            </button>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =================================
+         JAVASCRIPT
+    ================================== -->
+
+    <script
+        type="module"
+        src="JS/search.js?v=1"
+    ></script>
+
+
+</body>
+
+</html>
