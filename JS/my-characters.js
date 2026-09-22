@@ -4,15 +4,11 @@
 
 import {
     getApp
-} from
-    "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
 import {
     onAuthStateChanged
-} from
-    "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 import {
     getFirestore,
@@ -20,23 +16,11 @@ import {
     getDocs,
     deleteDoc,
     doc
-} from
-    "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-
-
-import {
-    getStorage,
-    ref,
-    deleteObject
-} from
-    "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
-
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 import {
     auth
-} from
-    "./main.js?v=10";
-
+} from "./main.js?v=10";
 
 
 // ======================================
@@ -46,18 +30,10 @@ import {
 const app =
     getApp();
 
-
 const db =
     getFirestore(
         app
     );
-
-
-const storage =
-    getStorage(
-        app
-    );
-
 
 
 // ======================================
@@ -69,30 +45,25 @@ const characterGrid =
         "characterGrid"
     );
 
-
 const loadingState =
     document.getElementById(
         "loadingState"
     );
-
 
 const emptyState =
     document.getElementById(
         "emptyState"
     );
 
-
 const errorState =
     document.getElementById(
         "errorState"
     );
 
-
 const errorMessage =
     document.getElementById(
         "errorMessage"
     );
-
 
 
 // ======================================
@@ -104,36 +75,30 @@ const deleteModal =
         "deleteModal"
     );
 
-
 const deleteModalBackdrop =
     document.getElementById(
         "deleteModalBackdrop"
     );
-
 
 const deleteModalClose =
     document.getElementById(
         "deleteModalClose"
     );
 
-
 const deleteCharacterName =
     document.getElementById(
         "deleteCharacterName"
     );
-
 
 const cancelDeleteButton =
     document.getElementById(
         "cancelDeleteButton"
     );
 
-
 const confirmDeleteButton =
     document.getElementById(
         "confirmDeleteButton"
     );
-
 
 
 // ======================================
@@ -143,14 +108,11 @@ const confirmDeleteButton =
 let signedInUser =
     null;
 
-
 let loadedCharacters =
     [];
 
-
 let characterPendingDelete =
     null;
-
 
 
 // ======================================
@@ -158,7 +120,6 @@ let characterPendingDelete =
 // ======================================
 
 onAuthStateChanged(
-
     auth,
 
     async function (user) {
@@ -169,27 +130,19 @@ onAuthStateChanged(
                 "내 캐릭터 페이지는 로그인 후 이용할 수 있습니다."
             );
 
-
             window.location.replace(
                 "main.html"
             );
 
-
             return;
-
         }
-
 
         signedInUser =
             user;
 
-
         await loadCharacters();
-
     }
-
 );
-
 
 
 // ======================================
@@ -199,77 +152,52 @@ onAuthStateChanged(
 async function loadCharacters() {
 
     if (!signedInUser) {
-
         return;
-
     }
 
-
     showLoadingState();
-
 
     try {
 
         const characterCollection =
             collection(
-
                 db,
-
                 "users",
-
                 signedInUser.uid,
-
                 "characters"
-
             );
-
 
         const snapshot =
             await getDocs(
                 characterCollection
             );
 
-
         const characters =
             [];
 
-
         snapshot.forEach(
-
             function (documentSnapshot) {
 
-                characters.push({
+                characters.push(
+                    {
+                        id:
+                            documentSnapshot.id,
 
-                    id:
-                        documentSnapshot.id,
-
-                    ...documentSnapshot.data()
-
-                });
-
+                        ...documentSnapshot.data()
+                    }
+                );
             }
-
         );
-
-
-
-        // ==================================
-        // RANDOMIZE ORDER ON EACH PAGE LOAD
-        // ==================================
 
         shuffleArray(
             characters
         );
 
-
         loadedCharacters =
             characters;
 
-
         renderCharacters();
-
     }
-
 
     catch (error) {
 
@@ -278,32 +206,28 @@ async function loadCharacters() {
             error
         );
 
-
         showErrorState(
             "캐릭터 정보를 불러오는 중 오류가 발생했습니다."
         );
-
     }
-
 }
-
 
 
 // ======================================
 // SHUFFLE
 // ======================================
 
-function shuffleArray(array) {
+function shuffleArray(
+    array
+) {
 
     for (
-
         let i =
             array.length - 1;
 
         i > 0;
 
         i -= 1
-
     ) {
 
         const randomIndex =
@@ -312,25 +236,18 @@ function shuffleArray(array) {
                 (i + 1)
             );
 
-
         const temp =
             array[i];
-
 
         array[i] =
             array[randomIndex];
 
-
         array[randomIndex] =
             temp;
-
     }
 
-
     return array;
-
 }
-
 
 
 // ======================================
@@ -342,29 +259,21 @@ function renderCharacters() {
     characterGrid.innerHTML =
         "";
 
-
     if (
-        loadedCharacters.length ===
-        0
+        loadedCharacters.length === 0
     ) {
 
         showEmptyState();
 
         return;
-
     }
 
-
     hideAllStates();
-
 
     characterGrid.hidden =
         false;
 
-
-
     loadedCharacters.forEach(
-
         function (character) {
 
             const card =
@@ -372,17 +281,12 @@ function renderCharacters() {
                     character
                 );
 
-
             characterGrid.appendChild(
                 card
             );
-
         }
-
     );
-
 }
-
 
 
 // ======================================
@@ -398,14 +302,11 @@ function createCharacterCard(
             "article"
         );
 
-
     card.className =
         "character-card";
 
-
     card.dataset.characterId =
         character.id;
-
 
 
     // ==================================
@@ -417,40 +318,30 @@ function createCharacterCard(
             "div"
         );
 
-
     imageWrapper.className =
         "character-image-wrapper";
-
-
 
     const profileImage =
         document.createElement(
             "img"
         );
 
-
     profileImage.className =
         "character-profile-image";
-
 
     profileImage.src =
         character.profileImageUrl ||
         "images/castfolio.png";
-
 
     profileImage.alt =
         character.name
             ? `${character.name} 프로필 이미지`
             : "캐릭터 프로필 이미지";
 
-
     profileImage.loading =
         "lazy";
 
-
-
     profileImage.addEventListener(
-
         "error",
 
         function () {
@@ -463,19 +354,13 @@ function createCharacterCard(
 
                 profileImage.src =
                     "images/castfolio.png";
-
             }
-
         }
-
     );
-
-
 
     imageWrapper.appendChild(
         profileImage
     );
-
 
 
     // ==================================
@@ -487,11 +372,9 @@ function createCharacterCard(
             character
         );
 
-
     imageWrapper.appendChild(
         menu
     );
-
 
 
     // ==================================
@@ -503,10 +386,8 @@ function createCharacterCard(
             "div"
         );
 
-
     content.className =
         "character-card-content";
-
 
 
     // ==================================
@@ -518,15 +399,12 @@ function createCharacterCard(
             "h2"
         );
 
-
     name.className =
         "character-name";
-
 
     name.textContent =
         character.name ||
         "이름 없음";
-
 
 
     // ==================================
@@ -538,15 +416,12 @@ function createCharacterCard(
             "p"
         );
 
-
     shortDescription.className =
         "character-short-description";
-
 
     shortDescription.textContent =
         character.shortDescription ||
         "한줄설명이 없습니다.";
-
 
 
     // ==================================
@@ -559,38 +434,28 @@ function createCharacterCard(
             {}
         );
 
-
-
     content.appendChild(
         name
     );
-
 
     content.appendChild(
         shortDescription
     );
 
-
     content.appendChild(
         general
     );
-
-
 
     card.appendChild(
         imageWrapper
     );
 
-
     card.appendChild(
         content
     );
 
-
     return card;
-
 }
-
 
 
 // ======================================
@@ -606,11 +471,8 @@ function createGeneralInformation(
             "div"
         );
 
-
     wrapper.className =
         "character-general";
-
-
 
     const fields = [
 
@@ -669,101 +531,72 @@ function createGeneralInformation(
             value:
                 general.genre
         }
-
     ];
-
-
 
     let visibleFieldCount =
         0;
 
-
-
     fields.forEach(
-
         function (field) {
 
-            if (
-                !field.value
-            ) {
-
+            if (!field.value) {
                 return;
-
             }
-
 
             visibleFieldCount +=
                 1;
-
 
             const row =
                 document.createElement(
                     "div"
                 );
 
-
             row.className =
                 "general-row";
-
-
 
             const label =
                 document.createElement(
                     "span"
                 );
 
-
             label.className =
                 "general-label";
 
-
             label.textContent =
                 field.label;
-
-
 
             const value =
                 document.createElement(
                     "span"
                 );
 
-
             value.className =
                 "general-value";
 
-
             value.textContent =
                 field.value;
-
-
 
             row.appendChild(
                 label
             );
 
-
             row.appendChild(
                 value
             );
 
-
             wrapper.appendChild(
                 row
             );
-
         }
-
     );
 
 
-
     // ==================================
-    // IF NO GENERAL INFORMATION
+    // NO GENERAL INFORMATION
     // ==================================
 
     if (
-        visibleFieldCount ===
-        0
+        visibleFieldCount === 0
     ) {
 
         const emptyRow =
@@ -771,57 +604,43 @@ function createGeneralInformation(
                 "div"
             );
 
-
         emptyRow.className =
             "general-row";
-
 
         const label =
             document.createElement(
                 "span"
             );
 
-
         label.className =
             "general-label";
 
-
         label.textContent =
             "정보";
-
-
 
         const value =
             document.createElement(
                 "span"
             );
 
-
         value.className =
             "general-value";
 
-
         value.textContent =
             "등록된 정보 없음";
-
-
 
         emptyRow.appendChild(
             label
         );
 
-
         emptyRow.appendChild(
             value
         );
 
-
         wrapper.appendChild(
             emptyRow
         );
-
     }
-
 
 
     // ==================================
@@ -832,8 +651,7 @@ function createGeneralInformation(
         Array.isArray(
             general.tags
         ) &&
-        general.tags.length >
-        0
+        general.tags.length > 0
     ) {
 
         const tagWrapper =
@@ -841,11 +659,8 @@ function createGeneralInformation(
                 "div"
             );
 
-
         tagWrapper.className =
             "character-tags";
-
-
 
         general.tags
 
@@ -855,7 +670,6 @@ function createGeneralInformation(
             )
 
             .forEach(
-
                 function (tagText) {
 
                     const tag =
@@ -863,35 +677,25 @@ function createGeneralInformation(
                             "span"
                         );
 
-
                     tag.className =
                         "character-tag";
-
 
                     tag.textContent =
                         `#${tagText}`;
 
-
                     tagWrapper.appendChild(
                         tag
                     );
-
                 }
-
             );
-
 
         wrapper.appendChild(
             tagWrapper
         );
-
     }
 
-
     return wrapper;
-
 }
-
 
 
 // ======================================
@@ -907,46 +711,35 @@ function createCharacterMenu(
             "div"
         );
 
-
     menu.className =
         "character-menu";
-
-
 
     const menuButton =
         document.createElement(
             "button"
         );
 
-
     menuButton.type =
         "button";
 
-
     menuButton.className =
         "character-menu-button";
-
 
     menuButton.setAttribute(
         "aria-label",
         "캐릭터 메뉴"
     );
 
-
     menuButton.textContent =
         "⋯";
-
-
 
     const dropdown =
         document.createElement(
             "div"
         );
 
-
     dropdown.className =
         "character-menu-dropdown";
-
 
 
     // ==================================
@@ -958,32 +751,26 @@ function createCharacterMenu(
             "button"
         );
 
-
     editButton.type =
         "button";
-
 
     editButton.className =
         "edit-character-button";
 
-
     editButton.textContent =
         "수정";
 
-
-
     editButton.addEventListener(
         "click",
+
         function (event) {
 
             event.stopPropagation();
 
             window.location.href =
-                `add-character.html?edit=${character.id}`;
-
+                `add-character.html?edit=${encodeURIComponent(character.id)}`;
         }
     );
-
 
 
     // ==================================
@@ -995,106 +782,80 @@ function createCharacterMenu(
             "button"
         );
 
-
     deleteButton.type =
         "button";
-
 
     deleteButton.className =
         "delete-character-button";
 
-
     deleteButton.textContent =
         "삭제";
 
-
-
     deleteButton.addEventListener(
-
         "click",
 
         function (event) {
 
             event.stopPropagation();
 
-
             closeAllCharacterMenus();
-
 
             openDeleteModal(
                 character
             );
-
         }
-
     );
 
 
-
     // ==================================
-    // OPEN / CLOSE MENU
+    // OPEN/CLOSE MENU
     // ==================================
 
     menuButton.addEventListener(
-
         "click",
 
         function (event) {
 
             event.stopPropagation();
-
 
             const shouldOpen =
                 !menu.classList.contains(
                     "open"
                 );
 
-
             closeAllCharacterMenus();
-
 
             if (shouldOpen) {
 
                 menu.classList.add(
                     "open"
                 );
-
             }
-
         }
-
     );
-
-
 
     dropdown.appendChild(
         editButton
     );
 
-
     dropdown.appendChild(
         deleteButton
     );
-
 
     menu.appendChild(
         menuButton
     );
 
-
     menu.appendChild(
         dropdown
     );
 
-
     return menu;
-
 }
 
 
-
 // ======================================
-// CLOSE ALL CARD MENUS
+// CLOSE ALL MENUS
 // ======================================
 
 function closeAllCharacterMenus() {
@@ -1106,37 +867,23 @@ function closeAllCharacterMenus() {
         )
 
         .forEach(
-
             function (menu) {
 
                 menu.classList.remove(
                     "open"
                 );
-
             }
-
         );
-
 }
 
-
-
-// ======================================
-// CLICK OUTSIDE CHARACTER MENU
-// ======================================
-
 document.addEventListener(
-
     "click",
 
     function () {
 
         closeAllCharacterMenus();
-
     }
-
 );
-
 
 
 // ======================================
@@ -1150,21 +897,16 @@ function openDeleteModal(
     characterPendingDelete =
         character;
 
-
     deleteCharacterName.textContent =
         character.name ||
         "이 캐릭터";
 
-
     deleteModal.hidden =
         false;
 
-
     document.body.style.overflow =
         "hidden";
-
 }
-
 
 
 // ======================================
@@ -1178,78 +920,52 @@ function closeDeleteModal() {
     ) {
 
         return;
-
     }
-
 
     characterPendingDelete =
         null;
 
-
     deleteModal.hidden =
         true;
 
-
     document.body.style.overflow =
         "";
-
 }
 
 
-
 // ======================================
-// MODAL EVENTS
+// DELETE MODAL EVENTS
 // ======================================
 
 deleteModalClose.addEventListener(
-
     "click",
-
     closeDeleteModal
-
 );
-
 
 cancelDeleteButton.addEventListener(
-
     "click",
-
     closeDeleteModal
-
 );
-
 
 deleteModalBackdrop.addEventListener(
-
     "click",
-
     closeDeleteModal
-
 );
 
-
-
 document.addEventListener(
-
     "keydown",
 
     function (event) {
 
         if (
-            event.key ===
-                "Escape" &&
-
+            event.key === "Escape" &&
             !deleteModal.hidden
         ) {
 
             closeDeleteModal();
-
         }
-
     }
-
 );
-
 
 
 // ======================================
@@ -1257,7 +973,6 @@ document.addEventListener(
 // ======================================
 
 confirmDeleteButton.addEventListener(
-
     "click",
 
     async function () {
@@ -1268,14 +983,10 @@ confirmDeleteButton.addEventListener(
         ) {
 
             return;
-
         }
-
 
         const character =
             characterPendingDelete;
-
-
 
         try {
 
@@ -1283,82 +994,55 @@ confirmDeleteButton.addEventListener(
                 true
             );
 
+            /*
+                IMPORTANT:
 
-            // ==================================
-            // DELETE ALL CHARACTER IMAGES
-            // ==================================
+                There is NO Firebase Storage anymore.
 
-            await deleteCharacterImages(
-                character
-            );
+                This deletes the Firestore character
+                document only.
 
-
-
-            // ==================================
-            // DELETE FIRESTORE DOCUMENT
-            // ==================================
+                Cloudinary images cannot safely be
+                deleted from browser JavaScript because
+                that would require secret credentials.
+            */
 
             await deleteDoc(
-
                 doc(
-
                     db,
-
                     "users",
-
                     signedInUser.uid,
-
                     "characters",
-
                     character.id
-
                 )
-
             );
-
-
-
-            // ==================================
-            // REMOVE FROM LOCAL LIST
-            // ==================================
 
             loadedCharacters =
                 loadedCharacters.filter(
-
                     function (item) {
 
                         return (
                             item.id !==
                             character.id
                         );
-
                     }
-
                 );
-
-
 
             characterPendingDelete =
                 null;
 
-
             deleteModal.hidden =
                 true;
 
-
             document.body.style.overflow =
                 "";
-
 
             setDeleteLoadingState(
                 false
             );
 
-
             renderCharacters();
-
         }
-
 
         catch (error) {
 
@@ -1367,173 +1051,19 @@ confirmDeleteButton.addEventListener(
                 error
             );
 
-
             setDeleteLoadingState(
                 false
             );
 
-
             alert(
-
                 "캐릭터를 삭제하지 못했습니다.\n\n" +
-
                 (error.code || "") +
-
                 "\n" +
-
                 error.message
-
             );
-
         }
-
     }
-
 );
-
-
-
-// ======================================
-// DELETE CHARACTER IMAGES
-// ======================================
-
-async function deleteCharacterImages(
-    character
-) {
-
-    const imageUrls =
-        new Set();
-
-
-
-    // ==================================
-    // PROFILE CROPPED IMAGE
-    // ==================================
-
-    if (
-        character.profileImageUrl
-    ) {
-
-        imageUrls.add(
-            character.profileImageUrl
-        );
-
-    }
-
-
-
-    // ==================================
-    // ORIGINAL PROFILE IMAGE
-    // ==================================
-
-    if (
-        character.profileOriginalImageUrl
-    ) {
-
-        imageUrls.add(
-            character.profileOriginalImageUrl
-        );
-
-    }
-
-
-
-    // ==================================
-    // GALLERY IMAGES
-    // ==================================
-
-    if (
-        Array.isArray(
-            character.galleryImages
-        )
-    ) {
-
-        character.galleryImages.forEach(
-
-            function (imageUrl) {
-
-                if (imageUrl) {
-
-                    imageUrls.add(
-                        imageUrl
-                    );
-
-                }
-
-            }
-
-        );
-
-    }
-
-
-
-    // ==================================
-    // DELETE EACH STORAGE FILE
-    // ==================================
-
-    for (
-        const imageUrl
-        of imageUrls
-    ) {
-
-        await deleteStorageImage(
-            imageUrl
-        );
-
-    }
-
-}
-
-
-
-// ======================================
-// DELETE ONE STORAGE IMAGE
-// ======================================
-
-async function deleteStorageImage(
-    imageUrl
-) {
-
-    try {
-
-        const imageRef =
-            ref(
-                storage,
-                imageUrl
-            );
-
-
-        await deleteObject(
-            imageRef
-        );
-
-    }
-
-
-    catch (error) {
-
-        /*
-            If the image is already gone,
-            continue deleting the character.
-        */
-
-        if (
-            error.code ===
-            "storage/object-not-found"
-        ) {
-
-            return;
-
-        }
-
-
-        throw error;
-
-    }
-
-}
-
 
 
 // ======================================
@@ -1547,22 +1077,17 @@ function setDeleteLoadingState(
     confirmDeleteButton.disabled =
         isDeleting;
 
-
     cancelDeleteButton.disabled =
         isDeleting;
 
-
     deleteModalClose.disabled =
         isDeleting;
-
 
     confirmDeleteButton.textContent =
         isDeleting
             ? "삭제 중..."
             : "삭제";
-
 }
-
 
 
 // ======================================
@@ -1574,44 +1099,33 @@ function hideAllStates() {
     loadingState.hidden =
         true;
 
-
     emptyState.hidden =
         true;
-
 
     errorState.hidden =
         true;
 
-
     characterGrid.hidden =
         true;
-
 }
-
 
 
 function showLoadingState() {
 
     hideAllStates();
 
-
     loadingState.hidden =
         false;
-
 }
-
 
 
 function showEmptyState() {
 
     hideAllStates();
 
-
     emptyState.hidden =
         false;
-
 }
-
 
 
 function showErrorState(
@@ -1620,12 +1134,9 @@ function showErrorState(
 
     hideAllStates();
 
-
     errorMessage.textContent =
         message;
 
-
     errorState.hidden =
         false;
-
 }
