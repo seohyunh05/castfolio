@@ -6,9 +6,11 @@ import {
     getApp
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
+
 import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
 
 import {
     getFirestore,
@@ -19,6 +21,7 @@ import {
     doc
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
+
 import {
     getStorage,
     ref,
@@ -26,833 +29,1215 @@ import {
     getDownloadURL
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
 
+
 import {
     auth
 } from "./main.js?v=10";
+
 
 
 // ======================================
 // FIREBASE
 // ======================================
 
-const app = getApp();
-const db = getFirestore(app);
-const storage = getStorage(app);
+const app =
+    getApp();
+
+
+const db =
+    getFirestore(
+        app
+    );
+
+
+const storage =
+    getStorage(
+        app
+    );
+
 
 
 // ======================================
 // ELEMENTS
 // ======================================
 
-const characterForm = document.getElementById("characterForm");
-const saveButton = document.getElementById("saveButton");
-const saveStatus = document.getElementById("saveStatus");
+const characterForm =
+    document.getElementById(
+        "characterForm"
+    );
 
-// Profile image
-const profileImageInput = document.getElementById("profileImageInput");
-const profileImageButton = document.getElementById("profileImageButton");
-const profilePreview = document.getElementById("profilePreview");
-const profilePlaceholder = document.getElementById("profilePlaceholder");
 
-// Crop modal
-const cropModal = document.getElementById("cropModal");
-const cropViewport = document.getElementById("cropViewport");
-const cropImage = document.getElementById("cropImage");
-const cropZoom = document.getElementById("cropZoom");
-const cropZoomValue = document.getElementById("cropZoomValue");
-const cropCloseButton = document.getElementById("cropCloseButton");
-const cropCancelButton = document.getElementById("cropCancelButton");
-const cropConfirmButton = document.getElementById("cropConfirmButton");
+const saveButton =
+    document.getElementById(
+        "saveButton"
+    );
 
-// Gallery
-const galleryInput = document.getElementById("galleryInput");
-const galleryAddButton = document.getElementById("galleryAddButton");
-const galleryGrid = document.getElementById("galleryGrid");
 
-// Short description
-const shortDescription = document.getElementById("shortDescription");
-const shortDescriptionCount = document.getElementById("shortDescriptionCount");
+const saveStatus =
+    document.getElementById(
+        "saveStatus"
+    );
 
-// Gender
-const genderInput = document.getElementById("gender");
-const genderButtons = document.querySelectorAll(".gender-button");
-
-// Tabs
-const tabButtons = document.querySelectorAll(".tab-button");
-const tabPanels = document.querySelectorAll("[data-tab-panel]");
 
 
 // ======================================
-// STATE
+// PROFILE IMAGE
 // ======================================
 
-let signedInUser = null;
+const profileImageInput =
+    document.getElementById(
+        "profileImageInput"
+    );
 
-// The original file is kept so Edit Character can use it later.
-let profileOriginalFile = null;
 
-// This is the 4:5 image produced by the crop modal.
-let profileCroppedFile = null;
+const profileImageButton =
+    document.getElementById(
+        "profileImageButton"
+    );
 
-// Crop values can also be stored for a future edit page.
-let profileCropMetadata = null;
 
-let profilePreviewUrl = null;
-let galleryFiles = [];
+const profilePreview =
+    document.getElementById(
+        "profilePreview"
+    );
 
-const cropState = {
-    sourceFile: null,
-    sourceUrl: null,
 
-    zoom: 1,
-    offsetX: 0,
-    offsetY: 0,
+const profilePlaceholder =
+    document.getElementById(
+        "profilePlaceholder"
+    );
 
-    baseWidth: 0,
-    baseHeight: 0,
-    frameWidth: 0,
-    frameHeight: 0,
-
-    dragging: false,
-    pointerId: null,
-    startPointerX: 0,
-    startPointerY: 0,
-    startOffsetX: 0,
-    startOffsetY: 0
-};
 
 
 // ======================================
-// LOGIN PROTECTION
+// CROP MODAL
 // ======================================
 
-onAuthStateChanged(auth, function (user) {
-    if (!user) {
-        alert("캐릭터 추가는 로그인 후 이용할 수 있습니다.");
-        window.location.replace("main.html");
-        return;
-    }
+const cropModal =
+    document.getElementById(
+        "cropModal"
+    );
 
-    signedInUser = user;
-});
+
+const cropImage =
+    document.getElementById(
+        "cropImage"
+    );
+
+
+const cropCloseButton =
+    document.getElementById(
+        "cropCloseButton"
+    );
+
+
+const cropCancelButton =
+    document.getElementById(
+        "cropCancelButton"
+    );
+
+
+const cropConfirmButton =
+    document.getElementById(
+        "cropConfirmButton"
+    );
+
+
+
+// ======================================
+// GALLERY
+// ======================================
+
+const galleryInput =
+    document.getElementById(
+        "galleryInput"
+    );
+
+
+const galleryAddButton =
+    document.getElementById(
+        "galleryAddButton"
+    );
+
+
+const galleryGrid =
+    document.getElementById(
+        "galleryGrid"
+    );
+
+
+
+// ======================================
+// SHORT DESCRIPTION
+// ======================================
+
+const shortDescription =
+    document.getElementById(
+        "shortDescription"
+    );
+
+
+const shortDescriptionCount =
+    document.getElementById(
+        "shortDescriptionCount"
+    );
+
+
+
+// ======================================
+// GENDER
+// ======================================
+
+const genderInput =
+    document.getElementById(
+        "gender"
+    );
+
+
+const genderButtons =
+    document.querySelectorAll(
+        ".gender-button"
+    );
+
 
 
 // ======================================
 // TABS
 // ======================================
 
-tabButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-        const targetTab = button.dataset.tab;
+const tabButtons =
+    document.querySelectorAll(
+        ".tab-button"
+    );
 
-        tabButtons.forEach(function (item) {
-            const isActive = item === button;
 
-            item.classList.toggle("active", isActive);
-            item.setAttribute("aria-selected", String(isActive));
-        });
+const tabPanels =
+    document.querySelectorAll(
+        "[data-tab-panel]"
+    );
 
-        tabPanels.forEach(function (panel) {
-            const isActive = panel.dataset.tabPanel === targetTab;
-
-            panel.classList.toggle("active", isActive);
-            panel.hidden = !isActive;
-        });
-    });
-});
 
 
 // ======================================
-// GENDER BUTTONS
+// STATE
 // ======================================
 
-genderButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-        const selectedGender = button.dataset.gender;
+let signedInUser =
+    null;
 
-        genderInput.value = selectedGender;
 
-        genderButtons.forEach(function (item) {
-            item.classList.toggle(
-                "active",
-                item.dataset.gender === selectedGender
+/*
+    Original full image.
+
+    We preserve this so a future
+    Edit Character page can crop
+    the image again.
+*/
+
+let profileOriginalFile =
+    null;
+
+
+/*
+    Actual 4:5 cropped profile image.
+*/
+
+let profileCroppedFile =
+    null;
+
+
+/*
+    Crop coordinates.
+
+    Useful for future editing.
+*/
+
+let profileCropMetadata =
+    null;
+
+
+let profilePreviewUrl =
+    null;
+
+
+let cropSourceUrl =
+    null;
+
+
+let cropper =
+    null;
+
+
+let pendingProfileFile =
+    null;
+
+
+let galleryFiles =
+    [];
+
+
+
+// ======================================
+// LOGIN PROTECTION
+// ======================================
+
+onAuthStateChanged(
+
+    auth,
+
+    function (user) {
+
+        if (!user) {
+
+            alert(
+                "캐릭터 추가는 로그인 후 이용할 수 있습니다."
             );
-        });
-    });
-});
 
 
-// ======================================
-// SHORT DESCRIPTION COUNT
-// ======================================
+            window.location.replace(
+                "main.html"
+            );
 
-shortDescription.addEventListener("input", function () {
-    shortDescriptionCount.textContent =
-        `${shortDescription.value.length} / 120`;
-});
 
-
-// ======================================
-// PROFILE IMAGE SELECTION
-// ======================================
-
-profileImageButton.addEventListener("click", function () {
-    profileImageInput.click();
-});
-
-profileImageInput.addEventListener("change", function () {
-    const file = profileImageInput.files[0];
-
-    if (!file) {
-        return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-        alert("이미지 파일만 선택할 수 있습니다.");
-        profileImageInput.value = "";
-        return;
-    }
-
-    // Selecting an image immediately opens the crop screen.
-    openCropModal(file);
-});
-
-
-// ======================================
-// OPEN CROP MODAL
-// ======================================
-
-function openCropModal(file) {
-    cleanupCropSource();
-
-    cropState.sourceFile = file;
-    cropState.zoom = 1;
-    cropState.offsetX = 0;
-    cropState.offsetY = 0;
-    cropState.baseWidth = 0;
-    cropState.baseHeight = 0;
-    cropState.frameWidth = 0;
-    cropState.frameHeight = 0;
-
-    cropZoom.value = "1";
-    cropZoomValue.textContent = "100%";
-
-    cropConfirmButton.disabled = true;
-    cropConfirmButton.textContent = "자르기";
-
-    cropModal.hidden = false;
-    document.body.classList.add("crop-modal-open");
-
-    cropState.sourceUrl = URL.createObjectURL(file);
-
-    cropImage.onload = function () {
-        calculateCropBaseSize(true);
-        cropConfirmButton.disabled = false;
-        cropConfirmButton.focus();
-    };
-
-    cropImage.onerror = function () {
-        alert("이미지를 불러올 수 없습니다.");
-        closeCropModal();
-    };
-
-    cropImage.src = cropState.sourceUrl;
-}
-
-
-// ======================================
-// CLOSE CROP MODAL
-// ======================================
-
-function closeCropModal() {
-    stopCropDragging();
-
-    cropModal.hidden = true;
-    document.body.classList.remove("crop-modal-open");
-
-    cropImage.onload = null;
-    cropImage.onerror = null;
-    cropImage.removeAttribute("src");
-
-    cleanupCropSource();
-
-    cropState.sourceFile = null;
-    cropState.baseWidth = 0;
-    cropState.baseHeight = 0;
-    cropState.frameWidth = 0;
-    cropState.frameHeight = 0;
-
-    // Allows choosing the same image again.
-    profileImageInput.value = "";
-}
-
-function cleanupCropSource() {
-    if (cropState.sourceUrl) {
-        URL.revokeObjectURL(cropState.sourceUrl);
-        cropState.sourceUrl = null;
-    }
-}
-
-cropCloseButton.addEventListener("click", closeCropModal);
-cropCancelButton.addEventListener("click", closeCropModal);
-
-cropModal.addEventListener("click", function (event) {
-    // Clicking the dark area outside the card works like Cancel.
-    if (event.target === cropModal) {
-        closeCropModal();
-    }
-});
-
-document.addEventListener("keydown", function (event) {
-    if (
-        event.key === "Escape" &&
-        !cropModal.hidden
-    ) {
-        closeCropModal();
-    }
-});
-
-
-// ======================================
-// CROP LAYOUT
-// ======================================
-
-function calculateCropBaseSize(resetPosition = false) {
-    if (
-        !cropImage.naturalWidth ||
-        !cropImage.naturalHeight ||
-        cropModal.hidden
-    ) {
-        return;
-    }
-
-    const newFrameWidth = cropViewport.clientWidth;
-    const newFrameHeight = cropViewport.clientHeight;
-
-    if (!newFrameWidth || !newFrameHeight) {
-        return;
-    }
-
-    const oldFrameWidth = cropState.frameWidth;
-    const oldFrameHeight = cropState.frameHeight;
-
-    // Preserve the same relative crop if the browser size changes.
-    if (
-        !resetPosition &&
-        oldFrameWidth > 0 &&
-        oldFrameHeight > 0
-    ) {
-        cropState.offsetX *= newFrameWidth / oldFrameWidth;
-        cropState.offsetY *= newFrameHeight / oldFrameHeight;
-    }
-
-    const coverScale = Math.max(
-        newFrameWidth / cropImage.naturalWidth,
-        newFrameHeight / cropImage.naturalHeight
-    );
-
-    cropState.baseWidth =
-        cropImage.naturalWidth * coverScale;
-
-    cropState.baseHeight =
-        cropImage.naturalHeight * coverScale;
-
-    cropState.frameWidth = newFrameWidth;
-    cropState.frameHeight = newFrameHeight;
-
-    if (resetPosition) {
-        cropState.offsetX = 0;
-        cropState.offsetY = 0;
-    }
-
-    applyCropTransform();
-}
-
-function getCropLimits() {
-    const displayedWidth =
-        cropState.baseWidth * cropState.zoom;
-
-    const displayedHeight =
-        cropState.baseHeight * cropState.zoom;
-
-    return {
-        maxX: Math.max(
-            0,
-            (displayedWidth - cropState.frameWidth) / 2
-        ),
-
-        maxY: Math.max(
-            0,
-            (displayedHeight - cropState.frameHeight) / 2
-        )
-    };
-}
-
-function clampCropPosition() {
-    const limits = getCropLimits();
-
-    cropState.offsetX = Math.min(
-        limits.maxX,
-        Math.max(-limits.maxX, cropState.offsetX)
-    );
-
-    cropState.offsetY = Math.min(
-        limits.maxY,
-        Math.max(-limits.maxY, cropState.offsetY)
-    );
-}
-
-function applyCropTransform() {
-    if (
-        !cropImage.naturalWidth ||
-        !cropState.baseWidth
-    ) {
-        return;
-    }
-
-    clampCropPosition();
-
-    cropImage.style.width =
-        `${cropState.baseWidth}px`;
-
-    cropImage.style.height =
-        `${cropState.baseHeight}px`;
-
-    cropImage.style.left =
-        `calc(50% + ${cropState.offsetX}px)`;
-
-    cropImage.style.top =
-        `calc(50% + ${cropState.offsetY}px)`;
-
-    cropImage.style.transform =
-        `translate(-50%, -50%) scale(${cropState.zoom})`;
-
-    cropZoom.value = String(cropState.zoom);
-
-    cropZoomValue.textContent =
-        `${Math.round(cropState.zoom * 100)}%`;
-}
-
-
-// ======================================
-// CROP ZOOM
-// ======================================
-
-cropZoom.addEventListener("input", function () {
-    cropState.zoom = Number(cropZoom.value);
-    applyCropTransform();
-});
-
-
-// Mouse wheel zoom is convenient on desktop.
-cropViewport.addEventListener(
-    "wheel",
-    function (event) {
-        if (cropModal.hidden) {
             return;
+
         }
 
-        event.preventDefault();
 
-        const zoomStep =
-            event.deltaY < 0
-                ? 0.08
-                : -0.08;
+        signedInUser =
+            user;
 
-        cropState.zoom = Math.min(
-            3,
-            Math.max(
-                1,
-                cropState.zoom + zoomStep
-            )
-        );
-
-        applyCropTransform();
-    },
-    {
-        passive: false
     }
+
 );
 
 
-// ======================================
-// DRAG IMAGE INSIDE CROP FRAME
-// ======================================
-
-cropViewport.addEventListener("pointerdown", function (event) {
-    if (!cropState.sourceFile) {
-        return;
-    }
-
-    event.preventDefault();
-
-    cropState.dragging = true;
-    cropState.pointerId = event.pointerId;
-
-    cropState.startPointerX =
-        event.clientX;
-
-    cropState.startPointerY =
-        event.clientY;
-
-    cropState.startOffsetX =
-        cropState.offsetX;
-
-    cropState.startOffsetY =
-        cropState.offsetY;
-
-    cropViewport.classList.add("dragging");
-
-    cropViewport.setPointerCapture(
-        event.pointerId
-    );
-});
-
-cropViewport.addEventListener("pointermove", function (event) {
-    if (
-        !cropState.dragging ||
-        event.pointerId !== cropState.pointerId
-    ) {
-        return;
-    }
-
-    const deltaX =
-        event.clientX -
-        cropState.startPointerX;
-
-    const deltaY =
-        event.clientY -
-        cropState.startPointerY;
-
-    cropState.offsetX =
-        cropState.startOffsetX +
-        deltaX;
-
-    cropState.offsetY =
-        cropState.startOffsetY +
-        deltaY;
-
-    applyCropTransform();
-});
-
-cropViewport.addEventListener(
-    "pointerup",
-    stopCropDragging
-);
-
-cropViewport.addEventListener(
-    "pointercancel",
-    stopCropDragging
-);
-
-cropViewport.addEventListener(
-    "lostpointercapture",
-    stopCropDragging
-);
-
-function stopCropDragging(event) {
-    if (!cropState.dragging) {
-        return;
-    }
-
-    if (
-        event &&
-        event.pointerId !== undefined &&
-        cropState.pointerId !== null &&
-        event.pointerId !== cropState.pointerId
-    ) {
-        return;
-    }
-
-    if (
-        cropState.pointerId !== null &&
-        cropViewport.hasPointerCapture &&
-        cropViewport.hasPointerCapture(
-            cropState.pointerId
-        )
-    ) {
-        cropViewport.releasePointerCapture(
-            cropState.pointerId
-        );
-    }
-
-    cropState.dragging = false;
-    cropState.pointerId = null;
-
-    cropViewport.classList.remove(
-        "dragging"
-    );
-}
-
 
 // ======================================
-// EXPORT CROPPED PROFILE IMAGE
+// TABS
 // ======================================
 
-async function createCroppedProfileFile() {
-    if (
-        !cropState.sourceFile ||
-        !cropImage.naturalWidth ||
-        !cropState.frameWidth ||
-        !cropState.baseWidth
-    ) {
-        throw new Error(
-            "자를 프로필 이미지가 없습니다."
-        );
-    }
+tabButtons.forEach(
 
-    const naturalWidth =
-        cropImage.naturalWidth;
+    function (button) {
 
-    const naturalHeight =
-        cropImage.naturalHeight;
+        button.addEventListener(
 
-    const frameWidth =
-        cropState.frameWidth;
+            "click",
 
-    const frameHeight =
-        cropState.frameHeight;
+            function () {
 
-    const coverScale =
-        cropState.baseWidth /
-        naturalWidth;
+                const targetTab =
+                    button.dataset.tab;
 
-    const finalDisplayScale =
-        coverScale *
-        cropState.zoom;
 
-    const displayedWidth =
-        naturalWidth *
-        finalDisplayScale;
+                tabButtons.forEach(
 
-    const displayedHeight =
-        naturalHeight *
-        finalDisplayScale;
+                    function (item) {
 
-    /*
-        Position of the source image's
-        top-left corner inside the crop frame.
-    */
+                        const isActive =
+                            item === button;
 
-    const displayedLeft =
-        frameWidth / 2 +
-        cropState.offsetX -
-        displayedWidth / 2;
 
-    const displayedTop =
-        frameHeight / 2 +
-        cropState.offsetY -
-        displayedHeight / 2;
-
-    let sourceX =
-        -displayedLeft /
-        finalDisplayScale;
-
-    let sourceY =
-        -displayedTop /
-        finalDisplayScale;
-
-    const sourceWidth =
-        frameWidth /
-        finalDisplayScale;
-
-    const sourceHeight =
-        frameHeight /
-        finalDisplayScale;
-
-    sourceX = Math.max(
-        0,
-        Math.min(
-            naturalWidth - sourceWidth,
-            sourceX
-        )
-    );
-
-    sourceY = Math.max(
-        0,
-        Math.min(
-            naturalHeight - sourceHeight,
-            sourceY
-        )
-    );
-
-    /*
-        Castfolio profile frame:
-        4 : 5
-    */
-
-    const outputWidth =
-        1200;
-
-    const outputHeight =
-        1500;
-
-    const canvas =
-        document.createElement(
-            "canvas"
-        );
-
-    canvas.width =
-        outputWidth;
-
-    canvas.height =
-        outputHeight;
-
-    const context =
-        canvas.getContext(
-            "2d"
-        );
-
-    if (!context) {
-        throw new Error(
-            "이미지 편집을 위한 Canvas를 사용할 수 없습니다."
-        );
-    }
-
-    context.imageSmoothingEnabled =
-        true;
-
-    context.imageSmoothingQuality =
-        "high";
-
-    context.drawImage(
-        cropImage,
-
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
-
-        0,
-        0,
-        outputWidth,
-        outputHeight
-    );
-
-    const blob =
-        await new Promise(
-            function (
-                resolve,
-                reject
-            ) {
-
-                canvas.toBlob(
-                    function (result) {
-
-                        if (result) {
-                            resolve(
-                                result
-                            );
-
-                            return;
-                        }
-
-                        reject(
-                            new Error(
-                                "프로필 이미지를 자르는 데 실패했습니다."
-                            )
+                        item.classList.toggle(
+                            "active",
+                            isActive
                         );
 
-                    },
 
-                    "image/webp",
-                    0.92
+                        item.setAttribute(
+                            "aria-selected",
+                            String(isActive)
+                        );
+
+                    }
+
+                );
+
+
+                tabPanels.forEach(
+
+                    function (panel) {
+
+                        const isActive =
+                            panel.dataset.tabPanel ===
+                            targetTab;
+
+
+                        panel.classList.toggle(
+                            "active",
+                            isActive
+                        );
+
+
+                        panel.hidden =
+                            !isActive;
+
+                    }
+
                 );
 
             }
+
         );
 
-    return new File(
-        [
-            blob
-        ],
+    }
 
-        "profile-cropped.webp",
+);
 
-        {
-            type:
-                "image/webp"
+
+
+// ======================================
+// GENDER
+// ======================================
+
+genderButtons.forEach(
+
+    function (button) {
+
+        button.addEventListener(
+
+            "click",
+
+            function () {
+
+                const selectedGender =
+                    button.dataset.gender;
+
+
+                genderInput.value =
+                    selectedGender;
+
+
+                genderButtons.forEach(
+
+                    function (item) {
+
+                        item.classList.toggle(
+
+                            "active",
+
+                            item.dataset.gender ===
+                            selectedGender
+
+                        );
+
+                    }
+
+                );
+
+            }
+
+        );
+
+    }
+
+);
+
+
+
+// ======================================
+// SHORT DESCRIPTION COUNTER
+// ======================================
+
+if (
+    shortDescription &&
+    shortDescriptionCount
+) {
+
+    shortDescription.addEventListener(
+
+        "input",
+
+        function () {
+
+            shortDescriptionCount.textContent =
+                `${shortDescription.value.length} / 120`;
+
         }
+
     );
+
 }
 
 
+
 // ======================================
-// CROP METADATA
+// PROFILE IMAGE BUTTON
 // ======================================
 
-function makeCurrentCropMetadata() {
-    return {
-        zoom:
-            cropState.zoom,
+profileImageButton.addEventListener(
 
-        offsetXRatio:
-            cropState.offsetX /
-            cropState.frameWidth,
+    "click",
 
-        offsetYRatio:
-            cropState.offsetY /
-            cropState.frameHeight,
+    function () {
 
-        aspectRatio:
-            4 / 5,
+        profileImageInput.click();
 
-        originalWidth:
-            cropImage.naturalWidth,
+    }
 
-        originalHeight:
-            cropImage.naturalHeight
-    };
+);
+
+
+
+// ======================================
+// IMAGE SELECTED
+// ======================================
+
+profileImageInput.addEventListener(
+
+    "change",
+
+    function () {
+
+        const file =
+            profileImageInput.files[0];
+
+
+        if (!file) {
+
+            return;
+
+        }
+
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            alert(
+                "이미지 파일만 선택할 수 있습니다."
+            );
+
+
+            profileImageInput.value =
+                "";
+
+
+            return;
+
+        }
+
+
+        /*
+            IMPORTANT:
+
+            Do not immediately place the
+            original image in the card.
+
+            Open the crop editor first.
+        */
+
+        openCropModal(
+            file
+        );
+
+    }
+
+);
+
+
+
+// ======================================
+// OPEN CROP EDITOR
+// ======================================
+
+function openCropModal(
+    file
+) {
+
+    /*
+        Cropper.js comes from the
+        <script> in add-character.html.
+    */
+
+    if (
+        typeof window.Cropper !==
+        "function"
+    ) {
+
+        console.error(
+            "Cropper.js is not loaded."
+        );
+
+
+        alert(
+
+            "이미지 자르기 기능을 불러오지 못했습니다.\n" +
+            "인터넷 연결 또는 Cropper.js 설정을 확인해 주세요."
+
+        );
+
+
+        profileImageInput.value =
+            "";
+
+
+        return;
+
+    }
+
+
+
+    /*
+        Clear any previous cropper.
+    */
+
+    destroyCropper();
+
+    cleanupCropSourceUrl();
+
+
+
+    /*
+        Temporarily hold the image.
+
+        It will only become the actual
+        character image after the user
+        presses 자르기 적용.
+    */
+
+    pendingProfileFile =
+        file;
+
+
+
+    /*
+        Create temporary browser URL.
+    */
+
+    cropSourceUrl =
+        URL.createObjectURL(
+            file
+        );
+
+
+    cropImage.src =
+        cropSourceUrl;
+
+
+
+    /*
+        Show modal.
+    */
+
+    cropModal.hidden =
+        false;
+
+
+    document.body.classList.add(
+        "crop-modal-open"
+    );
+
+
+    cropConfirmButton.disabled =
+        true;
+
+
+    cropConfirmButton.textContent =
+        "자르기 적용";
+
+
+
+    /*
+        Wait until the crop window is
+        actually rendered.
+
+        Cropper needs a real width/height.
+    */
+
+    window.requestAnimationFrame(
+
+        function () {
+
+            window.requestAnimationFrame(
+
+                function () {
+
+                    cropper =
+                        new window.Cropper(
+
+                            cropImage,
+
+                            {
+
+                                /*
+                                    IMPORTANT
+
+                                    Profile frame is 4:5.
+
+                                    Therefore crop rectangle
+                                    always stays 4:5.
+                                */
+
+                                aspectRatio:
+                                    4 / 5,
+
+
+                                /*
+                                    Keeps the crop selection
+                                    inside the original image.
+                                */
+
+                                viewMode:
+                                    1,
+
+
+                                /*
+                                    Dragging normally moves
+                                    the original image.
+
+                                    The crop box itself can
+                                    also be moved separately.
+                                */
+
+                                dragMode:
+                                    "move",
+
+
+                                /*
+                                    Initial crop rectangle.
+
+                                    0.70 means roughly 70%
+                                    of the visible image area.
+                                */
+
+                                autoCropArea:
+                                    0.70,
+
+
+                                /*
+                                    Responsive resizing.
+                                */
+
+                                responsive:
+                                    true,
+
+
+                                restore:
+                                    false,
+
+
+                                checkCrossOrigin:
+                                    false,
+
+
+                                background:
+                                    false,
+
+
+                                /*
+                                    Crop guides.
+                                */
+
+                                guides:
+                                    true,
+
+
+                                center:
+                                    true,
+
+
+                                highlight:
+                                    true,
+
+
+                                /*
+                                    IMPORTANT
+
+                                    User can MOVE the
+                                    crop rectangle.
+                                */
+
+                                cropBoxMovable:
+                                    true,
+
+
+                                /*
+                                    IMPORTANT
+
+                                    User can RESIZE the
+                                    crop rectangle.
+
+                                    Aspect ratio remains 4:5.
+                                */
+
+                                cropBoxResizable:
+                                    true,
+
+
+                                /*
+                                    Original image can also
+                                    be moved.
+                                */
+
+                                movable:
+                                    true,
+
+
+                                /*
+                                    Zoom.
+                                */
+
+                                zoomable:
+                                    true,
+
+
+                                zoomOnTouch:
+                                    true,
+
+
+                                zoomOnWheel:
+                                    true,
+
+
+                                wheelZoomRatio:
+                                    0.08,
+
+
+                                /*
+                                    Not needed.
+                                */
+
+                                scalable:
+                                    false,
+
+
+                                rotatable:
+                                    false,
+
+
+                                toggleDragModeOnDblclick:
+                                    false,
+
+
+                                /*
+                                    Cropper is ready.
+                                */
+
+                                ready:
+                                    function () {
+
+                                        cropConfirmButton.disabled =
+                                            false;
+
+                                    }
+
+                            }
+
+                        );
+
+                }
+
+            );
+
+        }
+
+    );
+
 }
 
 
+
 // ======================================
-// CONFIRM CROP
+// CLOSE CROP EDITOR
+// ======================================
+
+function closeCropModal() {
+
+    destroyCropper();
+
+
+    cleanupCropSourceUrl();
+
+
+    cropImage.removeAttribute(
+        "src"
+    );
+
+
+    cropModal.hidden =
+        true;
+
+
+    document.body.classList.remove(
+        "crop-modal-open"
+    );
+
+
+    pendingProfileFile =
+        null;
+
+
+    /*
+        Reset input so user can select
+        the same file again.
+    */
+
+    profileImageInput.value =
+        "";
+
+
+    cropConfirmButton.disabled =
+        false;
+
+
+    cropConfirmButton.textContent =
+        "자르기 적용";
+
+}
+
+
+
+// ======================================
+// DESTROY CROPPER
+// ======================================
+
+function destroyCropper() {
+
+    if (cropper) {
+
+        cropper.destroy();
+
+
+        cropper =
+            null;
+
+    }
+
+}
+
+
+
+// ======================================
+// CLEAN TEMP IMAGE URL
+// ======================================
+
+function cleanupCropSourceUrl() {
+
+    if (cropSourceUrl) {
+
+        URL.revokeObjectURL(
+            cropSourceUrl
+        );
+
+
+        cropSourceUrl =
+            null;
+
+    }
+
+}
+
+
+
+// ======================================
+// CROP MODAL BUTTONS
+// ======================================
+
+cropCloseButton.addEventListener(
+
+    "click",
+
+    closeCropModal
+
+);
+
+
+cropCancelButton.addEventListener(
+
+    "click",
+
+    closeCropModal
+
+);
+
+
+
+// ======================================
+// CLICK OUTSIDE MODAL
+// ======================================
+
+cropModal.addEventListener(
+
+    "click",
+
+    function (event) {
+
+        if (
+            event.target ===
+            cropModal
+        ) {
+
+            closeCropModal();
+
+        }
+
+    }
+
+);
+
+
+
+// ======================================
+// ESC TO CLOSE
+// ======================================
+
+document.addEventListener(
+
+    "keydown",
+
+    function (event) {
+
+        if (
+
+            event.key ===
+            "Escape" &&
+
+            !cropModal.hidden
+
+        ) {
+
+            closeCropModal();
+
+        }
+
+    }
+
+);
+
+
+
+// ======================================
+// CANVAS -> FILE
+// ======================================
+
+function canvasToFile(
+    canvas
+) {
+
+    return new Promise(
+
+        function (
+            resolve,
+            reject
+        ) {
+
+            canvas.toBlob(
+
+                function (blob) {
+
+                    if (!blob) {
+
+                        reject(
+
+                            new Error(
+                                "프로필 이미지를 자르는 데 실패했습니다."
+                            )
+
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    resolve(
+
+                        new File(
+
+                            [
+                                blob
+                            ],
+
+                            "profile-cropped.webp",
+
+                            {
+                                type:
+                                    "image/webp"
+                            }
+
+                        )
+
+                    );
+
+                },
+
+                "image/webp",
+
+                0.92
+
+            );
+
+        }
+
+    );
+
+}
+
+
+
+// ======================================
+// APPLY CROP
 // ======================================
 
 cropConfirmButton.addEventListener(
+
     "click",
 
     async function () {
 
-        if (!cropState.sourceFile) {
+        if (
+            !cropper ||
+            !pendingProfileFile
+        ) {
+
             return;
+
         }
 
-        const selectedOriginalFile =
-            cropState.sourceFile;
 
         try {
 
             cropConfirmButton.disabled =
                 true;
 
+
             cropConfirmButton.textContent =
                 "처리 중...";
 
 
-            const croppedFile =
-                await createCroppedProfileFile();
+
+            /*
+                Get ONLY the selected
+                purple crop rectangle.
+
+                Result is exactly 4:5.
+            */
+
+            const croppedCanvas =
+                cropper.getCroppedCanvas(
+
+                    {
+
+                        width:
+                            1200,
 
 
-            const cropMetadata =
-                makeCurrentCropMetadata();
+                        height:
+                            1500,
+
+
+                        imageSmoothingEnabled:
+                            true,
+
+
+                        imageSmoothingQuality:
+                            "high"
+
+                    }
+
+                );
+
+
+            if (!croppedCanvas) {
+
+                throw new Error(
+                    "자른 이미지를 만들 수 없습니다."
+                );
+
+            }
+
 
 
             /*
-                Only replace the existing
-                profile after cropping succeeds.
+                Convert crop result into
+                a real image file.
             */
 
+            const croppedFile =
+                await canvasToFile(
+                    croppedCanvas
+                );
+
+
+
+            /*
+                Save crop coordinates.
+            */
+
+            const cropData =
+                cropper.getData(
+                    true
+                );
+
+
+            const imageData =
+                cropper.getImageData();
+
+
+
             profileOriginalFile =
-                selectedOriginalFile;
+                pendingProfileFile;
+
 
             profileCroppedFile =
                 croppedFile;
 
-            profileCropMetadata =
-                cropMetadata;
 
+
+            profileCropMetadata = {
+
+                x:
+                    cropData.x,
+
+
+                y:
+                    cropData.y,
+
+
+                width:
+                    cropData.width,
+
+
+                height:
+                    cropData.height,
+
+
+                rotate:
+                    cropData.rotate,
+
+
+                scaleX:
+                    cropData.scaleX,
+
+
+                scaleY:
+                    cropData.scaleY,
+
+
+                aspectRatio:
+                    4 / 5,
+
+
+                originalWidth:
+                    imageData.naturalWidth,
+
+
+                originalHeight:
+                    imageData.naturalHeight
+
+            };
+
+
+
+            /*
+                Show actual cropped
+                result in character card.
+            */
 
             setProfilePreview(
                 croppedFile
@@ -866,6 +1251,8 @@ cropConfirmButton.addEventListener(
             closeCropModal();
 
         }
+
+
         catch (error) {
 
             console.error(
@@ -875,86 +1262,90 @@ cropConfirmButton.addEventListener(
 
 
             alert(
+
                 "이미지 자르기에 실패했습니다.\n\n" +
                 error.message
+
             );
 
 
             cropConfirmButton.disabled =
                 false;
 
+
             cropConfirmButton.textContent =
-                "자르기";
+                "자르기 적용";
 
         }
 
     }
+
 );
+
 
 
 // ======================================
 // PROFILE PREVIEW
 // ======================================
 
-function setProfilePreview(file) {
+function setProfilePreview(
+    file
+) {
+
     if (profilePreviewUrl) {
+
         URL.revokeObjectURL(
             profilePreviewUrl
         );
+
     }
+
 
     profilePreviewUrl =
         URL.createObjectURL(
             file
         );
 
+
     profilePreview.src =
         profilePreviewUrl;
+
 
     profilePreview.hidden =
         false;
 
+
     profilePlaceholder.hidden =
         true;
+
 }
 
 
-// ======================================
-// KEEP CROP CORRECT ON RESIZE
-// ======================================
-
-window.addEventListener(
-    "resize",
-
-    function () {
-
-        if (
-            !cropModal.hidden &&
-            cropImage.naturalWidth
-        ) {
-            calculateCropBaseSize(
-                false
-            );
-        }
-
-    }
-);
-
 
 // ======================================
-// GALLERY
+// GALLERY BUTTON
 // ======================================
 
 galleryAddButton.addEventListener(
+
     "click",
 
     function () {
+
         galleryInput.click();
+
     }
+
 );
 
 
+
+// ======================================
+// GALLERY SELECT
+// ======================================
+
 galleryInput.addEventListener(
+
     "change",
 
     function () {
@@ -965,6 +1356,7 @@ galleryInput.addEventListener(
             )
 
             .filter(
+
                 function (file) {
 
                     return file.type.startsWith(
@@ -972,16 +1364,21 @@ galleryInput.addEventListener(
                     );
 
                 }
+
             );
 
 
         if (
-            selectedFiles.length === 0
+            selectedFiles.length ===
+            0
         ) {
+
             galleryInput.value =
                 "";
 
+
             return;
+
         }
 
 
@@ -997,7 +1394,9 @@ galleryInput.addEventListener(
         renderGallery();
 
     }
+
 );
+
 
 
 // ======================================
@@ -1005,19 +1404,26 @@ galleryInput.addEventListener(
 // ======================================
 
 function renderGallery() {
+
     galleryGrid
+
         .querySelectorAll(
             ".gallery-card"
         )
 
         .forEach(
+
             function (card) {
+
                 card.remove();
+
             }
+
         );
 
 
     galleryFiles.forEach(
+
         function (
             file,
             index
@@ -1028,8 +1434,10 @@ function renderGallery() {
                     "div"
                 );
 
+
             card.className =
                 "gallery-card";
+
 
 
             const img =
@@ -1047,8 +1455,10 @@ function renderGallery() {
             img.src =
                 objectUrl;
 
+
             img.alt =
                 `갤러리 이미지 ${index + 1}`;
+
 
 
             img.onload =
@@ -1061,6 +1471,7 @@ function renderGallery() {
                 };
 
 
+
             const removeButton =
                 document.createElement(
                     "button"
@@ -1070,19 +1481,27 @@ function renderGallery() {
             removeButton.type =
                 "button";
 
+
             removeButton.className =
                 "gallery-remove-button";
 
+
             removeButton.setAttribute(
+
                 "aria-label",
+
                 "이미지 삭제"
+
             );
+
 
             removeButton.textContent =
                 "×";
 
 
+
             removeButton.addEventListener(
+
                 "click",
 
                 function () {
@@ -1092,15 +1511,19 @@ function renderGallery() {
                         1
                     );
 
+
                     renderGallery();
 
                 }
+
             );
+
 
 
             card.appendChild(
                 img
             );
+
 
             card.appendChild(
                 removeButton
@@ -1108,42 +1531,64 @@ function renderGallery() {
 
 
             galleryGrid.insertBefore(
+
                 card,
+
                 galleryAddButton
+
             );
 
         }
+
     );
+
 }
 
 
+
 // ======================================
-// HELPERS
+// CLEAN FORM VALUE
 // ======================================
 
-function cleanValue(id) {
+function cleanValue(
+    id
+) {
+
     const element =
         document.getElementById(
             id
         );
 
+
     return element
         ? element.value.trim()
         : "";
+
 }
 
+
+
+// ======================================
+// TAGS
+// ======================================
 
 function makeTagArray(
     tagString
 ) {
+
     const normalized =
         tagString
+
             .split(",")
 
             .map(
+
                 function (tag) {
+
                     return tag.trim();
+
                 }
+
             )
 
             .filter(
@@ -1152,48 +1597,69 @@ function makeTagArray(
 
 
     return [
+
         ...new Set(
             normalized
         )
+
     ];
+
 }
 
+
+
+// ======================================
+// FILE NAME
+// ======================================
 
 function sanitizeFileName(
     fileName
 ) {
+
     return fileName.replace(
+
         /[^a-zA-Z0-9가-힣._-]/g,
+
         "_"
+
     );
+
 }
+
 
 
 function makeStorageFileName(
     file,
     index = 0
 ) {
+
     const time =
         Date.now();
 
 
     return (
+
         `${time}_${index}_` +
+
         sanitizeFileName(
             file.name
         )
+
     );
+
 }
 
 
+
 // ======================================
-// UPLOAD FILE
+// FIREBASE STORAGE UPLOAD
 // ======================================
 
 async function uploadFile(
     file,
     storagePath
 ) {
+
     const storageRef =
         ref(
             storage,
@@ -1210,7 +1676,9 @@ async function uploadFile(
     return getDownloadURL(
         storageRef
     );
+
 }
+
 
 
 // ======================================
@@ -1218,41 +1686,59 @@ async function uploadFile(
 // ======================================
 
 function setSavingState(
+
     isSaving,
+
     message = "",
+
     type = ""
+
 ) {
+
     saveButton.disabled =
         isSaving;
 
 
+
     saveButton
+
         .querySelector(
             ".save-button-text"
         )
 
         .textContent =
-            isSaving
-                ? "저장 중..."
-                : "저장";
+
+        isSaving
+            ? "저장 중..."
+            : "저장";
+
 
 
     saveStatus.textContent =
         message;
 
 
+
     saveStatus.classList.remove(
+
         "error",
+
         "success"
+
     );
 
 
+
     if (type) {
+
         saveStatus.classList.add(
             type
         );
+
     }
+
 }
+
 
 
 // ======================================
@@ -1260,11 +1746,13 @@ function setSavingState(
 // ======================================
 
 characterForm.addEventListener(
+
     "submit",
 
     async function (event) {
 
         event.preventDefault();
+
 
 
         // ==================================
@@ -1274,13 +1762,20 @@ characterForm.addEventListener(
         if (!signedInUser) {
 
             setSavingState(
+
                 false,
+
                 "로그인 정보를 확인할 수 없습니다.",
+
                 "error"
+
             );
 
+
             return;
+
         }
+
 
 
         // ==================================
@@ -1288,6 +1783,7 @@ characterForm.addEventListener(
         // ==================================
 
         const characterData = {
+
 
             ownerId:
                 signedInUser.uid,
@@ -1299,10 +1795,12 @@ characterForm.addEventListener(
                 "사용자",
 
 
+
             name:
                 cleanValue(
                     "characterName"
                 ),
+
 
 
             shortDescription:
@@ -1311,11 +1809,13 @@ characterForm.addEventListener(
                 ),
 
 
+
             // ==================================
             // GENERAL
             // ==================================
 
             general: {
+
 
                 age:
                     cleanValue(
@@ -1355,9 +1855,11 @@ characterForm.addEventListener(
 
                 tags:
                     makeTagArray(
+
                         cleanValue(
                             "tags"
                         )
+
                     ),
 
 
@@ -1369,11 +1871,13 @@ characterForm.addEventListener(
             },
 
 
+
             // ==================================
             // APPEARANCE
             // ==================================
 
             appearance: {
+
 
                 hair:
                     cleanValue(
@@ -1407,14 +1911,12 @@ characterForm.addEventListener(
             },
 
 
-            // ==================================
-            // FREE WRITING
-            // ==================================
 
             personality:
                 cleanValue(
                     "personality"
                 ),
+
 
 
             features:
@@ -1423,55 +1925,49 @@ characterForm.addEventListener(
                 ),
 
 
+
             relationship:
                 cleanValue(
                     "relationship"
                 ),
 
 
-            // ==================================
-            // PROFILE IMAGE
-            // ==================================
 
             /*
-                Final 4:5 cropped image.
+                Cropped 4:5 image URL.
             */
 
             profileImageUrl:
                 "",
 
 
+
             /*
-                Original image is also saved
-                for future Edit Character.
+                Original full image URL.
             */
 
             profileOriginalImageUrl:
                 "",
 
 
+
             /*
-                Crop information.
+                Original crop coordinates.
             */
 
             profileCrop:
                 null,
 
 
-            // ==================================
-            // GALLERY
-            // ==================================
 
             galleryImages:
                 [],
 
 
-            // ==================================
-            // TIMESTAMPS
-            // ==================================
 
             createdAt:
                 serverTimestamp(),
+
 
 
             updatedAt:
@@ -1480,40 +1976,52 @@ characterForm.addEventListener(
         };
 
 
-        // ==================================
-        // SAVE
-        // ==================================
 
         try {
 
             setSavingState(
+
                 true,
+
                 "캐릭터 정보를 저장하고 있습니다..."
+
             );
 
 
+
             // ==================================
-            // CREATE CHARACTER DOCUMENT
+            // CREATE FIRESTORE DOCUMENT
             // ==================================
 
             const characterCollection =
                 collection(
+
                     db,
+
                     "users",
+
                     signedInUser.uid,
+
                     "characters"
+
                 );
+
 
 
             const characterDoc =
                 await addDoc(
+
                     characterCollection,
+
                     characterData
+
                 );
+
 
 
             const characterId =
                 characterDoc.id;
+
 
 
             let profileImageUrl =
@@ -1528,17 +2036,22 @@ characterForm.addEventListener(
                 [];
 
 
+
             // ==================================
             // PROFILE IMAGE
             // ==================================
 
             if (
+
                 profileOriginalFile &&
+
                 profileCroppedFile
+
             ) {
 
+
                 /*
-                    Original image
+                    Upload original.
                 */
 
                 const originalFileName =
@@ -1547,24 +2060,22 @@ characterForm.addEventListener(
                     );
 
 
+
                 profileOriginalImageUrl =
                     await uploadFile(
 
                         profileOriginalFile,
 
-                        `users/` +
-                        `${signedInUser.uid}/` +
-                        `characters/` +
-                        `${characterId}/` +
-                        `profile/` +
-                        `original/` +
-                        `${originalFileName}`
+                        `users/${signedInUser.uid}/` +
+                        `characters/${characterId}/` +
+                        `profile/original/${originalFileName}`
 
                     );
 
 
+
                 /*
-                    Cropped 4:5 image
+                    Upload actual crop.
                 */
 
                 profileImageUrl =
@@ -1572,17 +2083,14 @@ characterForm.addEventListener(
 
                         profileCroppedFile,
 
-                        `users/` +
-                        `${signedInUser.uid}/` +
-                        `characters/` +
-                        `${characterId}/` +
-                        `profile/` +
-                        `cropped/` +
-                        `profile-cropped.webp`
+                        `users/${signedInUser.uid}/` +
+                        `characters/${characterId}/` +
+                        `profile/cropped/profile-cropped.webp`
 
                     );
 
             }
+
 
 
             // ==================================
@@ -1590,20 +2098,29 @@ characterForm.addEventListener(
             // ==================================
 
             for (
+
                 let i = 0;
+
                 i < galleryFiles.length;
+
                 i += 1
+
             ) {
 
                 const file =
                     galleryFiles[i];
 
 
+
                 const galleryFileName =
                     makeStorageFileName(
+
                         file,
+
                         i
+
                     );
+
 
 
                 const imageUrl =
@@ -1611,14 +2128,12 @@ characterForm.addEventListener(
 
                         file,
 
-                        `users/` +
-                        `${signedInUser.uid}/` +
-                        `characters/` +
-                        `${characterId}/` +
-                        `gallery/` +
-                        `${galleryFileName}`
+                        `users/${signedInUser.uid}/` +
+                        `characters/${characterId}/` +
+                        `gallery/${galleryFileName}`
 
                     );
+
 
 
                 galleryImageUrls.push(
@@ -1628,6 +2143,7 @@ characterForm.addEventListener(
             }
 
 
+
             // ==================================
             // UPDATE FIRESTORE
             // ==================================
@@ -1635,12 +2151,19 @@ characterForm.addEventListener(
             await updateDoc(
 
                 doc(
+
                     db,
+
                     "users",
+
                     signedInUser.uid,
+
                     "characters",
+
                     characterId
+
                 ),
+
 
                 {
 
@@ -1668,21 +2191,22 @@ characterForm.addEventListener(
             );
 
 
+
             // ==================================
             // SUCCESS
             // ==================================
 
             setSavingState(
+
                 false,
+
                 "저장되었습니다.",
+
                 "success"
+
             );
 
 
-            /*
-                After saving, move to
-                My Characters page.
-            */
 
             window.setTimeout(
 
@@ -1700,46 +2224,63 @@ characterForm.addEventListener(
         }
 
 
-        // ==================================
-        // ERROR
-        // ==================================
-
         catch (error) {
 
             console.error(
+
                 "Character save failed:",
+
                 error
+
             );
 
 
             setSavingState(
+
                 false,
+
                 "저장에 실패했습니다. Firebase 설정과 권한을 확인해 주세요.",
+
                 "error"
+
             );
 
 
             alert(
+
                 "캐릭터 저장에 실패했습니다.\n\n" +
+
                 (error.code || "") +
+
                 "\n" +
+
                 error.message
+
             );
 
         }
 
     }
+
 );
 
 
+
 // ======================================
-// CLEAN UP OBJECT URL
+// CLEAN UP
 // ======================================
 
 window.addEventListener(
+
     "beforeunload",
 
     function () {
+
+        destroyCropper();
+
+
+        cleanupCropSourceUrl();
+
 
         if (profilePreviewUrl) {
 
@@ -1749,8 +2290,6 @@ window.addEventListener(
 
         }
 
-
-        cleanupCropSource();
-
     }
+
 );
