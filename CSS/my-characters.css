@@ -40,21 +40,9 @@
 .characters-heading {
     width: 100%;
 
-    background:
-        linear-gradient(
-            110deg,
-            rgba(72, 49, 151, 0.95),
-            rgba(61, 46, 137, 0.88),
-            rgba(38, 56, 137, 0.85)
-        );
-
-    border-bottom:
-        1px solid
-        rgba(194, 168, 255, 0.2);
-
-    box-shadow:
-        0 12px 40px
-        rgba(0, 0, 0, 0.18);
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
 }
 
 
@@ -67,8 +55,11 @@
     margin: 0 auto;
 
     padding:
-        34px
-        0;
+        30px
+        0
+        18px;
+
+    text-align: center;
 }
 
 

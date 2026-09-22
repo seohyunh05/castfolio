@@ -51,6 +51,14 @@ const CLOUDINARY_UPLOAD_PRESET = "character_uploads";
 
 
 // ======================================
+// IMAGE OPTIMIZATION
+// ======================================
+
+const GALLERY_MAX_DIMENSION = 1800;
+const GALLERY_WEBP_QUALITY = 0.84;
+
+
+// ======================================
 // ELEMENTS
 // ======================================
 
@@ -1269,13 +1277,295 @@ galleryAddButton.addEventListener(
 
 
 // ======================================
+// GALLERY IMAGE OPTIMIZATION
+// ======================================
+
+function loadImageElement(
+    objectUrl
+) {
+
+    return new Promise(
+        function (
+            resolve,
+            reject
+        ) {
+
+            const image =
+                new Image();
+
+            image.onload =
+                function () {
+
+                    resolve(
+                        image
+                    );
+                };
+
+            image.onerror =
+                function () {
+
+                    reject(
+                        new Error(
+                            "이미지를 불러올 수 없습니다."
+                        )
+                    );
+                };
+
+            image.src =
+                objectUrl;
+        }
+    );
+}
+
+
+async function optimizeGalleryImage(
+    file
+) {
+
+    if (
+        !file ||
+        !file.type.startsWith(
+            "image/"
+        )
+    ) {
+
+        return file;
+    }
+
+    /*
+        Keep animated GIF and SVG files as-is.
+        Converting them through canvas can remove
+        animation or vector information.
+    */
+
+    if (
+        file.type === "image/gif" ||
+        file.type === "image/svg+xml"
+    ) {
+
+        return file;
+    }
+
+    let bitmap =
+        null;
+
+    let image =
+        null;
+
+    let objectUrl =
+        null;
+
+    try {
+
+        let sourceWidth;
+        let sourceHeight;
+        let drawable;
+
+        if (
+            typeof createImageBitmap ===
+            "function"
+        ) {
+
+            bitmap =
+                await createImageBitmap(
+                    file
+                );
+
+            sourceWidth =
+                bitmap.width;
+
+            sourceHeight =
+                bitmap.height;
+
+            drawable =
+                bitmap;
+        }
+
+        else {
+
+            objectUrl =
+                URL.createObjectURL(
+                    file
+                );
+
+            image =
+                await loadImageElement(
+                    objectUrl
+                );
+
+            sourceWidth =
+                image.naturalWidth;
+
+            sourceHeight =
+                image.naturalHeight;
+
+            drawable =
+                image;
+        }
+
+        if (
+            !sourceWidth ||
+            !sourceHeight
+        ) {
+
+            return file;
+        }
+
+        const longestSide =
+            Math.max(
+                sourceWidth,
+                sourceHeight
+            );
+
+        const scale =
+            Math.min(
+                1,
+                GALLERY_MAX_DIMENSION /
+                longestSide
+            );
+
+        const targetWidth =
+            Math.max(
+                1,
+                Math.round(
+                    sourceWidth * scale
+                )
+            );
+
+        const targetHeight =
+            Math.max(
+                1,
+                Math.round(
+                    sourceHeight * scale
+                )
+            );
+
+        const canvas =
+            document.createElement(
+                "canvas"
+            );
+
+        canvas.width =
+            targetWidth;
+
+        canvas.height =
+            targetHeight;
+
+        const context =
+            canvas.getContext(
+                "2d"
+            );
+
+        if (!context) {
+
+            return file;
+        }
+
+        context.imageSmoothingEnabled =
+            true;
+
+        context.imageSmoothingQuality =
+            "high";
+
+        context.drawImage(
+            drawable,
+            0,
+            0,
+            targetWidth,
+            targetHeight
+        );
+
+        const blob =
+            await new Promise(
+                function (resolve) {
+
+                    canvas.toBlob(
+                        resolve,
+                        "image/webp",
+                        GALLERY_WEBP_QUALITY
+                    );
+                }
+            );
+
+        if (!blob) {
+
+            return file;
+        }
+
+        /*
+            If WebP somehow becomes larger than the
+            original file, keep the original instead.
+        */
+
+        if (
+            blob.size >=
+            file.size
+        ) {
+
+            return file;
+        }
+
+        const fileBaseName =
+            file.name
+                .replace(
+                    /\.[^/.]+$/,
+                    ""
+                ) ||
+            "gallery-image";
+
+        return new File(
+            [blob],
+            `${fileBaseName}.webp`,
+            {
+                type:
+                    "image/webp",
+
+                lastModified:
+                    file.lastModified ||
+                    Date.now()
+            }
+        );
+    }
+
+    catch (error) {
+
+        console.warn(
+            "Gallery image optimization failed; using original file:",
+            error
+        );
+
+        return file;
+    }
+
+    finally {
+
+        if (
+            bitmap &&
+            typeof bitmap.close ===
+            "function"
+        ) {
+
+            bitmap.close();
+        }
+
+        if (objectUrl) {
+
+            URL.revokeObjectURL(
+                objectUrl
+            );
+        }
+    }
+}
+
+
+// ======================================
 // GALLERY SELECT
 // ======================================
 
 galleryInput.addEventListener(
     "change",
 
-    function () {
+    async function () {
 
         const selectedFiles =
             Array.from(
@@ -1291,24 +1581,56 @@ galleryInput.addEventListener(
                     }
                 );
 
+        galleryInput.value =
+            "";
+
         if (
             selectedFiles.length === 0
         ) {
 
-            galleryInput.value =
-                "";
-
             return;
         }
 
-        galleryFiles.push(
-            ...selectedFiles
+        galleryAddButton.disabled =
+            true;
+
+        galleryAddButton.setAttribute(
+            "aria-busy",
+            "true"
         );
 
-        galleryInput.value =
-            "";
+        try {
 
-        renderGallery();
+            const optimizedFiles =
+                await Promise.all(
+
+                    selectedFiles.map(
+                        function (file) {
+
+                            return optimizeGalleryImage(
+                                file
+                            );
+                        }
+                    )
+
+                );
+
+            galleryFiles.push(
+                ...optimizedFiles
+            );
+
+            renderGallery();
+        }
+
+        finally {
+
+            galleryAddButton.disabled =
+                false;
+
+            galleryAddButton.removeAttribute(
+                "aria-busy"
+            );
+        }
     }
 );
 
@@ -1888,7 +2210,7 @@ characterForm.addEventListener(
                 );
 
             // ==================================
-            // PROFILE IMAGE
+            // PREPARE IMAGE UPLOADS
             // ==================================
 
             let profileImageUrl =
@@ -1900,21 +2222,120 @@ characterForm.addEventListener(
             let finalProfileCrop =
                 existingProfileCropMetadata;
 
-            if (profileCroppedFile) {
+            const galleryImageUrls =
+                [
+                    ...existingGalleryUrls
+                ];
+
+            const galleryImagePublicIds =
+                [];
+
+            const totalUploads =
+                (
+                    profileCroppedFile
+                        ? 1
+                        : 0
+                ) +
+                galleryFiles.length;
+
+            let finishedUploads =
+                0;
+
+            function updateUploadProgress() {
+
+                if (
+                    totalUploads === 0
+                ) {
+
+                    return;
+                }
 
                 setSavingState(
                     true,
-                    "프로필 이미지를 업로드하고 있습니다..."
+                    `이미지를 업로드하고 있습니다... ` +
+                    `(${finishedUploads}/${totalUploads})`
                 );
+            }
 
-                const profileUpload =
+            async function uploadAndTrack(
+                file,
+                folder
+            ) {
+
+                const result =
                     await uploadImage(
+                        file,
+                        folder
+                    );
+
+                finishedUploads +=
+                    1;
+
+                updateUploadProgress();
+
+                return result;
+            }
+
+            if (
+                totalUploads > 0
+            ) {
+
+                updateUploadProgress();
+            }
+
+            // ==================================
+            // PROFILE + GALLERY IN PARALLEL
+            // ==================================
+
+            const profileUploadPromise =
+                profileCroppedFile
+
+                    ? uploadAndTrack(
                         profileCroppedFile,
 
                         `castfolio/` +
                         `${signedInUser.uid}/` +
                         `${characterId}/profile`
+                    )
+
+                    : Promise.resolve(
+                        null
                     );
+
+            const galleryUploadPromise =
+                Promise.all(
+
+                    galleryFiles.map(
+                        function (file) {
+
+                            return uploadAndTrack(
+                                file,
+
+                                `castfolio/` +
+                                `${signedInUser.uid}/` +
+                                `${characterId}/gallery`
+                            );
+                        }
+                    )
+
+                );
+
+            const [
+                profileUpload,
+                galleryUploads
+            ] =
+                await Promise.all(
+                    [
+                        profileUploadPromise,
+                        galleryUploadPromise
+                    ]
+                );
+
+            // ==================================
+            // PROFILE RESULT
+            // ==================================
+
+            if (profileUpload) {
 
                 profileImageUrl =
                     profileUpload.url;
@@ -1927,51 +2348,30 @@ characterForm.addEventListener(
             }
 
             // ==================================
-            // GALLERY
+            // GALLERY RESULTS
             // ==================================
 
-            const galleryImageUrls =
-                [
-                    ...existingGalleryUrls
-                ];
+            galleryUploads.forEach(
+                function (upload) {
 
-            const galleryImagePublicIds =
-                [];
-
-            for (
-                let i = 0;
-                i < galleryFiles.length;
-                i += 1
-            ) {
-
-                setSavingState(
-                    true,
-
-                    `갤러리 이미지를 업로드하고 있습니다... ` +
-                    `(${i + 1}/${galleryFiles.length})`
-                );
-
-                const upload =
-                    await uploadImage(
-                        galleryFiles[i],
-
-                        `castfolio/` +
-                        `${signedInUser.uid}/` +
-                        `${characterId}/gallery`
+                    galleryImageUrls.push(
+                        upload.url
                     );
 
-                galleryImageUrls.push(
-                    upload.url
-                );
-
-                galleryImagePublicIds.push(
-                    upload.publicId
-                );
-            }
+                    galleryImagePublicIds.push(
+                        upload.publicId
+                    );
+                }
+            );
 
             // ==================================
             // SAVE FINAL FIRESTORE DATA
             // ==================================
+
+            setSavingState(
+                true,
+                "캐릭터 정보를 저장하고 있습니다..."
+            );
 
             await updateDoc(
                 characterRef,
