@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>내 캐릭터 | Castfolio</title>
+
+
+    <!-- Main website style -->
+    <link
+        rel="stylesheet"
+        href="CSS/main.css?v=10"
+    >
+
+
+    <!-- My Characters page style -->
+    <link
+        rel="stylesheet"
+        href="CSS/my-characters.css?v=1"
+    >
+</head>
+
+
+<body>
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <header class="header">
+
+        <!-- Logo -->
+
+        <a
+            href="main.html"
+            class="logo"
+        >
+            <img
+                src="images/castfolio.png"
+                alt="Castfolio Logo"
+            >
+
+            <span>
+                Castfolio
+            </span>
+        </a>
+
+
+        <!-- Navigation -->
+
+        <nav
+            class="nav"
+            id="navMenu"
+        >
+
+            <a
+                href="my-characters.html"
+                class="nav-link active"
+            >
+                캐릭터
+            </a>
+
+
+            <a
+                href="gallery.html"
+                class="nav-link"
+            >
+                갤러리
+            </a>
+
+
+            <a
+                href="search.html"
+                class="nav-link"
+            >
+                검색
+            </a>
+
+
+            <!-- Other Dropdown -->
+
+            <div class="dropdown">
+
+                <button
+                    class="dropdown-button"
+                    id="moreButton"
+                    type="button"
+                >
+                    기타
+
+                    <span class="arrow">
+                        ▾
+                    </span>
+                </button>
+
+
+                <div
+                    class="dropdown-menu"
+                    id="dropdownMenu"
+                >
+
+                    <a href="settings.html">
+                        설정
+                    </a>
+
+                    <a href="find-profile.html">
+                        프로필 찾기
+                    </a>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+        <!-- =================================
+             RIGHT SIDE
+        ================================== -->
+
+        <div class="header-right">
+
+            <a
+                href="settings.html"
+                class="header-user-profile"
+                id="headerUserProfile"
+                hidden
+            >
+
+                <img
+                    src="images/castfolio.png"
+                    alt="프로필 이미지"
+                    class="header-profile-image"
+                    id="headerProfileImage"
+                    width="36"
+                    height="36"
+                >
+
+                <span
+                    class="header-profile-name"
+                    id="headerProfileName"
+                >
+                    사용자
+                </span>
+
+            </a>
+
+
+            <button
+                class="login-button"
+                id="loginButton"
+                type="button"
+            >
+                로그인
+            </button>
+
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="메뉴 열기"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================
+         MY CHARACTERS PAGE
+    ================================== -->
+
+    <main class="my-characters-page">
+
+        <!-- =================================
+             PAGE HEADING
+        ================================== -->
+
+        <section class="characters-heading">
+
+            <div class="characters-heading-inner">
+
+                <h1>
+                    내 캐릭터
+                </h1>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             CHARACTER AREA
+        ================================== -->
+
+        <section class="characters-content">
+
+            <!-- Loading -->
+
+            <div
+                class="characters-status"
+                id="loadingState"
+            >
+
+                <div class="loading-spinner"></div>
+
+                <p>
+                    캐릭터를 불러오고 있습니다...
+                </p>
+
+            </div>
+
+
+
+            <!-- Error -->
+
+            <div
+                class="characters-status error-state"
+                id="errorState"
+                hidden
+            >
+
+                <h2>
+                    캐릭터를 불러올 수 없습니다.
+                </h2>
+
+                <p id="errorMessage">
+                    잠시 후 다시 시도해 주세요.
+                </p>
+
+            </div>
+
+
+
+            <!-- Empty -->
+
+            <div
+                class="characters-status empty-state"
+                id="emptyState"
+                hidden
+            >
+
+                <div class="empty-icon">
+                    ✦
+                </div>
+
+                <h2>
+                    아직 등록된 캐릭터가 없습니다.
+                </h2>
+
+                <p>
+                    새로운 캐릭터를 만들어 보세요.
+                </p>
+
+                <a
+                    href="add-character.html"
+                    class="empty-add-button"
+                >
+                    캐릭터 추가
+                </a>
+
+            </div>
+
+
+
+            <!-- Character Cards -->
+
+            <div
+                class="character-grid"
+                id="characterGrid"
+                hidden
+            ></div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =================================
+         FLOATING ADD BUTTON
+    ================================== -->
+
+    <a
+        href="add-character.html"
+        class="floating-add-button"
+        aria-label="캐릭터 추가"
+        title="캐릭터 추가"
+    >
+        ＋
+    </a>
+
+
+
+    <!-- =================================
+         DELETE CONFIRMATION MODAL
+    ================================== -->
+
+    <div
+        class="delete-modal"
+        id="deleteModal"
+        hidden
+    >
+
+        <div
+            class="delete-modal-backdrop"
+            id="deleteModalBackdrop"
+        ></div>
+
+
+        <div
+            class="delete-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteModalTitle"
+        >
+
+            <button
+                class="delete-modal-close"
+                id="deleteModalClose"
+                type="button"
+                aria-label="닫기"
+            >
+                ×
+            </button>
+
+
+            <div class="delete-warning-icon">
+                !
+            </div>
+
+
+            <h2 id="deleteModalTitle">
+                캐릭터를 삭제하시겠습니까?
+            </h2>
+
+
+            <p>
+                <strong id="deleteCharacterName">
+                    이 캐릭터
+                </strong>
+                의 모든 정보와 이미지가 영구적으로 삭제됩니다.
+            </p>
+
+
+            <p class="delete-warning-text">
+                삭제한 캐릭터는 복구할 수 없습니다.
+            </p>
+
+
+            <div class="delete-modal-actions">
+
+                <button
+                    class="cancel-delete-button"
+                    id="cancelDeleteButton"
+                    type="button"
+                >
+                    취소
+                </button>
+
+
+                <button
+                    class="confirm-delete-button"
+                    id="confirmDeleteButton"
+                    type="button"
+                >
+                    삭제
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================
+         JAVASCRIPT
+    ================================== -->
+
+    <script
+        type="module"
+        src="JS/main.js?v=10"
+    ></script>
+
+
+    <script
+        type="module"
+        src="JS/my-characters.js?v=1"
+    ></script>
+
+</body>
+
+</html>

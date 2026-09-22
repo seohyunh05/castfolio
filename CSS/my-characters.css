@@ -1,0 +1,1204 @@
+/* =================================
+   MY CHARACTERS PAGE
+================================= */
+
+.my-characters-page {
+    width: 100%;
+    min-height: 100vh;
+
+    padding-top: 78px;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(91, 62, 180, 0.13),
+            transparent 34%
+        ),
+
+        radial-gradient(
+            circle at 85% 30%,
+            rgba(65, 90, 190, 0.12),
+            transparent 32%
+        ),
+
+        #050716;
+}
+
+
+
+/* =================================
+   ACTIVE NAVIGATION
+================================= */
+
+.nav-link.active {
+    color: #c8b4ff;
+}
+
+
+
+/* =================================
+   PAGE HEADING
+================================= */
+
+.characters-heading {
+    width: 100%;
+
+    background:
+        linear-gradient(
+            110deg,
+            rgba(72, 49, 151, 0.95),
+            rgba(61, 46, 137, 0.88),
+            rgba(38, 56, 137, 0.85)
+        );
+
+    border-bottom:
+        1px solid
+        rgba(194, 168, 255, 0.2);
+
+    box-shadow:
+        0 12px 40px
+        rgba(0, 0, 0, 0.18);
+}
+
+
+.characters-heading-inner {
+    width: min(
+        1400px,
+        calc(100% - 80px)
+    );
+
+    margin: 0 auto;
+
+    padding:
+        34px
+        0;
+}
+
+
+.characters-heading h1 {
+    font-size:
+        clamp(
+            29px,
+            3vw,
+            42px
+        );
+
+    font-weight: 750;
+
+    letter-spacing: -1px;
+
+    color: white;
+}
+
+
+
+/* =================================
+   CONTENT
+================================= */
+
+.characters-content {
+    width: min(
+        1400px,
+        calc(100% - 80px)
+    );
+
+    min-height: 400px;
+
+    margin: 0 auto;
+
+    padding:
+        42px
+        0
+        90px;
+}
+
+
+
+/* =================================
+   STATUS
+================================= */
+
+.characters-status {
+    width: 100%;
+
+    min-height: 360px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    color:
+        rgba(255, 255, 255, 0.7);
+}
+
+
+.characters-status[hidden] {
+    display: none !important;
+}
+
+
+.characters-status h2 {
+    margin-top: 10px;
+
+    color:
+        rgba(255, 255, 255, 0.92);
+
+    font-size: 22px;
+}
+
+
+.characters-status p {
+    margin-top: 10px;
+
+    color:
+        rgba(255, 255, 255, 0.54);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+
+/* =================================
+   LOADING
+================================= */
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+
+    border:
+        3px solid
+        rgba(184, 154, 255, 0.14);
+
+    border-top-color:
+        #a47fff;
+
+    animation:
+        character-spin
+        0.8s
+        linear
+        infinite;
+}
+
+
+@keyframes character-spin {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+
+
+/* =================================
+   EMPTY STATE
+================================= */
+
+.empty-icon {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 64px;
+    height: 64px;
+
+    margin-bottom: 8px;
+
+    border-radius: 50%;
+
+    color: #d1c0ff;
+
+    font-size: 25px;
+
+    background:
+        rgba(126, 89, 218, 0.14);
+
+    border:
+        1px solid
+        rgba(171, 141, 245, 0.25);
+}
+
+
+.empty-add-button {
+    margin-top: 24px;
+
+    padding:
+        11px
+        22px;
+
+    border-radius: 9px;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7952cf,
+            #655fd7
+        );
+
+    border:
+        1px solid
+        rgba(210, 192, 255, 0.32);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.empty-add-button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 30px
+        rgba(112, 69, 210, 0.28);
+}
+
+
+
+/* =================================
+   CHARACTER GRID
+================================= */
+
+.character-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        );
+
+    gap: 25px;
+}
+
+
+.character-grid[hidden] {
+    display: none !important;
+}
+
+
+
+/* =================================
+   CHARACTER CARD
+================================= */
+
+.character-card {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: visible;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(24, 25, 48, 0.98),
+            rgba(13, 15, 35, 0.98)
+        );
+
+    border:
+        1px solid
+        rgba(174, 148, 230, 0.13);
+
+    box-shadow:
+        0 16px 35px
+        rgba(0, 0, 0, 0.25);
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.character-card:hover {
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(174, 140, 255, 0.32);
+
+    box-shadow:
+        0 22px 50px
+        rgba(0, 0, 0, 0.35),
+
+        0 0 26px
+        rgba(113, 76, 213, 0.08);
+}
+
+
+
+/* =================================
+   PROFILE IMAGE
+================================= */
+
+.character-image-wrapper {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 4 / 5;
+
+    overflow: hidden;
+
+    border-radius:
+        17px
+        17px
+        0
+        0;
+
+    background:
+        #101225;
+}
+
+
+.character-profile-image {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.35s ease;
+}
+
+
+.character-card:hover
+.character-profile-image {
+    transform:
+        scale(1.025);
+}
+
+
+
+/* =================================
+   IMAGE OVERLAY
+================================= */
+
+.character-image-wrapper::after {
+    content: "";
+
+    position: absolute;
+
+    inset: auto 0 0 0;
+
+    height: 30%;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(9, 10, 26, 0.28)
+        );
+}
+
+
+
+/* =================================
+   CARD MENU BUTTON
+================================= */
+
+.character-menu {
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    z-index: 10;
+}
+
+
+.character-menu-button {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding-bottom: 8px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background:
+        rgba(7, 8, 20, 0.7);
+
+    backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
+        blur(8px);
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 24px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.2);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.character-menu-button:hover {
+    background:
+        rgba(85, 61, 154, 0.88);
+
+    transform:
+        scale(1.05);
+}
+
+
+
+/* =================================
+   CARD MENU DROPDOWN
+================================= */
+
+.character-menu-dropdown {
+    position: absolute;
+
+    top: 45px;
+    right: 0;
+
+    width: 118px;
+
+    display: none;
+
+    padding: 7px;
+
+    border-radius: 11px;
+
+    background:
+        rgba(17, 18, 39, 0.98);
+
+    border:
+        1px solid
+        rgba(183, 154, 246, 0.22);
+
+    box-shadow:
+        0 15px 35px
+        rgba(0, 0, 0, 0.42);
+}
+
+
+.character-menu.open
+.character-menu-dropdown {
+    display: block;
+}
+
+
+.character-menu-dropdown button {
+    width: 100%;
+
+    padding:
+        10px
+        11px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: transparent;
+
+    color:
+        rgba(255, 255, 255, 0.82);
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease;
+}
+
+
+.character-menu-dropdown button:hover {
+    background:
+        rgba(143, 102, 237, 0.14);
+
+    color: white;
+}
+
+
+.character-menu-dropdown
+.delete-character-button {
+    color: #ff9caa;
+}
+
+
+.character-menu-dropdown
+.delete-character-button:hover {
+    background:
+        rgba(255, 82, 112, 0.11);
+
+    color: #ffb5c0;
+}
+
+
+
+/* =================================
+   CARD CONTENT
+================================= */
+
+.character-card-content {
+    padding:
+        19px
+        18px
+        20px;
+}
+
+
+.character-name {
+    overflow: hidden;
+
+    margin-bottom: 11px;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+
+
+/* =================================
+   SHORT DESCRIPTION
+================================= */
+
+.character-short-description {
+    min-height: 43px;
+
+    margin-bottom: 17px;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+
+    font-size: 14px;
+
+    line-height: 1.55;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+
+
+/* =================================
+   GENERAL INFORMATION
+================================= */
+
+.character-general {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    padding-top: 14px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+}
+
+
+.general-row {
+    display: grid;
+
+    grid-template-columns:
+        62px
+        minmax(0, 1fr);
+
+    gap: 8px;
+
+    font-size: 12.5px;
+
+    line-height: 1.45;
+}
+
+
+.general-label {
+    color:
+        rgba(194, 172, 245, 0.63);
+}
+
+
+.general-value {
+    overflow: hidden;
+
+    color:
+        rgba(255, 255, 255, 0.7);
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+
+
+/* =================================
+   TAGS
+================================= */
+
+.character-tags {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 13px;
+}
+
+
+.character-tag {
+    max-width: 100%;
+
+    overflow: hidden;
+
+    padding:
+        5px
+        8px;
+
+    border-radius: 6px;
+
+    color:
+        #bca4f4;
+
+    background:
+        rgba(125, 82, 219, 0.1);
+
+    border:
+        1px solid
+        rgba(162, 128, 236, 0.15);
+
+    font-size: 11px;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+
+
+/* =================================
+   FLOATING ADD BUTTON
+================================= */
+
+.floating-add-button {
+    position: fixed;
+
+    top: 50%;
+    right: 28px;
+
+    z-index: 500;
+
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding-bottom: 4px;
+
+    border-radius: 50%;
+
+    transform:
+        translateY(-50%);
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 33px;
+
+    font-weight: 200;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8056de,
+            #635fdb
+        );
+
+    border:
+        1px solid
+        rgba(218, 201, 255, 0.65);
+
+    box-shadow:
+        0 12px 34px
+        rgba(78, 45, 169, 0.52),
+
+        0 0 24px
+        rgba(120, 79, 219, 0.2);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.floating-add-button:hover {
+    transform:
+        translateY(-50%)
+        scale(1.08);
+
+    box-shadow:
+        0 15px 42px
+        rgba(88, 50, 190, 0.65),
+
+        0 0 32px
+        rgba(149, 104, 244, 0.28);
+}
+
+
+
+/* =================================
+   DELETE MODAL
+================================= */
+
+.delete-modal[hidden] {
+    display: none !important;
+}
+
+
+.delete-modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 3000;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+}
+
+
+.delete-modal-backdrop {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(1, 2, 12, 0.78);
+
+    backdrop-filter:
+        blur(6px);
+
+    -webkit-backdrop-filter:
+        blur(6px);
+}
+
+
+.delete-modal-dialog {
+    position: relative;
+
+    z-index: 1;
+
+    width: min(
+        430px,
+        100%
+    );
+
+    padding:
+        36px
+        30px
+        28px;
+
+    text-align: center;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            150deg,
+            #181a39,
+            #0e1028
+        );
+
+    border:
+        1px solid
+        rgba(190, 158, 255, 0.23);
+
+    box-shadow:
+        0 28px 90px
+        rgba(0, 0, 0, 0.58);
+}
+
+
+.delete-modal-close {
+    position: absolute;
+
+    top: 12px;
+    right: 15px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    background: transparent;
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+
+.delete-warning-icon {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    margin:
+        0
+        auto
+        18px;
+
+    border-radius: 50%;
+
+    color: #ff9aaa;
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+    background:
+        rgba(255, 80, 105, 0.11);
+
+    border:
+        1px solid
+        rgba(255, 112, 134, 0.26);
+}
+
+
+.delete-modal-dialog h2 {
+    color: white;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+
+.delete-modal-dialog p {
+    margin-top: 14px;
+
+    color:
+        rgba(255, 255, 255, 0.65);
+
+    font-size: 14px;
+
+    line-height: 1.65;
+}
+
+
+.delete-modal-dialog strong {
+    color: white;
+}
+
+
+.delete-modal-dialog
+.delete-warning-text {
+    margin-top: 7px;
+
+    color:
+        rgba(255, 139, 157, 0.78);
+
+    font-size: 12px;
+}
+
+
+
+/* =================================
+   DELETE MODAL BUTTONS
+================================= */
+
+.delete-modal-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap: 10px;
+
+    margin-top: 26px;
+}
+
+
+.delete-modal-actions button {
+    padding:
+        12px
+        15px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+}
+
+
+.cancel-delete-button {
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+
+    background:
+        rgba(255, 255, 255, 0.05);
+
+    color:
+        rgba(255, 255, 255, 0.78);
+}
+
+
+.cancel-delete-button:hover {
+    background:
+        rgba(255, 255, 255, 0.09);
+}
+
+
+.confirm-delete-button {
+    border:
+        1px solid
+        rgba(255, 118, 139, 0.42);
+
+    background:
+        rgba(200, 54, 78, 0.82);
+
+    color: white;
+}
+
+
+.confirm-delete-button:hover {
+    background:
+        rgba(225, 61, 87, 0.96);
+}
+
+
+.confirm-delete-button:disabled,
+.cancel-delete-button:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+}
+
+
+
+/* =================================
+   ERROR
+================================= */
+
+.error-state h2 {
+    color: #ffabb7;
+}
+
+
+
+/* =================================
+   RESPONSIVE - LARGE TABLET
+================================= */
+
+@media (max-width: 1180px) {
+
+    .character-grid {
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+    }
+
+}
+
+
+
+/* =================================
+   RESPONSIVE - TABLET
+================================= */
+
+@media (max-width: 850px) {
+
+    .characters-heading-inner,
+    .characters-content {
+        width:
+            calc(
+                100% - 44px
+            );
+    }
+
+
+    .character-grid {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 20px;
+    }
+
+
+    .floating-add-button {
+        right: 18px;
+
+        width: 58px;
+        height: 58px;
+
+        font-size: 31px;
+    }
+
+}
+
+
+
+/* =================================
+   RESPONSIVE - MOBILE
+================================= */
+
+@media (max-width: 780px) {
+
+    .my-characters-page {
+        padding-top: 68px;
+    }
+
+
+    .characters-heading-inner {
+        padding:
+            26px
+            0;
+    }
+
+
+    .characters-content {
+        padding-top: 28px;
+    }
+
+}
+
+
+
+/* =================================
+   RESPONSIVE - SMALL MOBILE
+================================= */
+
+@media (max-width: 560px) {
+
+    .characters-heading-inner,
+    .characters-content {
+        width:
+            calc(
+                100% - 28px
+            );
+    }
+
+
+    .character-grid {
+        grid-template-columns:
+            1fr;
+
+        gap: 22px;
+    }
+
+
+    .character-card {
+        max-width: 420px;
+
+        width: 100%;
+
+        margin:
+            0
+            auto;
+    }
+
+
+    .floating-add-button {
+        width: 54px;
+        height: 54px;
+
+        right: 15px;
+
+        font-size: 29px;
+    }
+
+
+    .delete-modal-dialog {
+        padding:
+            33px
+            22px
+            23px;
+    }
+
+}
