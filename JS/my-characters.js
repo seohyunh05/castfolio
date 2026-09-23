@@ -1,7 +1,6 @@
 // ======================================
 // FIREBASE IMPORTS
 // ======================================
-
 import {
     getApp
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
@@ -26,7 +25,6 @@ import {
 // ======================================
 // FIREBASE
 // ======================================
-
 const app =
     getApp();
 
@@ -39,7 +37,6 @@ const db =
 // ======================================
 // ELEMENTS
 // ======================================
-
 const characterGrid =
     document.getElementById(
         "characterGrid"
@@ -104,13 +101,10 @@ const confirmDeleteButton =
 // ======================================
 // STATE
 // ======================================
-
 let signedInUser =
     null;
-
 let loadedCharacters =
     [];
-
 let characterPendingDelete =
     null;
 
@@ -118,14 +112,10 @@ let characterPendingDelete =
 // ======================================
 // AUTHENTICATION
 // ======================================
-
 onAuthStateChanged(
     auth,
-
     async function (user) {
-
         if (!user) {
-
             alert(
                 "내 캐릭터 페이지는 로그인 후 이용할 수 있습니다."
             );
@@ -139,7 +129,6 @@ onAuthStateChanged(
 
         signedInUser =
             user;
-
         await loadCharacters();
     }
 );
@@ -148,9 +137,7 @@ onAuthStateChanged(
 // ======================================
 // LOAD CHARACTERS
 // ======================================
-
 async function loadCharacters() {
-
     if (!signedInUser) {
         return;
     }
@@ -158,7 +145,6 @@ async function loadCharacters() {
     showLoadingState();
 
     try {
-
         const characterCollection =
             collection(
                 db,
@@ -177,12 +163,10 @@ async function loadCharacters() {
 
         snapshot.forEach(
             function (documentSnapshot) {
-
                 characters.push(
                     {
                         id:
                             documentSnapshot.id,
-
                         ...documentSnapshot.data()
                     }
                 );
@@ -192,20 +176,16 @@ async function loadCharacters() {
         shuffleArray(
             characters
         );
-
         loadedCharacters =
             characters;
-
         renderCharacters();
     }
 
     catch (error) {
-
         console.error(
             "Failed to load characters:",
             error
         );
-
         showErrorState(
             "캐릭터 정보를 불러오는 중 오류가 발생했습니다."
         );
@@ -216,20 +196,15 @@ async function loadCharacters() {
 // ======================================
 // SHUFFLE
 // ======================================
-
 function shuffleArray(
     array
 ) {
-
     for (
         let i =
             array.length - 1;
-
         i > 0;
-
         i -= 1
     ) {
-
         const randomIndex =
             Math.floor(
                 Math.random() *
@@ -238,10 +213,8 @@ function shuffleArray(
 
         const temp =
             array[i];
-
         array[i] =
             array[randomIndex];
-
         array[randomIndex] =
             temp;
     }
@@ -253,16 +226,12 @@ function shuffleArray(
 // ======================================
 // RENDER CHARACTERS
 // ======================================
-
 function renderCharacters() {
-
     characterGrid.innerHTML =
         "";
-
     if (
         loadedCharacters.length === 0
     ) {
-
         showEmptyState();
 
         return;
@@ -275,12 +244,10 @@ function renderCharacters() {
 
     loadedCharacters.forEach(
         function (character) {
-
             const card =
                 createCharacterCard(
                     character
                 );
-
             characterGrid.appendChild(
                 card
             );
@@ -292,11 +259,9 @@ function renderCharacters() {
 // ======================================
 // CREATE CHARACTER CARD
 // ======================================
-
 function createCharacterCard(
     character
 ) {
-
     const card =
         document.createElement(
             "article"
@@ -307,11 +272,6 @@ function createCharacterCard(
 
     card.dataset.characterId =
         character.id;
-
-
-    // ==================================
-    // IMAGE
-    // ==================================
 
     const imageWrapper =
         document.createElement(
@@ -343,15 +303,12 @@ function createCharacterCard(
 
     profileImage.addEventListener(
         "error",
-
         function () {
-
             if (
                 !profileImage.src.includes(
                     "castfolio.png"
                 )
             ) {
-
                 profileImage.src =
                     "images/castfolio.png";
             }
@@ -362,11 +319,6 @@ function createCharacterCard(
         profileImage
     );
 
-
-    // ==================================
-    // THREE DOT MENU
-    // ==================================
-
     const menu =
         createCharacterMenu(
             character
@@ -376,82 +328,79 @@ function createCharacterCard(
         menu
     );
 
-
-    // ==================================
-    // CONTENT
-    // ==================================
-
     const content =
         document.createElement(
             "div"
         );
-
     content.className =
         "character-card-content";
-
-
-    // ==================================
-    // NAME
-    // ==================================
 
     const name =
         document.createElement(
             "h2"
         );
-
     name.className =
         "character-name";
-
     name.textContent =
         character.name ||
         "이름 없음";
-
-
-    // ==================================
-    // SHORT DESCRIPTION
-    // ==================================
 
     const shortDescription =
         document.createElement(
             "p"
         );
-
     shortDescription.className =
         "character-short-description";
-
     shortDescription.textContent =
         character.shortDescription ||
         "한줄설명이 없습니다.";
-
-
-    // ==================================
-    // GENERAL INFORMATION
-    // ==================================
 
     const general =
         createGeneralInformation(
             character.general ||
             {}
         );
-
     content.appendChild(
         name
     );
-
     content.appendChild(
         shortDescription
     );
-
     content.appendChild(
         general
     );
-
     card.appendChild(
         imageWrapper
     );
-
     card.appendChild(
         content
+    );
+
+    card.tabIndex =
+        0;
+    card.addEventListener(
+        "click",
+        function () {
+            openCharacter(
+                character.id
+            );
+        }
+    );
+
+    // Keyboard support
+    card.addEventListener(
+        "keydown",
+        function (event) {
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
+                event.preventDefault();
+                openCharacter(
+                    character.id
+                );
+            }
+        }
     );
 
     return card;
@@ -459,27 +408,36 @@ function createCharacterCard(
 
 
 // ======================================
+// OPEN CHARACTER PAGE
+// ======================================
+function openCharacter(
+    characterId
+) {
+    window.location.href =
+        "character.html?id=" +
+        encodeURIComponent(
+            characterId
+        );
+}
+
+
+// ======================================
 // GENERAL INFORMATION
 // ======================================
-
 function createGeneralInformation(
     general
 ) {
-
     const wrapper =
         document.createElement(
             "div"
         );
-
     wrapper.className =
         "character-general";
 
     const fields = [
-
         {
             label:
                 "나이",
-
             value:
                 general.age
         },
@@ -487,7 +445,6 @@ function createGeneralInformation(
         {
             label:
                 "성별",
-
             value:
                 general.gender
         },
@@ -495,7 +452,6 @@ function createGeneralInformation(
         {
             label:
                 "종족",
-
             value:
                 general.species
         },
@@ -503,7 +459,6 @@ function createGeneralInformation(
         {
             label:
                 "키",
-
             value:
                 general.height
         },
@@ -511,7 +466,6 @@ function createGeneralInformation(
         {
             label:
                 "몸무게",
-
             value:
                 general.weight
         },
@@ -519,14 +473,13 @@ function createGeneralInformation(
         {
             label:
                 "직업",
-
             value:
                 general.occupation
         },
 
         {
             label:
-                "장르",
+             "장르",
 
             value:
                 general.genre
@@ -538,11 +491,9 @@ function createGeneralInformation(
 
     fields.forEach(
         function (field) {
-
             if (!field.value) {
                 return;
             }
-
             visibleFieldCount +=
                 1;
 
@@ -550,7 +501,6 @@ function createGeneralInformation(
                 document.createElement(
                     "div"
                 );
-
             row.className =
                 "general-row";
 
@@ -558,10 +508,8 @@ function createGeneralInformation(
                 document.createElement(
                     "span"
                 );
-
             label.className =
                 "general-label";
-
             label.textContent =
                 field.label;
 
@@ -569,17 +517,14 @@ function createGeneralInformation(
                 document.createElement(
                     "span"
                 );
-
             value.className =
                 "general-value";
-
             value.textContent =
                 field.value;
 
             row.appendChild(
                 label
             );
-
             row.appendChild(
                 value
             );
@@ -590,20 +535,13 @@ function createGeneralInformation(
         }
     );
 
-
-    // ==================================
-    // NO GENERAL INFORMATION
-    // ==================================
-
     if (
         visibleFieldCount === 0
     ) {
-
         const emptyRow =
             document.createElement(
                 "div"
             );
-
         emptyRow.className =
             "general-row";
 
@@ -611,10 +549,8 @@ function createGeneralInformation(
             document.createElement(
                 "span"
             );
-
         label.className =
             "general-label";
-
         label.textContent =
             "정보";
 
@@ -622,17 +558,14 @@ function createGeneralInformation(
             document.createElement(
                 "span"
             );
-
         value.className =
             "general-value";
-
         value.textContent =
             "등록된 정보 없음";
 
         emptyRow.appendChild(
             label
         );
-
         emptyRow.appendChild(
             value
         );
@@ -643,35 +576,26 @@ function createGeneralInformation(
     }
 
 
-    // ==================================
-    // TAGS
-    // ==================================
-
     if (
         Array.isArray(
             general.tags
         ) &&
         general.tags.length > 0
     ) {
-
         const tagWrapper =
             document.createElement(
                 "div"
             );
-
         tagWrapper.className =
             "character-tags";
 
         general.tags
-
             .slice(
-                0,
-                5
+                0, 5
             )
 
             .forEach(
                 function (tagText) {
-
                     const tag =
                         document.createElement(
                             "span"
@@ -679,16 +603,13 @@ function createGeneralInformation(
 
                     tag.className =
                         "character-tag";
-
                     tag.textContent =
                         `#${tagText}`;
-
                     tagWrapper.appendChild(
                         tag
                     );
                 }
             );
-
         wrapper.appendChild(
             tagWrapper
         );
@@ -701,16 +622,13 @@ function createGeneralInformation(
 // ======================================
 // CHARACTER MENU
 // ======================================
-
 function createCharacterMenu(
     character
 ) {
-
     const menu =
         document.createElement(
             "div"
         );
-
     menu.className =
         "character-menu";
 
@@ -721,15 +639,12 @@ function createCharacterMenu(
 
     menuButton.type =
         "button";
-
     menuButton.className =
         "character-menu-button";
-
     menuButton.setAttribute(
         "aria-label",
         "캐릭터 메뉴"
     );
-
     menuButton.textContent =
         "⋯";
 
@@ -742,29 +657,19 @@ function createCharacterMenu(
         "character-menu-dropdown";
 
 
-    // ==================================
-    // EDIT
-    // ==================================
-
     const editButton =
         document.createElement(
             "button"
         );
-
     editButton.type =
         "button";
-
     editButton.className =
         "edit-character-button";
-
     editButton.textContent =
         "수정";
-
     editButton.addEventListener(
         "click",
-
         function (event) {
-
             event.stopPropagation();
 
             window.location.href =
@@ -773,29 +678,19 @@ function createCharacterMenu(
     );
 
 
-    // ==================================
-    // DELETE
-    // ==================================
-
     const deleteButton =
         document.createElement(
             "button"
         );
-
     deleteButton.type =
         "button";
-
     deleteButton.className =
         "delete-character-button";
-
     deleteButton.textContent =
         "삭제";
-
     deleteButton.addEventListener(
         "click",
-
         function (event) {
-
             event.stopPropagation();
 
             closeAllCharacterMenus();
@@ -807,15 +702,9 @@ function createCharacterMenu(
     );
 
 
-    // ==================================
-    // OPEN/CLOSE MENU
-    // ==================================
-
     menuButton.addEventListener(
         "click",
-
         function (event) {
-
             event.stopPropagation();
 
             const shouldOpen =
@@ -826,7 +715,6 @@ function createCharacterMenu(
             closeAllCharacterMenus();
 
             if (shouldOpen) {
-
                 menu.classList.add(
                     "open"
                 );
@@ -837,15 +725,12 @@ function createCharacterMenu(
     dropdown.appendChild(
         editButton
     );
-
     dropdown.appendChild(
         deleteButton
     );
-
     menu.appendChild(
         menuButton
     );
-
     menu.appendChild(
         dropdown
     );
@@ -857,18 +742,14 @@ function createCharacterMenu(
 // ======================================
 // CLOSE ALL MENUS
 // ======================================
-
 function closeAllCharacterMenus() {
-
     document
-
         .querySelectorAll(
             ".character-menu.open"
         )
 
         .forEach(
             function (menu) {
-
                 menu.classList.remove(
                     "open"
                 );
@@ -878,9 +759,7 @@ function closeAllCharacterMenus() {
 
 document.addEventListener(
     "click",
-
     function () {
-
         closeAllCharacterMenus();
     }
 );
@@ -889,21 +768,16 @@ document.addEventListener(
 // ======================================
 // OPEN DELETE MODAL
 // ======================================
-
 function openDeleteModal(
     character
 ) {
-
     characterPendingDelete =
         character;
-
     deleteCharacterName.textContent =
         character.name ||
         "이 캐릭터";
-
     deleteModal.hidden =
         false;
-
     document.body.style.overflow =
         "hidden";
 }
@@ -912,9 +786,7 @@ function openDeleteModal(
 // ======================================
 // CLOSE DELETE MODAL
 // ======================================
-
 function closeDeleteModal() {
-
     if (
         confirmDeleteButton.disabled
     ) {
@@ -924,10 +796,8 @@ function closeDeleteModal() {
 
     characterPendingDelete =
         null;
-
     deleteModal.hidden =
         true;
-
     document.body.style.overflow =
         "";
 }
@@ -936,7 +806,6 @@ function closeDeleteModal() {
 // ======================================
 // DELETE MODAL EVENTS
 // ======================================
-
 deleteModalClose.addEventListener(
     "click",
     closeDeleteModal
@@ -954,14 +823,11 @@ deleteModalBackdrop.addEventListener(
 
 document.addEventListener(
     "keydown",
-
     function (event) {
-
         if (
             event.key === "Escape" &&
             !deleteModal.hidden
         ) {
-
             closeDeleteModal();
         }
     }
@@ -971,12 +837,9 @@ document.addEventListener(
 // ======================================
 // CONFIRM DELETE
 // ======================================
-
 confirmDeleteButton.addEventListener(
     "click",
-
     async function () {
-
         if (
             !characterPendingDelete ||
             !signedInUser
@@ -989,7 +852,6 @@ confirmDeleteButton.addEventListener(
             characterPendingDelete;
 
         try {
-
             setDeleteLoadingState(
                 true
             );
@@ -1007,7 +869,6 @@ confirmDeleteButton.addEventListener(
             loadedCharacters =
                 loadedCharacters.filter(
                     function (item) {
-
                         return (
                             item.id !==
                             character.id
@@ -1017,22 +878,17 @@ confirmDeleteButton.addEventListener(
 
             characterPendingDelete =
                 null;
-
             deleteModal.hidden =
                 true;
-
             document.body.style.overflow =
                 "";
-
             setDeleteLoadingState(
                 false
             );
-
             renderCharacters();
         }
 
         catch (error) {
-
             console.error(
                 "Character delete failed:",
                 error
@@ -1056,11 +912,9 @@ confirmDeleteButton.addEventListener(
 // ======================================
 // DELETE BUTTON STATE
 // ======================================
-
 function setDeleteLoadingState(
     isDeleting
 ) {
-
     confirmDeleteButton.disabled =
         isDeleting;
 
@@ -1080,9 +934,7 @@ function setDeleteLoadingState(
 // ======================================
 // PAGE STATES
 // ======================================
-
 function hideAllStates() {
-
     loadingState.hidden =
         true;
 
@@ -1096,34 +948,24 @@ function hideAllStates() {
         true;
 }
 
-
 function showLoadingState() {
-
     hideAllStates();
-
     loadingState.hidden =
         false;
 }
 
-
 function showEmptyState() {
-
     hideAllStates();
-
     emptyState.hidden =
         false;
 }
 
-
 function showErrorState(
     message
 ) {
-
     hideAllStates();
-
     errorMessage.textContent =
         message;
-
     errorState.hidden =
         false;
 }
