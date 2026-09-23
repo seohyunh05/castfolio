@@ -16,10 +16,38 @@
 
     overflow: hidden;
 
-    background-image: url("../images/searchpage.png");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background: transparent;
+}
+
+
+/* Fixed page background */
+
+.search-page::before {
+    content: "";
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-image:
+        url("../images/searchpage.png");
+
+    background-position:
+        center center;
+
+    background-size:
+        cover;
+
+    background-repeat:
+        no-repeat;
+
+    pointer-events: none;
+
+    z-index: 0;
 }
 
 
