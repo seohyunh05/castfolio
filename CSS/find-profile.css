@@ -20,20 +20,16 @@
         30px
         60px;
 
-    background:
-        radial-gradient(
-            circle at 25% 30%,
-            rgba(105, 72, 210, 0.17),
-            transparent 35%
+    background-image:
+        linear-gradient(
+            rgba(3, 4, 22, 0.25),
+            rgba(3, 4, 22, 0.25)
         ),
+        url("../images/profilepage.png");
 
-        radial-gradient(
-            circle at 75% 70%,
-            rgba(55, 82, 190, 0.16),
-            transparent 38%
-        ),
-
-        #050716;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 
