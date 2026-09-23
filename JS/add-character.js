@@ -2100,7 +2100,7 @@ function makeCharacterData() {
             bodyType:
                 cleanValue(
                     "bodyType"
-                )
+                ),
             
             specialNotes:
                 cleanValue(
