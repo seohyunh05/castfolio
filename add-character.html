@@ -422,6 +422,16 @@
                                 관계
                             </button>
 
+                            <button
+                                class="tab-button"
+                                type="button"
+                                data-tab="background"
+                                role="tab"
+                                aria-selected="false"
+                            >
+                                배경
+                            </button>
+
                         </div>
 
 
@@ -883,6 +893,35 @@
 
                         </div>
 
+                        <!-- =================================
+                            BACKGROUND
+                        ================================== -->
+
+                        <div
+                            class="tab-content"
+                            id="tab-background"
+                            data-tab-panel="background"
+                            role="tabpanel"
+                            hidden
+                        >
+
+                            <div class="field-group free-writing-field">
+
+                                <label for="background">
+                                    배경
+                                </label>
+
+                                <textarea
+                                    id="background"
+                                    name="background"
+                                    rows="12"
+                                    placeholder="가정환경, 성장 과정, 과거 사건, 소속 등 캐릭터의 배경을 자유롭게 작성해 주세요."
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
                     </section>
 
                 </div>
@@ -1123,7 +1162,7 @@
 
     <script
         type="module"
-        src="JS/add-character.js?v=14"
+        src="JS/add-character.js?v=15"
     ></script>
 
 </body>

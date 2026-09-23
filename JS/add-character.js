@@ -621,6 +621,11 @@ async function loadCharacterForEdit() {
             data.relationship
         );
 
+        setValue(
+            "background",
+            data.background
+        );
+
         existingProfileImageUrl =
             data.profileImageUrl || "";
 
@@ -2126,7 +2131,12 @@ function makeCharacterData() {
         relationship:
             cleanValue(
                 "relationship"
-            )
+            ),
+
+        background:
+            cleanValue(
+                "background"
+            ),
     };
 }
 
