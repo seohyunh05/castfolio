@@ -41,12 +41,6 @@ const profileName =
     );
 
 
-const profileEmail =
-    document.getElementById(
-        "profileEmail"
-    );
-
-
 const usernameInput =
     document.getElementById(
         "usernameInput"
@@ -205,10 +199,6 @@ function loadUserProfile(user) {
 
     profileName.textContent =
         displayName;
-
-
-    profileEmail.textContent =
-        email;
 
 
     usernameInput.value =

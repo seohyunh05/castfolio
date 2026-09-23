@@ -252,32 +252,12 @@
 
 
 .profile-preview-info strong {
-    margin-bottom:
-        6px;
 
     color:
         white;
 
     font-size:
         19px;
-}
-
-
-.profile-preview-info span {
-    overflow:
-        hidden;
-
-    color:
-        rgba(255, 255, 255, 0.48);
-
-    font-size:
-        14px;
-
-    white-space:
-        nowrap;
-
-    text-overflow:
-        ellipsis;
 }
 
 
