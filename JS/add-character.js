@@ -597,6 +597,16 @@ async function loadCharacterForEdit() {
         );
 
         setValue(
+            "specialNotes",
+            appearance.specialNotes
+        );
+
+        setValue(
+            "appearanceOther",
+            appearance.other
+        );
+
+        setValue(
             "personality",
             data.personality
         );
@@ -2090,6 +2100,16 @@ function makeCharacterData() {
             bodyType:
                 cleanValue(
                     "bodyType"
+                )
+            
+            specialNotes:
+                cleanValue(
+                    "specialNotes"
+                ),
+
+            other:
+                cleanValue(
+                    "appearanceOther"
                 )
         },
 
