@@ -327,6 +327,16 @@ function filterCharacters() {
 
 
                 // ----------------------
+                // GENERAL INFORMATION
+                // ----------------------
+
+                const general =
+                    character.general ||
+                    {};
+
+
+
+                // ----------------------
                 // NAME
                 // ----------------------
 
@@ -335,7 +345,7 @@ function filterCharacters() {
                         character.name ||
                         ""
                     )
-                    .toLowerCase();
+                        .toLowerCase();
 
 
 
@@ -343,9 +353,24 @@ function filterCharacters() {
                 // TAGS
                 // ----------------------
 
+                /*
+                    Current Castfolio format:
+
+                    character.general.tags
+
+                    Old top-level format is kept
+                    as a fallback for compatibility.
+                */
+
                 const tags =
                     normalizeTags(
+
+                        general.tags
+
+                        ||
+
                         character.tags
+
                     );
 
 
@@ -368,11 +393,33 @@ function filterCharacters() {
                 // GENRE
                 // ----------------------
 
+                /*
+                    Current Castfolio format:
+
+                    character.general.genre
+
+                    Old top-level format is kept
+                    as a fallback for compatibility.
+                */
+
                 const genre =
                     String(
-                        character.genre ||
+
+                        general.genre
+
+                        ||
+
+                        character.genre
+
+                        ||
+
                         ""
+
                     );
+
+
+                const lowercaseGenre =
+                    genre.toLowerCase();
 
 
 
@@ -400,6 +447,12 @@ function filterCharacters() {
                     );
 
 
+                const genreTextMatches =
+                    lowercaseGenre.includes(
+                        searchText
+                    );
+
+
                 const textMatches =
 
                     searchText === ""
@@ -410,12 +463,16 @@ function filterCharacters() {
 
                     ||
 
-                    tagMatches;
+                    tagMatches
+
+                    ||
+
+                    genreTextMatches;
 
 
 
                 // ----------------------
-                // GENRE MATCH
+                // GENRE FILTER MATCH
                 // ----------------------
 
                 const genreMatches =
@@ -577,6 +634,16 @@ function createCharacterCard(
 
 
     // ==================================
+    // GENERAL INFORMATION
+    // ==================================
+
+    const general =
+        character.general ||
+        {};
+
+
+
+    // ==================================
     // IMAGE
     // ==================================
 
@@ -725,6 +792,10 @@ function createCharacterCard(
 
     description.textContent =
 
+        character.shortDescription
+
+        ||
+
         character.description
 
         ||
@@ -756,9 +827,24 @@ function createCharacterCard(
 
 
 
-    // Genre
+    // ==================================
+    // GENRE
+    // ==================================
 
-    if (character.genre) {
+    const characterGenre =
+
+        general.genre
+
+        ||
+
+        character.genre
+
+        ||
+
+        "";
+
+
+    if (characterGenre) {
 
 
         const genreBadge =
@@ -772,7 +858,7 @@ function createCharacterCard(
 
 
         genreBadge.textContent =
-            character.genre;
+            characterGenre;
 
 
         meta.appendChild(
@@ -783,11 +869,19 @@ function createCharacterCard(
 
 
 
-    // Tags
+    // ==================================
+    // TAGS
+    // ==================================
 
     const tags =
         normalizeTags(
+
+            general.tags
+
+            ||
+
             character.tags
+
         );
 
 
@@ -1089,6 +1183,7 @@ genreFilter.addEventListener(
     "change",
 
     function () {
+
 
         filterCharacters();
 
