@@ -12,60 +12,46 @@ body {
     position: relative;
     width: 100%;
     min-height: 100vh;
+
     padding:
         128px
         28px
         80px;
-
-    isolation: isolate;
-    background:
-        #050716;
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(3, 4, 18, 0.58),
+            rgba(5, 7, 22, 0.72) 42%,
+            rgba(5, 7, 22, 0.88) 100%
+        ),
+        var(--character-background);
+    background-position:
+        center top,
+        center top;
+    background-size:
+        cover,
+        cover;
+    background-repeat:
+        no-repeat,
+        no-repeat;
+    background-attachment:
+        fixed,
+        fixed;
 }
 
 
 /* =================================
    GENRE BACKGROUND
 ================================= */
-.character-page::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -3;
-    background-image:
-        var(--character-background);
-    background-position:
-        center;
-    background-size:
-        cover;
-    background-repeat:
-        no-repeat;
-    filter:
-        saturate(0.85);
-}
-
-.character-page::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    background:
-        linear-gradient(
-            180deg,
-            rgba(3, 4, 18, 0.70),
-            rgba(5, 7, 22, 0.88) 36%,
-            rgba(5, 7, 22, 0.97) 100%
-        );
-}
-
 .character-background-overlay {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
     background:
         radial-gradient(
             circle at 50% 13%,
-            rgba(148, 100, 255, 0.18),
+            rgba(148, 100, 255, 0.12),
             transparent 38%
         );
 }
@@ -75,12 +61,13 @@ body {
    CONTAINER
 ================================= */
 .character-container {
+    position: relative;
+    z-index: 1;
     width: min(
         1160px,
         100%
     );
-    margin:
-        0 auto;
+    margin: 0 auto;
 }
 
 
@@ -88,6 +75,14 @@ body {
 /* =================================
    PAGE STATES
 ================================= */
+.character-state[hidden] {
+    display: none !important;
+}
+
+.character-content[hidden] {
+    display: none !important;
+}
+
 .character-state {
     min-height:
         55vh;

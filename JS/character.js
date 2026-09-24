@@ -666,133 +666,102 @@ function renderGallery(
 // ======================================
 // GENRE BACKGROUND
 // ======================================
-function applyGenreBackground(
-    genre
-) {
+function applyGenreBackground(genre) {
     const normalizedGenre =
-        String(
-            genre || ""
-        )
+        String(genre || "")
             .trim()
             .toLowerCase();
+
+    const genreBackgrounds = [
+        {
+            keywords: [
+                "현대 판타지",
+                "현판",
+                "modern fantasy"
+            ],
+            image: "images/modfan.png"
+        },
+        {
+            keywords: [
+                "sf",
+                "sci-fi",
+                "science fiction",
+                "공상과학",
+                "사이파이"
+            ],
+            image: "images/scifi.png"
+        },
+        {
+            keywords: [
+                "판타지",
+                "fantasy"
+            ],
+            image: "images/fantasy.png"
+        },
+        {
+            keywords: [
+                "역사",
+                "시대",
+                "historical",
+                "history"
+            ],
+            image: "images/history.png"
+        },
+        {
+            keywords: [
+                "로맨스",
+                "romance"
+            ],
+            image: "images/romance.png"
+        },
+        {
+            keywords: [
+                "미스터리",
+                "추리",
+                "스릴러",
+                "mystery",
+                "thriller"
+            ],
+            image: "images/mystery.png"
+        },
+        {
+            keywords: [
+                "일상",
+                "daily",
+                "slice of life"
+            ],
+            image: "images/daily.png"
+        }
+    ];
 
     let backgroundImage =
         "images/homepage.png";
 
-    if (
-        normalizedGenre.includes(
-            "현대 판타지"
-        ) ||
-        normalizedGenre.includes(
-            "현판"
-        ) ||
-        normalizedGenre.includes(
-            "modern fantasy"
-        )
-    ) {
-        backgroundImage =
-            "images/modfan.png";
-    }
+    for (const item of genreBackgrounds) {
+        const matched =
+            item.keywords.some(
+                function (keyword) {
+                    return normalizedGenre.includes(
+                        keyword
+                    );
+                }
+            );
+        if (matched) {
 
-    else if (
-        normalizedGenre.includes(
-            "sf"
-        ) ||
-        normalizedGenre.includes(
-            "sci-fi"
-        ) ||
-        normalizedGenre.includes(
-            "science fiction"
-        ) ||
-        normalizedGenre.includes(
-            "공상과학"
-        ) ||
-        normalizedGenre.includes(
-            "사이파이"
-        )
-    ) {
-        backgroundImage =
-            "images/scifi.png";
-    }
+            backgroundImage =
+                item.image;
 
-    else if (
-        normalizedGenre.includes(
-            "판타지"
-        ) ||
-        normalizedGenre.includes(
-            "fantasy"
-        )
-    ) {
-        backgroundImage =
-            "images/fantasy.png";
+            break;
+        }
     }
-
-    else if (
-        normalizedGenre.includes(
-            "역사"
-        ) ||
-        normalizedGenre.includes(
-            "시대"
-        ) ||
-        normalizedGenre.includes(
-            "historical"
-        ) ||
-        normalizedGenre.includes(
-            "history"
-        )
-    ) {
-        backgroundImage =
-            "images/history.png";
-    }
-
-    else if (
-        normalizedGenre.includes(
-            "로맨스"
-        ) ||
-        normalizedGenre.includes(
-            "romance"
-        )
-    ) {
-        backgroundImage =
-            "images/romance.png";
-    }
-
-    else if (
-        normalizedGenre.includes(
-            "미스터리"
-        ) ||
-        normalizedGenre.includes(
-            "추리"
-        ) ||
-        normalizedGenre.includes(
-            "스릴러"
-        ) ||
-        normalizedGenre.includes(
-            "mystery"
-        ) ||
-        normalizedGenre.includes(
-            "thriller"
-        )
-    ) {
-        backgroundImage =
-            "images/mystery.png";
-    }
-
-    else if (
-        normalizedGenre.includes(
-            "일상"
-        ) ||
-        normalizedGenre.includes(
-            "daily"
-        ) ||
-        normalizedGenre.includes(
-            "slice of life"
-        )
-    ) {
-        backgroundImage =
-            "images/daily.png";
-    }
-
+    console.log(
+        "Character genre:",
+        genre
+    );
+    console.log(
+        "Background image:",
+        backgroundImage
+    );
     characterPage.style.setProperty(
         "--character-background",
         `url("${backgroundImage}")`
