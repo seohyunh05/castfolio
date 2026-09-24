@@ -563,6 +563,7 @@ select {
    INFORMATION PANEL
 ================================= */
 .info-panel {
+    height: 590px;
     min-height: 590px;
     overflow: hidden;
     border-radius: 20px;
@@ -710,8 +711,8 @@ select {
    APPEARANCE - OTHER
 ================================= */
 .appearance-other textarea {
-    height: 170px;
-    min-height: 170px;
+    height: 160px;
+    min-height: 160px;
 }
 
 
