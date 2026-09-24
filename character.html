@@ -18,7 +18,7 @@
 
     <link
         rel="stylesheet"
-        href="CSS/character.css?v=3"
+        href="CSS/character.css?v=4"
     >
 
     <link
@@ -587,9 +587,43 @@
         </div>
     </div>
 
+    <div
+        class="image-viewer"
+        id="imageViewer"
+        hidden
+    >
+        <div
+            class="image-viewer-backdrop"
+            id="imageViewerBackdrop"
+        ></div>
+
+        <div
+            class="image-viewer-content"
+            role="dialog"
+            aria-modal="true"
+            aria-label="이미지 크게 보기"
+        >
+            <button
+                type="button"
+                class="image-viewer-close"
+                id="imageViewerClose"
+                aria-label="이미지 닫기"
+            >
+                ×
+            </button>
+
+            <img
+                id="imageViewerImage"
+                class="image-viewer-image"
+                src=""
+                alt=""
+            >
+        </div>
+    </div>
+
     <script
         type="module"
-        src="JS/character.js?v=3"
+        src="JS/character.js?v=4"
     ></script>
 </body>
 </html>

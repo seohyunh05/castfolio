@@ -193,6 +193,27 @@ const galleryEmptyMessage =
 
 
 // ======================================
+// IMAGE VIEWER
+// ======================================
+const imageViewer =
+    document.getElementById(
+        "imageViewer"
+    );
+const imageViewerBackdrop =
+    document.getElementById(
+        "imageViewerBackdrop"
+    );
+const imageViewerClose =
+    document.getElementById(
+        "imageViewerClose"
+    );
+const imageViewerImage =
+    document.getElementById(
+        "imageViewerImage"
+    );
+
+
+// ======================================
 // ACTION BUTTONS
 // ======================================
 const editCharacterButton =
@@ -638,16 +659,23 @@ function renderGallery(
                 "lazy";
             image.addEventListener(
                 "error",
-
                 function () {
-
                     image.src =
                         "images/castfolio.png";
                 },
-
                 {
                     once:
                         true
+                }
+            );
+            
+            image.addEventListener(
+                "click",
+                function () {
+                    openImageViewer(
+                        imageUrl,
+                        image.alt
+                    );
                 }
             );
 
@@ -661,6 +689,70 @@ function renderGallery(
         }
     );
 }
+
+
+// ======================================
+// OPEN IMAGE VIEWER
+// ======================================
+function openImageViewer(
+    imageUrl,
+    altText = ""
+) {
+    if (
+        !imageUrl ||
+        !imageViewer ||
+        !imageViewerImage
+    ) {
+
+        return;
+    }
+
+    imageViewerImage.src =
+        imageUrl;
+    imageViewerImage.alt =
+        altText;
+    imageViewer.hidden =
+        false;
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+// ======================================
+// CLOSE IMAGE VIEWER
+// ======================================
+function closeImageViewer() {
+    if (
+        !imageViewer ||
+        !imageViewerImage
+    ) {
+
+        return;
+    }
+
+    imageViewer.hidden =
+        true;
+    imageViewerImage.removeAttribute(
+        "src"
+    );
+    imageViewerImage.alt =
+        "";
+    document.body.style.overflow =
+        "";
+}
+
+
+// ======================================
+// IMAGE VIEWER EVENTS
+// ======================================
+imageViewerClose.addEventListener(
+    "click",
+    closeImageViewer
+);
+imageViewerBackdrop.addEventListener(
+    "click",
+    closeImageViewer
+);
 
 
 // ======================================
@@ -783,7 +875,7 @@ function applyGenreBackground(genre) {
         ),
         url("${absoluteImageUrl}")
         `;
-        
+
     characterPage.style.backgroundPosition =
         "center top, center top";
     characterPage.style.backgroundSize =
@@ -890,14 +982,27 @@ document.addEventListener(
 
     function (event) {
         if (
-            event.key === "Escape" &&
+            event.key !== "Escape"
+        ) {
+
+            return;
+        }
+
+        if (
+            !imageViewer.hidden
+        ) {
+            closeImageViewer();
+
+            return;
+        }
+
+        if (
             !deleteModal.hidden
         ) {
             closeDeleteModal();
         }
     }
 );
-
 
 
 // ======================================
