@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>캐릭터 | Castfolio</title>
+
+    <link
+        rel="stylesheet"
+        href="CSS/main.css?v=10"
+    >
+
+    <link
+        rel="stylesheet"
+        href="CSS/character.css?v=1"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap"
+        rel="stylesheet"
+    >
+</head>
+
+
+<body>
+    <header class="header">
+        <a
+            href="main.html"
+            class="logo"
+        >
+            <img
+                src="images/castfolio.png"
+                alt="Castfolio Logo"
+            >
+
+            <span>
+                Castfolio
+            </span>
+        </a>
+
+        <nav
+            class="nav"
+            id="navMenu"
+        >
+            <a
+                href="my-characters.html"
+                class="nav-link"
+            >
+                캐릭터
+            </a>
+
+            <a
+                href="gallery.html"
+                class="nav-link"
+            >
+                갤러리
+            </a>
+
+            <a
+                href="search.html"
+                class="nav-link"
+            >
+                검색
+            </a>
+
+            <div class="dropdown">
+                <button
+                    class="dropdown-button"
+                    id="moreButton"
+                    type="button"
+                >
+                    기타
+                    <span class="arrow">
+                        ▾
+                    </span>
+                </button>
+
+                <div
+                    class="dropdown-menu"
+                    id="dropdownMenu"
+                >
+                    <a href="settings.html">
+                        설정
+                    </a>
+
+                    <a href="find-profile.html">
+                        프로필 찾기
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="header-right">
+            <a
+                href="settings.html"
+                class="header-user-profile"
+                id="headerUserProfile"
+                hidden
+            >
+                <img
+                    src="images/castfolio.png"
+                    alt="프로필 이미지"
+                    class="header-profile-image"
+                    id="headerProfileImage"
+                    width="36"
+                    height="36"
+                >
+                <span
+                    class="header-profile-name"
+                    id="headerProfileName"
+                >
+                    사용자
+                </span>
+            </a>
+
+            <button
+                class="login-button"
+                id="loginButton"
+                type="button"
+            >
+                로그인
+            </button>
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="메뉴 열기"
+            >
+                ☰
+            </button>
+        </div>
+    </header>
+
+
+    <main
+        class="character-page"
+        id="characterPage"
+    >
+        <div class="character-background-overlay"></div>
+        <div class="character-container">
+            <section
+                class="character-state"
+                id="characterLoading"
+            >
+                <div class="loading-spinner"></div>
+
+                <p>
+                    캐릭터 정보를 불러오고 있습니다...
+                </p>
+            </section>
+
+            <section
+                class="character-state"
+                id="characterError"
+                hidden
+            >
+                <h2>
+                    캐릭터를 불러올 수 없습니다
+                </h2>
+
+                <p id="characterErrorMessage">
+                    캐릭터 정보를 확인할 수 없습니다.
+                </p>
+
+                <a
+                    href="my-characters.html"
+                    class="back-character-button"
+                >
+                    내 캐릭터로 돌아가기
+                </a>
+            </section>
+
+            <div
+                class="character-content"
+                id="characterContent"
+                hidden
+            >
+                <section class="character-heading">
+
+                    <h1 id="characterName">
+                        캐릭터 이름
+                    </h1>
+
+                    <p
+                        class="character-short-description"
+                        id="characterShortDescription"
+                    >
+                    </p>
+                </section>
+
+                <section class="character-overview">
+                    <div class="character-profile-panel">
+                        <div class="character-profile-image-wrapper">
+                            <img
+                                id="characterProfileImage"
+                                class="character-profile-image"
+                                src="images/castfolio.png"
+                                alt="캐릭터 프로필 이미지"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="character-general-panel">
+                        <div class="section-title-row">
+                            <span class="section-number">
+                                01
+                            </span>
+
+                            <h2>
+                                기본 정보
+                            </h2>
+                        </div>
+
+                        <div class="general-information-grid">
+                            <div class="general-information-item">
+                                <span class="general-information-label">
+                                    나이
+                                </span>
+
+                                <span
+                                    class="general-information-value"
+                                    id="characterAge"
+                                >
+                                    —
+                                </span>
+                            </div>
+
+                            <div class="general-information-item">
+                                <span class="general-information-label">
+                                    성별
+                                </span>
+
+                                <span
+                                    class="general-information-value"
+                                    id="characterGender"
+                                >
+                                    —
+                                </span>
+                            </div>
+
+                            <div class="general-information-item">
+                                <span class="general-information-label">
+                                    종족
+                                </span>
+
+                                <span
+                                    class="general-information-value"
+                                    id="characterSpecies"
+                                >
+                                    —
+                                </span>
+                            </div>
+
+                            <div class="general-information-item">
+                                <span class="general-information-label">
+                                    키
+                                </span>
+
+                                <span
+                                    class="general-information-value"
+                                    id="characterHeight"
+                                >
+                                    —
+                                </span>
+                            </div>
+
+                            <div class="general-information-item">
+                                <span class="general-information-label">
+                                    몸무게
+                                </span>
+
+                                <span
+                                    class="general-information-value"
+                                    id="characterWeight"
+                                >
+                                    —
+                                </span>
+                            </div>
+
+                            <div class="general-information-item">
+                                <span class="general-information-label">
+                                    직업
+                                </span>
+
+                                <span
+                                    class="general-information-value"
+                                    id="characterOccupation"
+                                >
+                                    —
+                                </span>
+                            </div>
+
+                            <div class="general-information-item full-width">
+                                <span class="general-information-label">
+                                    장르
+                                </span>
+
+                                <span
+                                    class="general-information-value"
+                                    id="characterGenre"
+                                >
+                                    —
+                                </span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="character-tags"
+                            id="characterTags"
+                        ></div>
+                    </div>
+                </section>
+
+                <section class="character-detail-section">
+                    <div class="section-title-row">
+                        <span class="section-number">
+                            02
+                        </span>
+
+                        <h2>
+                            외모
+                        </h2>
+                    </div>
+
+                    <div class="appearance-grid">
+                        <div class="appearance-item">
+                            <span class="appearance-label">
+                                머리
+                            </span>
+
+                            <p id="appearanceHair">
+                                —
+                            </p>
+                        </div>
+
+                        <div class="appearance-item">
+                            <span class="appearance-label">
+                                눈
+                            </span>
+
+                            <p id="appearanceEyes">
+                                —
+                            </p>
+                        </div>
+
+                        <div class="appearance-item">
+                            <span class="appearance-label">
+                                피부
+                            </span>
+
+                            <p id="appearanceSkin">
+                                —
+                            </p>
+                        </div>
+
+                        <div class="appearance-item">
+                            <span class="appearance-label">
+                                얼굴형
+                            </span>
+
+                            <p id="appearanceFaceShape">
+                                —
+                            </p>
+
+                        </div>
+
+                        <div class="appearance-item">
+                            <span class="appearance-label">
+                                체형
+                            </span>
+
+                            <p id="appearanceBodyType">
+                                —
+                            </p>
+                        </div>
+
+                        <div class="appearance-item">
+                            <span class="appearance-label">
+                                특이사항
+                            </span>
+
+                            <p id="appearanceSpecialNotes">
+                                —
+                            </p>
+                        </div>
+
+                        <div class="appearance-item appearance-wide">
+                            <span class="appearance-label">
+                                기타
+                            </span>
+
+                            <p id="appearanceOther">
+                                —
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="character-detail-section">
+                    <div class="section-title-row">
+                        <span class="section-number">
+                            03
+                        </span>
+
+                        <h2>
+                            성격
+                        </h2>
+                    </div>
+
+                    <p
+                        class="character-long-text"
+                        id="characterPersonality"
+                    ></p>
+                </section>
+
+                <section class="character-detail-section">
+                    <div class="section-title-row">
+                        <span class="section-number">
+                            04
+                        </span>
+
+                        <h2>
+                            특징
+                        </h2>
+                    </div>
+
+                    <p
+                        class="character-long-text"
+                        id="characterFeatures"
+                    ></p>
+                </section>
+
+                <section class="character-detail-section">
+                    <div class="section-title-row">
+                        <span class="section-number">
+                            05
+                        </span>
+
+                        <h2>
+                            관계
+                        </h2>
+                    </div>
+
+                    <p
+                        class="character-long-text"
+                        id="characterRelationship"
+                    ></p>
+                </section>
+
+                <section class="character-detail-section">
+                    <div class="section-title-row">
+                        <span class="section-number">
+                            06
+                        </span>
+
+                        <h2>
+                            배경
+                        </h2>
+                    </div>
+
+                    <p
+                        class="character-long-text"
+                        id="characterBackground"
+                    ></p>
+                </section>
+
+                <section class="character-library-section">
+                    <div class="library-heading">
+                        <span class="section-number">
+                            07
+                        </span>
+
+                        <h2>
+                            <span id="libraryCharacterName"></span>
+                            Library
+                        </h2>
+                    </div>
+
+                    <div
+                        class="character-gallery-grid"
+                        id="characterGallery"
+                    ></div>
+
+                    <p
+                        class="gallery-empty-message"
+                        id="galleryEmptyMessage"
+                        hidden
+                    >
+                        등록된 이미지가 없습니다.
+                    </p>
+                </section>
+
+                <section class="character-actions">
+                    <button
+                        type="button"
+                        class="character-edit-button"
+                        id="editCharacterButton"
+                    >
+                        수정
+                    </button>
+
+                    <button
+                        type="button"
+                        class="character-delete-button"
+                        id="deleteCharacterButton"
+                    >
+                        삭제
+                    </button>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div
+        class="delete-modal"
+        id="deleteModal"
+        hidden
+    >
+        <div
+            class="delete-modal-backdrop"
+            id="deleteModalBackdrop"
+        ></div>
+
+        <div
+            class="delete-modal-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteModalTitle"
+        >
+            <button
+                type="button"
+                class="delete-modal-close"
+                id="deleteModalClose"
+                aria-label="닫기"
+            >
+                ×
+            </button>
+
+            <h2 id="deleteModalTitle">
+                캐릭터를 삭제하시겠습니까?
+            </h2>
+
+            <p>
+                <strong id="deleteCharacterName"></strong>의
+                캐릭터 정보가 삭제됩니다.
+            </p>
+
+            <p class="delete-warning">
+                이 작업은 되돌릴 수 없습니다.
+            </p>
+
+            <div class="delete-modal-actions">
+                <button
+                    type="button"
+                    class="delete-cancel-button"
+                    id="cancelDeleteButton"
+                >
+                    취소
+                </button>
+
+                <button
+                    type="button"
+                    class="delete-confirm-button"
+                    id="confirmDeleteButton"
+                >
+                    영구 삭제
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script
+        type="module"
+        src="JS/character.js?v=1"
+    ></script>
+</body>
+</html>
