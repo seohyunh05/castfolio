@@ -6,39 +6,24 @@ body {
 }
 
 .character-page {
-    --character-background:
-        url("../images/homepage.png");
-
     position: relative;
     width: 100%;
     min-height: 100vh;
-
     padding:
         128px
         28px
         80px;
-    background-image:
-        linear-gradient(
-            180deg,
-            rgba(3, 4, 18, 0.58),
-            rgba(5, 7, 22, 0.72) 42%,
-            rgba(5, 7, 22, 0.88) 100%
-        ),
-        var(--character-background);
+    background-color:
+        #050716;
     background-position:
-        center top,
         center top;
     background-size:
-        cover,
         cover;
     background-repeat:
-        no-repeat,
         no-repeat;
     background-attachment:
-        fixed,
         fixed;
 }
-
 
 /* =================================
    GENRE BACKGROUND

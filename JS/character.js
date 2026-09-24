@@ -679,7 +679,7 @@ function applyGenreBackground(genre) {
                 "현판",
                 "modern fantasy"
             ],
-            image: "images/modfan.png"
+            image: "./images/modfan.png"
         },
         {
             keywords: [
@@ -689,14 +689,14 @@ function applyGenreBackground(genre) {
                 "공상과학",
                 "사이파이"
             ],
-            image: "images/scifi.png"
+            image: "./images/scifi.png"
         },
         {
             keywords: [
                 "판타지",
                 "fantasy"
             ],
-            image: "images/fantasy.png"
+            image: "./images/fantasy.png"
         },
         {
             keywords: [
@@ -705,14 +705,14 @@ function applyGenreBackground(genre) {
                 "historical",
                 "history"
             ],
-            image: "images/history.png"
+            image: "./images/history.png"
         },
         {
             keywords: [
                 "로맨스",
                 "romance"
             ],
-            image: "images/romance.png"
+            image: "./images/romance.png"
         },
         {
             keywords: [
@@ -722,7 +722,7 @@ function applyGenreBackground(genre) {
                 "mystery",
                 "thriller"
             ],
-            image: "images/mystery.png"
+            image: "./images/mystery.png"
         },
         {
             keywords: [
@@ -730,44 +730,69 @@ function applyGenreBackground(genre) {
                 "daily",
                 "slice of life"
             ],
-            image: "images/daily.png"
+            image: "./images/daily.png"
         }
     ];
 
-    let backgroundImage =
-        "images/homepage.png";
+    let selectedImage =
+        "./images/homepage.png";
 
     for (const item of genreBackgrounds) {
         const matched =
             item.keywords.some(
                 function (keyword) {
+
                     return normalizedGenre.includes(
                         keyword
                     );
                 }
             );
         if (matched) {
-
-            backgroundImage =
+            selectedImage =
                 item.image;
 
             break;
         }
     }
+
+    const absoluteImageUrl =
+        new URL(
+            selectedImage,
+            window.location.href
+        ).href;
     console.log(
         "Character genre:",
         genre
     );
     console.log(
-        "Background image:",
-        backgroundImage
+        "Selected background:",
+        selectedImage
     );
-    characterPage.style.setProperty(
-        "--character-background",
-        `url("${backgroundImage}")`
+    console.log(
+        "Absolute background URL:",
+        absoluteImageUrl
     );
-}
 
+    characterPage.style.backgroundImage =
+        `
+        linear-gradient(
+            180deg,
+            rgba(3, 4, 18, 0.48),
+            rgba(5, 7, 22, 0.64) 45%,
+            rgba(5, 7, 22, 0.78) 100%
+        ),
+        url("${absoluteImageUrl}")
+        `;
+        
+    characterPage.style.backgroundPosition =
+        "center top, center top";
+    characterPage.style.backgroundSize =
+        "cover, cover";
+    characterPage.style.backgroundRepeat =
+        "no-repeat, no-repeat";
+    characterPage.style.backgroundAttachment =
+        "fixed, fixed";
+}
 
 
 // ======================================
