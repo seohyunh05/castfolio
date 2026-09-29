@@ -1181,6 +1181,12 @@ select {
         margin: 0 auto;
     }
 
+    .info-panel {
+        height: auto;
+        min-height: 590px;
+        overflow: visible;
+    }
+
     .form-grid.two-column {
         grid-template-columns:
             1fr;
