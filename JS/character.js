@@ -771,7 +771,7 @@ function applyGenreBackground(genre) {
                 "현판",
                 "modern fantasy"
             ],
-            image: "./images/modfan.png"
+            image: "./images/modfan.png?v=2"
         },
         {
             keywords: [
@@ -788,7 +788,7 @@ function applyGenreBackground(genre) {
                 "판타지",
                 "fantasy"
             ],
-            image: "./images/fantasy.png"
+            image: "./images/fantasy.png?v=2"
         },
         {
             keywords: [
@@ -822,7 +822,7 @@ function applyGenreBackground(genre) {
                 "daily",
                 "slice of life"
             ],
-            image: "./images/daily.png"
+            image: "./images/daily.png?v=2"
         }
     ];
 
