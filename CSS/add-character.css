@@ -1754,3 +1754,236 @@ body.crop-modal-open {
     }
 
 }
+
+
+/* =================================
+   MOBILE LAYOUT FIX
+   Keep this at the END of this file
+================================= */
+@media (max-width: 780px) {
+    html, body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .character-editor-page {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        padding:
+            104px
+            16px
+            55px;
+    }
+
+    .character-editor-shell,
+    #characterForm,
+    .character-name-wrap,
+    .editor-grid,
+    .profile-panel,
+    .profile-card,
+    .info-panel,
+    .gallery-section {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .character-name-input {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .editor-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+    }
+
+    .profile-panel {
+        margin: 0;
+    }
+    .profile-card {
+        padding: 18px;
+    }
+    .profile-image-frame {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        aspect-ratio: 4 / 5;
+    }
+    #profilePreview {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+    }
+
+    .info-panel {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .tab-list {
+        width: 100%;
+        max-width: 100%;
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        overscroll-behavior-x: contain;
+    }
+    .tab-list::-webkit-scrollbar {
+        display: none;
+    }
+    .tab-button {
+        flex:
+            0
+            0
+            auto;
+
+        min-width: 76px;
+        padding:
+            17px
+            15px
+            15px;
+
+        white-space: nowrap;
+    }
+
+    .tab-content {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding:
+            22px
+            18px
+            24px;
+    }
+    .tab-content[hidden] {
+        display: none !important;
+    }
+
+    .form-grid,
+    .form-grid.two-column {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        grid-template-columns:
+            minmax(0, 1fr);
+    }
+
+    .field-group,
+    .field-group.full-width,
+    .free-writing-field,
+    .appearance-other {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+
+        grid-column: auto;
+    }
+
+    .field-group input,
+    .field-group textarea,
+    .field-group select,
+    .short-description-field textarea {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .select-wrap {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .gender-options {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+    .gender-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .field-group textarea {
+        min-height: 220px;
+    }
+    .free-writing-field {
+        min-height: 0;
+    }
+    .appearance-other textarea {
+        height: auto;
+        min-height: 150px;
+    }
+
+    .gallery-section {
+        padding: 18px;
+    }
+    .gallery-grid {
+        width: 100%;
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+    .section-heading-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .section-heading-row p {
+        max-width: 100%;
+        text-align: left;
+    }
+    .form-actions {
+        width: 100%;
+
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .save-button {
+        width: 100%;
+    }
+}
+
+
+/* =================================
+   VERY SMALL PHONES
+================================= */
+@media (max-width: 430px) {
+    .character-editor-page {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+    .profile-card {
+        padding: 15px;
+    }
+    .tab-content {
+        padding:
+            20px
+            15px
+            22px;
+    }
+    .tab-button {
+        min-width: 72px;
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+    .character-name-input {
+        font-size: 27px;
+    }
+}
