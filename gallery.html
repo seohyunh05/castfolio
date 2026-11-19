@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gallery | Castfolio</title>
+
+    <link
+        rel="stylesheet"
+        href="CSS/main.css?v=10"
+    >
+
+    <link
+        rel="stylesheet"
+        href="CSS/gallery.css?v=1"
+    >
+</head>
+
+<body>
+
+    <!-- =================================
+         HEADER
+    ================================== -->
+
+    <header class="header">
+
+        <!-- Logo -->
+
+        <a href="main.html" class="logo">
+
+            <img
+                src="images/castfolio.png"
+                alt="Castfolio Logo"
+            >
+
+            <span>Castfolio</span>
+
+        </a>
+
+
+        <!-- Navigation -->
+
+        <nav class="nav" id="navMenu">
+
+            <a
+                href="my-characters.html"
+                class="nav-link"
+            >
+                캐릭터
+            </a>
+
+            <a
+                href="gallery.html"
+                class="nav-link gallery-nav-active"
+                aria-current="page"
+            >
+                갤러리
+            </a>
+
+            <a
+                href="search.html"
+                class="nav-link"
+            >
+                검색
+            </a>
+
+
+            <!-- Other Dropdown -->
+
+            <div class="dropdown">
+
+                <button
+                    class="dropdown-button"
+                    id="moreButton"
+                    type="button"
+                >
+                    기타
+
+                    <span class="arrow">▾</span>
+                </button>
+
+                <div
+                    class="dropdown-menu"
+                    id="dropdownMenu"
+                >
+
+                    <a href="settings.html">
+                        설정
+                    </a>
+
+                    <a href="find-profile.html">
+                        프로필 찾기
+                    </a>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+        <!-- Header Right -->
+
+        <div class="header-right">
+
+            <a
+                href="settings.html"
+                class="header-user-profile"
+                id="headerUserProfile"
+                hidden
+            >
+
+                <img
+                    src="images/castfolio.png"
+                    alt="프로필 이미지"
+                    class="header-profile-image"
+                    id="headerProfileImage"
+                    width="36"
+                    height="36"
+                >
+
+                <span
+                    class="header-profile-name"
+                    id="headerProfileName"
+                >
+                    사용자
+                </span>
+
+            </a>
+
+
+            <button
+                class="login-button"
+                id="loginButton"
+                type="button"
+            >
+                로그인
+            </button>
+
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="메뉴 열기"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================
+         GALLERY PAGE
+    ================================== -->
+
+    <main class="gallery-page">
+
+        <!-- Gallery Heading -->
+
+        <section class="gallery-intro">
+
+            <p class="gallery-eyebrow">
+                CASTFOLIO COLLECTION
+            </p>
+
+            <h1>
+                The Hall of
+                <span>Splendor</span>
+            </h1>
+
+            <p class="gallery-description">
+                나만의 특별한 포트폴리오를 감상해 보세요!
+            </p>
+
+        </section>
+
+
+        <!-- =================================
+             GENRE FILTERS
+        ================================== -->
+
+        <nav
+            class="gallery-filters"
+            aria-label="장르별 이미지 필터"
+        >
+
+            <button
+                class="genre-button is-active"
+                type="button"
+                data-genre="all"
+                aria-pressed="true"
+            >
+                전체
+            </button>
+
+            <button
+                class="genre-button"
+                type="button"
+                data-genre="scifi"
+                aria-pressed="false"
+            >
+                SF
+            </button>
+
+            <button
+                class="genre-button"
+                type="button"
+                data-genre="fantasy"
+                aria-pressed="false"
+            >
+                판타지
+            </button>
+
+            <button
+                class="genre-button"
+                type="button"
+                data-genre="history"
+                aria-pressed="false"
+            >
+                역사
+            </button>
+
+            <button
+                class="genre-button"
+                type="button"
+                data-genre="romance"
+                aria-pressed="false"
+            >
+                로맨스
+            </button>
+
+            <button
+                class="genre-button"
+                type="button"
+                data-genre="modern-fantasy"
+                aria-pressed="false"
+            >
+                현대 판타지
+            </button>
+
+            <button
+                class="genre-button"
+                type="button"
+                data-genre="daily"
+                aria-pressed="false"
+            >
+                일상
+            </button>
+
+            <button
+                class="genre-button"
+                type="button"
+                data-genre="mystery"
+                aria-pressed="false"
+            >
+                미스터리
+            </button>
+
+        </nav>
+
+
+        <!-- =================================
+             GALLERY CONTENT
+        ================================== -->
+
+        <section class="gallery-content">
+
+            <div class="gallery-content-header">
+
+                <h2>나의 갤러리</h2>
+
+                <p
+                    class="gallery-count"
+                    id="galleryCount"
+                    aria-live="polite"
+                >
+                    이미지 불러오는 중...
+                </p>
+
+            </div>
+
+
+            <!-- Images are inserted by JS -->
+
+            <div
+                class="gallery-grid"
+                id="galleryGrid"
+            ></div>
+
+
+            <!-- Loading / Empty / Error Message -->
+
+            <p
+                class="gallery-status"
+                id="galleryStatus"
+                role="status"
+            >
+                갤러리를 불러오는 중입니다...
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- =================================
+         IMAGE VIEWER
+    ================================== -->
+
+    <dialog
+        class="gallery-lightbox"
+        id="imageDialog"
+        aria-label="이미지 크게 보기"
+    >
+
+        <div class="lightbox-content">
+
+            <button
+                class="lightbox-close"
+                id="lightboxClose"
+                type="button"
+                aria-label="이미지 닫기"
+            >
+                &times;
+            </button>
+
+            <img
+                id="lightboxImage"
+                alt=""
+            >
+
+            <p
+                class="lightbox-caption"
+                id="lightboxCaption"
+            ></p>
+
+        </div>
+
+    </dialog>
+
+
+    <!-- =================================
+         JAVASCRIPT
+    ================================== -->
+
+    <script
+        type="module"
+        src="JS/gallery.js?v=1"
+    ></script>
+
+</body>
+
+</html>
