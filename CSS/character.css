@@ -233,7 +233,7 @@ body {
 .character-profile-panel,
 .character-general-panel,
 .character-detail-section,
-.character-library-section {
+.character-gallery-section {
     border:
         1px solid
         rgba(255, 255, 255, 0.10);
@@ -295,7 +295,7 @@ body {
 }
 
 .section-title-row,
-.library-heading {
+.gallery-heading {
     display:
         flex;
     align-items:
@@ -318,7 +318,7 @@ body {
 }
 
 .section-title-row h2,
-.library-heading h2 {
+.gallery-heading h2 {
     color:
         white;
     font-size:
@@ -430,7 +430,7 @@ body {
    DETAIL SECTIONS
 ================================= */
 .character-detail-section,
-.character-library-section {
+.character-gallery-section {
     margin-top:
         24px;
     padding:
@@ -521,9 +521,9 @@ body {
 
 
 /* =================================
-   LIBRARY / GALLERY
+   GALLERY
 ================================= */
-.character-library-section {
+.character-gallery-section {
     margin-top:
         24px;
 }
@@ -1053,7 +1053,7 @@ body {
 
     .character-general-panel,
     .character-detail-section,
-    .character-library-section {
+    .character-gallery-section {
         padding:
             24px
             20px;
@@ -1116,7 +1116,7 @@ body {
     }
 
     .section-title-row h2,
-    .library-heading h2 {
+    .gallery-heading h2 {
         font-size:
             21px;
     }
