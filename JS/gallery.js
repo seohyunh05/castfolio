@@ -264,67 +264,134 @@
 
      const genres = new Set();
 
-
-     // Check common Firestore field names
-
-     const fields = [
-         character.genre,
-         character.genres,
-         character.genreTags,
-         character.tags,
-         character.category,
-         character.categories,
-         character.characterGenre,
-         character.characterGenres,
-         character.selectedGenre,
-         character.selectedGenres
-     ];
+     const visited = new WeakSet();
 
 
-     // Check nested character information
+     // ==================================
+     // SEARCH ALL CHARACTER DATA
+     // ==================================
 
-     const nestedFields = [
-         character.basicInfo,
-         character.characterInfo,
-         character.characterData,
-         character.details
-     ];
-
-
-     nestedFields.forEach(function (data) {
+     function scanGenreData(value, depth = 0) {
 
          if (
-             !data ||
-             typeof data !== "object"
+             value === null ||
+             value === undefined ||
+             depth > 10
          ) {
+             return;
+         }
+
+
+         // ==================================
+         // STRING VALUES
+         // ==================================
+
+         if (typeof value === "string") {
+
+             const values = value.split(
+                 /[,/|;#&\n]+/
+             );
+
+             values.forEach(function (item) {
+
+                 const genre =
+                     normalizeGenre(item);
+
+                 if (genre) {
+
+                     genres.add(genre);
+
+                 }
+
+             });
 
              return;
+         }
+
+
+         // ==================================
+         // ARRAY VALUES
+         // ==================================
+
+         if (Array.isArray(value)) {
+
+             value.forEach(function (item) {
+
+                 scanGenreData(
+                     item,
+                     depth + 1
+                 );
+
+             });
+
+             return;
+         }
+
+
+         // ==================================
+         // OBJECT VALUES
+         // ==================================
+
+         if (typeof value === "object") {
+
+             if (visited.has(value)) {
+                 return;
+             }
+
+             visited.add(value);
+
+
+             Object.entries(value).forEach(
+                 function ([key, fieldValue]) {
+
+
+                     // Example:
+                     // { fantasy: true }
+
+                     if (fieldValue === true) {
+
+                         const genre =
+                             normalizeGenre(key);
+
+                         if (genre) {
+
+                             genres.add(genre);
+
+                         }
+
+                     }
+
+
+                     // Search nested information
+
+                     scanGenreData(
+                         fieldValue,
+                         depth + 1
+                     );
+
+                 }
+             );
 
          }
 
-         fields.push(
-             data.genre,
-             data.genres,
-             data.genreTags,
-             data.tags,
-             data.category,
-             data.categories,
-             data.selectedGenres
-         );
-
-     });
+     }
 
 
-     // Collect all recognized genres
+     // ==================================
+     // START SEARCH
+     // ==================================
 
-     fields.forEach(function (field) {
+     scanGenreData(character);
 
-         collectGenres(
-             field,
-             genres
-         );
 
-     });
+     // ==================================
+     // DEBUG RESULTS
+     // ==================================
+
+     console.log(
+         "Detected genres:",
+         Array.from(genres)
+     );
 
 
      return Array.from(genres);
