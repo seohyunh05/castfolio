@@ -1,719 +1,1081 @@
 
-// ======================================
-// FIREBASE IMPORTS
-// ======================================
+ // ======================================
+ // FIREBASE IMPORTS
+ // ======================================
 
-import {
-    auth
-} from "./main.js";
+ import {
+     auth
+ } from "./main.js";
 
-import {
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+ import {
+     onAuthStateChanged
+ } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-import {
-    getFirestore,
-    collection,
-    getDocs
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+ import {
+     getFirestore,
+     collection,
+     getDocs
+ } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
-// ======================================
-// FIREBASE INITIALIZATION
-// ======================================
+ // ======================================
+ // FIREBASE INITIALIZATION
+ // ======================================
 
-const db = getFirestore(auth.app);
+ const db = getFirestore(auth.app);
 
 
-// ======================================
-// ELEMENTS
-// ======================================
+ // ======================================
+ // ELEMENTS
+ // ======================================
 
-const galleryGrid =
-    document.getElementById("galleryGrid");
+ const galleryGrid =
+     document.getElementById("galleryGrid");
 
-const galleryStatus =
-    document.getElementById("galleryStatus");
+ const galleryStatus =
+     document.getElementById("galleryStatus");
 
-const galleryCount =
-    document.getElementById("galleryCount");
+ const galleryCount =
+     document.getElementById("galleryCount");
 
-const genreButtons =
-    document.querySelectorAll(".genre-button");
+ const genreButtons =
+     document.querySelectorAll(".genre-button");
 
-const imageDialog =
-    document.getElementById("imageDialog");
+ const imageDialog =
+     document.getElementById("imageDialog");
 
-const lightboxImage =
-    document.getElementById("lightboxImage");
+ const lightboxImage =
+     document.getElementById("lightboxImage");
 
-const lightboxCaption =
-    document.getElementById("lightboxCaption");
+ const lightboxCaption =
+     document.getElementById("lightboxCaption");
 
-const lightboxClose =
-    document.getElementById("lightboxClose");
+ const lightboxClose =
+     document.getElementById("lightboxClose");
 
 
-// ======================================
-// GALLERY STATE
-// ======================================
+ // ======================================
+ // GALLERY STATE
+ // ======================================
 
-let allImages = [];
+ let allImages = [];
 
-let selectedGenre = "all";
+ let selectedGenre = "all";
 
-let isLoading = true;
+ let isLoading = true;
 
 
-// ======================================
-// GENRE NAMES
-// ======================================
+ // ======================================
+ // GENRE NAMES
+ // ======================================
 
-const genreAliases = {
-    "sf": "scifi",
-    "scifi": "scifi",
-    "sciencefiction": "scifi",
-    "공상과학": "scifi",
+ const genreAliases = {
 
-    "fantasy": "fantasy",
-    "판타지": "fantasy",
+     // Science Fiction
+     "sf": "scifi",
+     "scifi": "scifi",
+     "sciencefiction": "scifi",
+     "공상과학": "scifi",
+     "에스에프": "scifi",
 
-    "history": "history",
-    "historical": "history",
-    "역사": "history",
-    "시대극": "history",
+     // Fantasy
+     "fantasy": "fantasy",
+     "판타지": "fantasy",
 
-    "romance": "romance",
-    "로맨스": "romance",
+     // History
+     "history": "history",
+     "historical": "history",
+     "historicalfiction": "history",
+     "역사": "history",
+     "시대극": "history",
 
-    "modernfantasy": "modern-fantasy",
-    "현대판타지": "modern-fantasy",
-    "현판": "modern-fantasy",
+     // Romance
+     "romance": "romance",
+     "로맨스": "romance",
 
-    "daily": "daily",
-    "dailylife": "daily",
-    "sliceoflife": "daily",
-    "일상": "daily",
+     // Modern Fantasy
+     "modernfantasy": "modern-fantasy",
+     "modfan": "modern-fantasy",
+     "현대판타지": "modern-fantasy",
+     "현판": "modern-fantasy",
 
-    "mystery": "mystery",
-    "미스터리": "mystery",
-    "추리": "mystery"
-};
+     // Daily Life
+     "daily": "daily",
+     "dailylife": "daily",
+     "sliceoflife": "daily",
+     "일상": "daily",
+     "일상물": "daily",
 
+     // Mystery
+     "mystery": "mystery",
+     "미스터리": "mystery",
+     "추리": "mystery"
 
-// ======================================
-// NORMALIZE GENRE
-// ======================================
+ };
 
-function normalizeGenre(value) {
 
-    if (typeof value !== "string") {
-        return null;
-    }
+ // ======================================
+ // NORMALIZE GENRE
+ // ======================================
 
-    const normalized = value
-        .normalize("NFKC")
-        .toLowerCase()
-        .replace(/[\s_-]/g, "");
+ function normalizeGenre(value) {
 
-    return genreAliases[normalized] || null;
-}
+     if (typeof value !== "string") {
 
+         return null;
 
-// ======================================
-// GET CHARACTER GENRES
-// ======================================
+     }
 
-function getCharacterGenres(character) {
+     const normalized = value
+         .normalize("NFKC")
+         .toLowerCase()
+         .replace(/[^a-z0-9가-힣]/g, "");
 
-    const fields = [
-        character.genres,
-        character.genre,
-        character.category
-    ];
+     return genreAliases[normalized] || null;
 
-    const genres = [];
+ }
 
-    fields.forEach(function (field) {
 
-        const values = Array.isArray(field)
-            ? field
-            : [field];
+ // ======================================
+ // COLLECT GENRE VALUES
+ // ======================================
 
-        values.forEach(function (value) {
+ function collectGenres(value, genres) {
 
-            if (typeof value !== "string") {
-                return;
-            }
+     if (value === null || value === undefined) {
 
-            value.split(/[,/|]/).forEach(function (name) {
+         return;
 
-                const genre = normalizeGenre(name);
+     }
 
-                if (genre && !genres.includes(genre)) {
-                    genres.push(genre);
-                }
 
-            });
+     // ==================================
+     // ARRAY FORMAT
+     // ==================================
 
-        });
+     if (Array.isArray(value)) {
 
-    });
+         value.forEach(function (item) {
 
-    return genres;
-}
+             collectGenres(
+                 item,
+                 genres
+             );
 
+         });
 
-// ======================================
-// GET IMAGE URL
-// ======================================
+         return;
 
-function getImageUrl(value) {
+     }
 
-    if (typeof value === "string") {
-        return value.trim();
-    }
 
-    if (value && typeof value === "object") {
+     // ==================================
+     // STRING FORMAT
+     // ==================================
 
-        return (
-            value.url ||
-            value.downloadURL ||
-            value.downloadUrl ||
-            value.imageUrl ||
-            value.src ||
-            ""
-        );
+     if (typeof value === "string") {
 
-    }
+         const names = value.split(
+             /[,/|;#&]+/
+         );
 
-    return "";
-}
+         names.forEach(function (name) {
 
+             const genre =
+                 normalizeGenre(name);
 
-// ======================================
-// VALIDATE IMAGE URL
-// ======================================
+             if (genre) {
 
-function isValidImageUrl(value) {
+                 genres.add(genre);
 
-    if (typeof value !== "string" || !value) {
-        return false;
-    }
+             }
 
-    try {
+         });
 
-        const url = new URL(
-            value,
-            window.location.href
-        );
+         return;
 
-        if (
-            url.protocol !== "https:" &&
-            url.protocol !== "http:"
-        ) {
-            return false;
-        }
+     }
 
-        return (
-            /^(https?:\/\/|\/|\.\/|\.\.\/)/i.test(value) ||
-            /\.(png|jpg|jpeg|webp|gif|avif|svg)(\?.*)?$/i.test(value)
-        );
 
-    }
+     // ==================================
+     // OBJECT FORMAT
+     // ==================================
 
-    catch (error) {
-        return false;
-    }
-}
+     if (typeof value === "object") {
 
+         const properties = [
+             "name",
+             "label",
+             "value",
+             "id",
+             "key",
+             "text",
+             "type",
+             "genre",
+             "genres",
+             "tags"
+         ];
 
-// ======================================
-// GET ALL CHARACTER IMAGES
-// ======================================
 
-function getCharacterImages(character) {
+         // Check common genre properties
 
-    const imageFields = [
-        character.images,
-        character.imageUrls,
-        character.galleryImages,
-        character.gallery,
-        character.photos,
-        character.image,
-        character.coverImage,
-        character.profileImage
-    ];
+         properties.forEach(function (property) {
 
-    const imageUrls = [];
+             if (value[property] !== undefined) {
 
-    imageFields.forEach(function (field) {
+                 collectGenres(
+                     value[property],
+                     genres
+                 );
 
-        const images = Array.isArray(field)
-            ? field
-            : [field];
+             }
 
-        images.forEach(function (image) {
+         });
 
-            const url = getImageUrl(image);
 
-            if (
-                isValidImageUrl(url) &&
-                !imageUrls.includes(url)
-            ) {
-                imageUrls.push(url);
-            }
+         // Handle objects such as:
+         // { fantasy: true, romance: true }
 
-        });
+         Object.entries(value).forEach(
+             function ([key, fieldValue]) {
 
-    });
+                 if (fieldValue === true) {
 
-    return imageUrls;
-}
+                     collectGenres(
+                         key,
+                         genres
+                     );
 
+                 }
 
-// ======================================
-// RANDOMIZE IMAGES
-// ======================================
+             }
+         );
 
-function shuffleImages(images) {
+     }
 
-    const shuffled = [...images];
+ }
 
-    for (
-        let index = shuffled.length - 1;
-        index > 0;
-        index--
-    ) {
 
-        const randomIndex = Math.floor(
-            Math.random() * (index + 1)
-        );
+ // ======================================
+ // GET CHARACTER GENRES
+ // ======================================
 
-        [
-            shuffled[index],
-            shuffled[randomIndex]
-        ] = [
-            shuffled[randomIndex],
-            shuffled[index]
-        ];
+ function getCharacterGenres(character) {
 
-    }
+     const genres = new Set();
 
-    return shuffled;
-}
 
+     // Check common Firestore field names
 
-// ======================================
-// OPEN IMAGE VIEWER
-// ======================================
+     const fields = [
+         character.genre,
+         character.genres,
+         character.genreTags,
+         character.tags,
+         character.category,
+         character.categories,
+         character.characterGenre,
+         character.characterGenres,
+         character.selectedGenre,
+         character.selectedGenres
+     ];
 
-function openImageViewer(image) {
 
-    lightboxImage.src = image.url;
+     // Check nested character information
 
-    lightboxImage.alt =
-        image.characterName + " 이미지";
+     const nestedFields = [
+         character.basicInfo,
+         character.characterInfo,
+         character.characterData,
+         character.details
+     ];
 
-    lightboxCaption.textContent =
-        image.characterName;
 
-    imageDialog.showModal();
-}
+     nestedFields.forEach(function (data) {
 
+         if (
+             !data ||
+             typeof data !== "object"
+         ) {
 
-// ======================================
-// CREATE IMAGE CARD
-// ======================================
+             return;
 
-function createImageCard(image) {
+         }
 
-    const card = document.createElement("button");
+         fields.push(
+             data.genre,
+             data.genres,
+             data.genreTags,
+             data.tags,
+             data.category,
+             data.categories,
+             data.selectedGenres
+         );
 
-    card.type = "button";
-    card.className = "gallery-card";
+     });
 
-    card.setAttribute(
-        "aria-label",
-        image.characterName + " 이미지 크게 보기"
-    );
 
+     // Collect all recognized genres
 
-    // Image
+     fields.forEach(function (field) {
 
-    const img = document.createElement("img");
+         collectGenres(
+             field,
+             genres
+         );
 
-    img.src = image.url;
+     });
 
-    img.alt =
-        image.characterName + " 이미지";
 
-    img.loading = "lazy";
+     return Array.from(genres);
 
-    img.decoding = "async";
+ }
 
 
-    // Character name
+ // ======================================
+ // GET IMAGE URL
+ // ======================================
 
-    const caption = document.createElement("span");
+ function getImageUrl(value) {
 
-    caption.className = "gallery-card-caption";
+     if (typeof value === "string") {
 
-    caption.textContent =
-        image.characterName;
+         return value.trim();
 
+     }
 
-    // Assemble card
+     if (
+         value &&
+         typeof value === "object"
+     ) {
 
-    card.appendChild(img);
+         return (
+             value.url ||
+             value.downloadURL ||
+             value.downloadUrl ||
+             value.imageUrl ||
+             value.src ||
+             ""
+         );
 
-    card.appendChild(caption);
+     }
 
+     return "";
 
-    // Remove broken images
+ }
 
-    img.addEventListener("error", function () {
 
-        card.remove();
+ // ======================================
+ // VALIDATE IMAGE URL
+ // ======================================
 
-    });
+ function isValidImageUrl(value) {
 
+     if (
+         typeof value !== "string" ||
+         !value
+     ) {
 
-    // Open larger image
+         return false;
 
-    card.addEventListener("click", function () {
+     }
 
-        openImageViewer(image);
+     try {
 
-    });
+         const url = new URL(
+             value,
+             window.location.href
+         );
 
-    return card;
-}
+         if (
+             url.protocol !== "https:" &&
+             url.protocol !== "http:"
+         ) {
 
+             return false;
 
-// ======================================
-// RENDER GALLERY
-// ======================================
+         }
 
-function renderGallery() {
+         return (
+             /^(https?:\/\/|\/|\.\/|\.\.\/)/i.test(value) ||
+             /\.(png|jpg|jpeg|webp|gif|avif|svg)(\?.*)?$/i.test(value)
+         );
 
-    galleryGrid.replaceChildren();
+     }
 
+     catch (error) {
 
-    // Loading
+         return false;
 
-    if (isLoading) {
+     }
 
-        galleryCount.textContent =
-            "이미지 불러오는 중...";
+ }
 
-        galleryStatus.textContent =
-            "갤러리를 불러오는 중입니다...";
 
-        galleryStatus.hidden = false;
+ // ======================================
+ // GET ALL CHARACTER IMAGES
+ // ======================================
 
-        return;
-    }
+ function getCharacterImages(character) {
 
+     const imageFields = [
+         character.images,
+         character.imageUrls,
+         character.galleryImages,
+         character.gallery,
+         character.photos,
+         character.image,
+         character.coverImage,
+         character.profileImage
+     ];
 
-    // Filter images
+     const imageUrls = [];
 
-    const visibleImages = allImages.filter(
-        function (image) {
 
-            if (selectedGenre === "all") {
-                return true;
-            }
+     imageFields.forEach(function (field) {
 
-            return image.genres.includes(
-                selectedGenre
-            );
+         const images = Array.isArray(field)
+             ? field
+             : [field];
 
-        }
-    );
 
+         images.forEach(function (image) {
 
-    // Update count
+             const url =
+                 getImageUrl(image);
 
-    galleryCount.textContent =
-        `이미지 ${visibleImages.length}장`;
+             if (
+                 isValidImageUrl(url) &&
+                 !imageUrls.includes(url)
+             ) {
 
+                 imageUrls.push(url);
 
-    // Empty gallery
+             }
 
-    if (visibleImages.length === 0) {
+         });
 
-        galleryStatus.textContent =
-            allImages.length === 0
-                ? "아직 등록된 이미지가 없습니다. 캐릭터에 이미지를 추가해 보세요."
-                : "이 장르에 등록된 이미지가 없습니다.";
+     });
 
-        galleryStatus.hidden = false;
 
-        return;
-    }
+     return imageUrls;
 
+ }
 
-    // Show images
 
-    galleryStatus.hidden = true;
+ // ======================================
+ // RANDOMIZE IMAGES
+ // ======================================
 
-    const fragment =
-        document.createDocumentFragment();
+ function shuffleImages(images) {
 
-    visibleImages.forEach(function (image) {
+     const shuffled = [...images];
 
-        fragment.appendChild(
-            createImageCard(image)
-        );
+     for (
+         let index = shuffled.length - 1;
+         index > 0;
+         index--
+     ) {
 
-    });
+         const randomIndex = Math.floor(
+             Math.random() * (index + 1)
+         );
 
-    galleryGrid.appendChild(fragment);
-}
+         [
+             shuffled[index],
+             shuffled[randomIndex]
+         ] = [
+             shuffled[randomIndex],
+             shuffled[index]
+         ];
 
+     }
 
-// ======================================
-// LOAD IMAGES FROM FIRESTORE
-// ======================================
+     return shuffled;
 
-async function loadGallery(user) {
+ }
 
-    isLoading = true;
 
-    renderGallery();
+ // ======================================
+ // OPEN IMAGE VIEWER
+ // ======================================
 
-    try {
+ function openImageViewer(image) {
 
-        /*
-            Expected Firestore structure:
+     lightboxImage.src =
+         image.url;
 
-            users
-                {userId}
-                    characters
-                        {characterId}
-        */
+     lightboxImage.alt =
+         image.characterName + " 이미지";
 
-        const charactersRef = collection(
-            db,
-            "users",
-            user.uid,
-            "characters"
-        );
+     lightboxCaption.textContent =
+         image.characterName;
 
-        const snapshot = await getDocs(
-            charactersRef
-        );
+     imageDialog.showModal();
 
+ }
 
-        // Prevent showing another user's data
 
-        if (
-            !auth.currentUser ||
-            auth.currentUser.uid !== user.uid
-        ) {
-            return;
-        }
+ // ======================================
+ // CREATE IMAGE CARD
+ // ======================================
 
+ function createImageCard(image) {
 
-        const images = [];
+     const card =
+         document.createElement("button");
 
-        snapshot.forEach(function (documentSnapshot) {
+     card.type = "button";
 
-            const character =
-                documentSnapshot.data();
+     card.className = "gallery-card";
 
-            const characterName =
-                character.name ||
-                character.characterName ||
-                character.title ||
-                "이름 없는 캐릭터";
+     card.setAttribute(
+         "aria-label",
+         image.characterName + " 이미지 크게 보기"
+     );
 
-            const genres =
-                getCharacterGenres(character);
 
-            const characterImages =
-                getCharacterImages(character);
+     // ==================================
+     // IMAGE
+     // ==================================
 
+     const img =
+         document.createElement("img");
 
-            // Each image becomes its own card
+     img.src = image.url;
 
-            characterImages.forEach(function (url) {
+     img.alt =
+         image.characterName + " 이미지";
 
-                images.push({
-                    url: url,
-                    characterName: characterName,
-                    genres: genres
-                });
+     img.loading = "lazy";
 
-            });
+     img.decoding = "async";
 
-        });
 
+     // ==================================
+     // CHARACTER NAME
+     // ==================================
 
-        // Shuffle once each time the page loads
+     const caption =
+         document.createElement("span");
 
-        allImages = shuffleImages(images);
+     caption.className =
+         "gallery-card-caption";
 
-        isLoading = false;
+     caption.textContent =
+         image.characterName;
 
-        renderGallery();
 
-    }
+     // ==================================
+     // ASSEMBLE CARD
+     // ==================================
 
-    catch (error) {
+     card.appendChild(img);
 
-        console.error(
-            "Gallery loading failed:",
-            error
-        );
+     card.appendChild(caption);
 
-        isLoading = false;
 
-        allImages = [];
+     // ==================================
+     // IMAGE ERROR
+     // ==================================
 
-        galleryGrid.replaceChildren();
+     img.addEventListener(
+         "error",
 
-        galleryCount.textContent =
-            "이미지를 불러올 수 없습니다.";
+         function () {
 
-        galleryStatus.textContent =
-            "갤러리를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+             card.remove();
 
-        galleryStatus.hidden = false;
+         }
+     );
 
-    }
-}
 
+     // ==================================
+     // IMAGE CLICK
+     // ==================================
 
-// ======================================
-// GENRE FILTER BUTTONS
-// ======================================
+     card.addEventListener(
+         "click",
 
-genreButtons.forEach(function (button) {
+         function () {
 
-    button.addEventListener("click", function () {
+             openImageViewer(image);
 
-        selectedGenre =
-            button.dataset.genre;
+         }
+     );
 
 
-        // Update active button
+     return card;
 
-        genreButtons.forEach(function (item) {
+ }
 
-            const isActive =
-                item === button;
 
-            item.classList.toggle(
-                "is-active",
-                isActive
-            );
+ // ======================================
+ // RENDER GALLERY
+ // ======================================
 
-            item.setAttribute(
-                "aria-pressed",
-                String(isActive)
-            );
+ function renderGallery() {
 
-        });
+     galleryGrid.replaceChildren();
 
 
-        // Update gallery
+     // ==================================
+     // LOADING
+     // ==================================
 
-        renderGallery();
+     if (isLoading) {
 
-    });
+         galleryCount.textContent =
+             "이미지 불러오는 중...";
 
-});
+         galleryStatus.textContent =
+             "갤러리를 불러오는 중입니다...";
 
+         galleryStatus.hidden = false;
 
-// ======================================
-// CLOSE IMAGE VIEWER
-// ======================================
+         return;
 
-lightboxClose.addEventListener(
-    "click",
-    function () {
+     }
 
-        imageDialog.close();
 
-    }
-);
+     // ==================================
+     // FILTER IMAGES
+     // ==================================
 
+     const visibleImages = allImages.filter(
+         function (image) {
 
-// Close when clicking outside the image
+             if (selectedGenre === "all") {
 
-imageDialog.addEventListener(
-    "click",
-    function (event) {
+                 return true;
 
-        if (event.target === imageDialog) {
+             }
 
-            imageDialog.close();
+             return image.genres.includes(
+                 selectedGenre
+             );
 
-        }
+         }
+     );
 
-    }
-);
 
+     // ==================================
+     // UPDATE IMAGE COUNT
+     // ==================================
 
-// Clear image after closing
+     galleryCount.textContent =
+         `이미지 ${visibleImages.length}장`;
 
-imageDialog.addEventListener(
-    "close",
-    function () {
 
-        lightboxImage.removeAttribute("src");
+     // ==================================
+     // EMPTY GALLERY
+     // ==================================
 
-    }
-);
+     if (visibleImages.length === 0) {
 
+         if (allImages.length === 0) {
 
-// ======================================
-// AUTHENTICATION CHECK
-// ======================================
+             galleryStatus.textContent =
+                 "아직 등록된 이미지가 없습니다. 캐릭터에 이미지를 추가해 보세요.";
 
-onAuthStateChanged(
+         }
 
-    auth,
+         else {
 
-    function (user) {
+             galleryStatus.textContent =
+                 "이 장르에 등록된 이미지가 없습니다.";
 
-        // User is not logged in
+         }
 
-        if (!user) {
+         galleryStatus.hidden = false;
 
-            window.location.replace(
-                "main.html"
-            );
+         return;
 
-            return;
-        }
+     }
 
 
-        // User is logged in
+     // ==================================
+     // SHOW IMAGES
+     // ==================================
 
-        loadGallery(user);
+     galleryStatus.hidden = true;
 
-    },
+     const fragment =
+         document.createDocumentFragment();
 
-    function (error) {
 
-        console.error(
-            "Authentication error:",
-            error
-        );
+     visibleImages.forEach(function (image) {
 
-        isLoading = false;
+         fragment.appendChild(
+             createImageCard(image)
+         );
 
-        galleryCount.textContent =
-            "로그인 상태 확인 실패";
+     });
 
-        galleryStatus.textContent =
-            "로그인 상태를 확인할 수 없습니다.";
 
-        galleryStatus.hidden = false;
+     galleryGrid.appendChild(fragment);
 
-    }
+ }
 
-);
+
+ // ======================================
+ // LOAD IMAGES FROM FIRESTORE
+ // ======================================
+
+ async function loadGallery(user) {
+
+     isLoading = true;
+
+     renderGallery();
+
+
+     try {
+
+         /*
+             Expected Firestore structure:
+
+             users
+                 {userId}
+                     characters
+                         {characterId}
+         */
+
+         const charactersRef = collection(
+             db,
+             "users",
+             user.uid,
+             "characters"
+         );
+
+
+         const snapshot = await getDocs(
+             charactersRef
+         );
+
+
+         // Prevent displaying a previous user's data
+
+         if (
+             !auth.currentUser ||
+             auth.currentUser.uid !== user.uid
+         ) {
+
+             return;
+
+         }
+
+
+         const images = [];
+
+
+         // ==================================
+         // PROCESS CHARACTER DOCUMENTS
+         // ==================================
+
+         snapshot.forEach(function (documentSnapshot) {
+
+             const character =
+                 documentSnapshot.data();
+
+
+             // Character name
+
+             const characterName =
+                 character.name ||
+                 character.characterName ||
+                 character.title ||
+                 "이름 없는 캐릭터";
+
+
+             // Get character genres
+
+             const genres =
+                 getCharacterGenres(character);
+
+
+             // Get character images
+
+             const characterImages =
+                 getCharacterImages(character);
+
+
+             // ==================================
+             // GENRE DEBUGGING
+             // ==================================
+
+             console.log(
+                 "Character:",
+                 characterName,
+                 "Saved character data:",
+                 character,
+                 "Recognized genres:",
+                 genres,
+                 "Image count:",
+                 characterImages.length
+             );
+
+
+             // ==================================
+             // ADD EACH IMAGE SEPARATELY
+             // ==================================
+
+             characterImages.forEach(function (url) {
+
+                 images.push({
+
+                     url: url,
+
+                     characterName: characterName,
+
+                     genres: genres
+
+                 });
+
+             });
+
+         });
+
+
+         // ==================================
+         // RANDOMIZE IMAGE ORDER
+         // ==================================
+
+         allImages = shuffleImages(
+             images
+         );
+
+
+         isLoading = false;
+
+
+         // ==================================
+         // DISPLAY GALLERY
+         // ==================================
+
+         renderGallery();
+
+     }
+
+
+     // ==================================
+     // FIRESTORE ERROR
+     // ==================================
+
+     catch (error) {
+
+         console.error(
+             "Gallery loading failed:",
+             error
+         );
+
+         isLoading = false;
+
+         allImages = [];
+
+         galleryGrid.replaceChildren();
+
+         galleryCount.textContent =
+             "이미지를 불러올 수 없습니다.";
+
+         galleryStatus.textContent =
+             "갤러리를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+
+         galleryStatus.hidden = false;
+
+     }
+
+ }
+
+
+ // ======================================
+ // GENRE FILTER BUTTONS
+ // ======================================
+
+ genreButtons.forEach(function (button) {
+
+     button.addEventListener(
+         "click",
+
+         function () {
+
+             const buttonGenre =
+                 button.dataset.genre;
+
+
+             // ==================================
+             // SELECT GENRE
+             // ==================================
+
+             selectedGenre =
+                 buttonGenre === "all"
+                     ? "all"
+                     : normalizeGenre(buttonGenre);
+
+
+             if (!selectedGenre) {
+
+                 console.warn(
+                     "Unknown genre:",
+                     buttonGenre
+                 );
+
+                 return;
+
+             }
+
+
+             // ==================================
+             // UPDATE ACTIVE BUTTON
+             // ==================================
+
+             genreButtons.forEach(function (item) {
+
+                 const isActive =
+                     item === button;
+
+                 item.classList.toggle(
+                     "is-active",
+                     isActive
+                 );
+
+                 item.setAttribute(
+                     "aria-pressed",
+                     String(isActive)
+                 );
+
+             });
+
+
+             // ==================================
+             // DEBUG FILTER
+             // ==================================
+
+             console.log(
+                 "Selected genre:",
+                 selectedGenre
+             );
+
+
+             // ==================================
+             // RENDER FILTERED IMAGES
+             // ==================================
+
+             renderGallery();
+
+         }
+     );
+
+ });
+
+
+ // ======================================
+ // CLOSE IMAGE VIEWER
+ // ======================================
+
+ lightboxClose.addEventListener(
+     "click",
+
+     function () {
+
+         imageDialog.close();
+
+     }
+ );
+
+
+ // ======================================
+ // CLICK OUTSIDE IMAGE
+ // ======================================
+
+ imageDialog.addEventListener(
+     "click",
+
+     function (event) {
+
+         if (event.target === imageDialog) {
+
+             imageDialog.close();
+
+         }
+
+     }
+ );
+
+
+ // ======================================
+ // CLEAR IMAGE AFTER CLOSE
+ // ======================================
+
+ imageDialog.addEventListener(
+     "close",
+
+     function () {
+
+         lightboxImage.removeAttribute(
+             "src"
+         );
+
+     }
+ );
+
+
+ // ======================================
+ // AUTHENTICATION CHECK
+ // ======================================
+
+ onAuthStateChanged(
+
+     auth,
+
+     function (user) {
+
+         // ==================================
+         // NOT LOGGED IN
+         // ==================================
+
+         if (!user) {
+
+             allImages = [];
+
+             window.location.replace(
+                 "main.html"
+             );
+
+             return;
+
+         }
+
+
+         // ==================================
+         // LOGGED IN
+         // ==================================
+
+         loadGallery(user);
+
+     },
+
+
+     // ==================================
+     // AUTHENTICATION ERROR
+     // ==================================
+
+     function (error) {
+
+         console.error(
+             "Authentication error:",
+             error
+         );
+
+         isLoading = false;
+
+         galleryCount.textContent =
+             "로그인 상태 확인 실패";
+
+         galleryStatus.textContent =
+             "로그인 상태를 확인할 수 없습니다.";
+
+         galleryStatus.hidden = false;
+
+     }
+
+ );
