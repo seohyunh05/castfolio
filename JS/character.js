@@ -178,17 +178,29 @@ const characterBackground =
 // ======================================
 // GALLERY
 // ======================================
+
 const libraryCharacterName =
+    document.getElementById(
+        "galleryCharacterName"
+    ) ||
     document.getElementById(
         "libraryCharacterName"
     );
+
 const characterGallery =
     document.getElementById(
         "characterGallery"
+    ) ||
+    document.getElementById(
+        "characterLibrary"
     );
+
 const galleryEmptyMessage =
     document.getElementById(
         "galleryEmptyMessage"
+    ) ||
+    document.getElementById(
+        "libraryEmptyMessage"
     );
 
 
